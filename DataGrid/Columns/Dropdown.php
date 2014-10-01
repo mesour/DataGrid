@@ -95,7 +95,7 @@ class Dropdown extends Base {
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
 		foreach ($this->option[self::LINKS] as $link) {
 			if($link instanceof Link) {
-				$link = $link->create();
+				$link = $link->create($this->data);
 				if(!$link) {
 					continue;
 				}
