@@ -1,0 +1,176 @@
+table.table th.act{
+	text-align: left;
+	padding-left: 15px;
+	width: 132px;
+}
+.thumbnailx.buttons-count-5,
+table.table th.act.buttons-count-5{
+	width: 220px;
+}
+.thumbnailx.buttons-count-4,
+table.table th.act.buttons-count-4{
+	width: 176px;
+}
+.thumbnailx.buttons-count-3,
+table.table th.act.buttons-count-3{
+	width: 132px;
+}
+.thumbnailx.buttons-count-2,
+table.table th.act.buttons-count-2{
+	width: 88px;
+}
+.thumbnailx.buttons-count-1,
+table.table th.act.buttons-count-1{
+	width: 44px;
+}
+table.table th.act.act-select{
+	width: 60px;
+}
+table.table th.act.act-select > .btn-group{
+	
+}
+table.table th.act.act-select > .btn-group .dropdown-toggle{
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+}
+table.table th.act.act-select > .btn-group .caret{
+	margin-left: 3px;
+}
+#checkbox-button{
+	float: left;
+	cursor: not-allowed;
+	margin-left: 16px;
+}
+.main-checkbox{
+	
+}
+table.table td.with-checkbox{
+	padding-left: 21px;
+}
+.datagrid-bottom .pagination{
+	margin: 0;
+}
+.right-buttons{
+	text-align: right;
+}
+.data-grid{
+	position: relative;
+	z-index: 20;
+    padding-bottom: 50px;
+}
+.data-grid .data-grid{
+    padding-bottom: 0;
+}
+.datagrid-bottom{
+	position: relative;
+	z-index: 10;
+} 
+.thumbnailx{
+	max-height: 31px;
+}
+.table-striped>tbody>tr.placeholder td{
+	background: #f8efc0;
+}
+/* for nested */
+.placeholder {
+	border: 0;
+	background: #747474 !important;
+	border-radius: 0px;
+}
+.data-grid-tree ul.grid-ul{
+	list-style-type: none;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+.data-grid-tree ul.grid-ul ul{
+	list-style-type: none;
+}
+.data-grid-tree ul.grid-ul li{
+	list-style-type: none;
+}
+.data-grid-tree ul.grid-ul ul li{
+	list-style-type: none;
+}
+.data-grid-tree ul.grid-ul ul{
+	margin-top: 10px;
+}
+.data-grid-tree ul.grid-ul li{
+	min-height: 30px;
+	margin-bottom: 10px;
+	width: 100%;
+}
+.data-grid-tree ul.grid-ul li:hover{
+	background: #ddd;
+}
+.data-grid-tree ul.grid-ul li:hover li{
+	background: #eee;
+}
+.data-grid-tree ul.grid-ul li:hover li:hover{
+	background: #ccc;
+}
+.data-grid-tree ul.grid-ul li .right-buttons{
+	float: right;
+}
+.grid-selection{
+	margin-left: 20px;
+	height: 30px;
+}
+.ordering .glyphicon{
+    display: inline-block;
+    padding-left: 5px;
+}
+.ordering .glyphicon-sort-by-alphabet,
+.ordering .glyphicon-sort-by-alphabet-alt{
+    display: none;
+}
+.ordering.asc .no-sort,
+.ordering.desc .no-sort,
+.ordering.asc:hover .glyphicon-sort-by-alphabet,
+.ordering:hover .no-sort{
+    display: none;
+}
+.ordering:hover .glyphicon-sort-by-alphabet,
+.ordering.asc .glyphicon-sort-by-alphabet{
+    display: inline-block;
+}
+.ordering.asc:hover .glyphicon-sort-by-alphabet-alt,
+.ordering.desc .glyphicon-sort-by-alphabet-alt{
+    display: inline-block;
+}
+.ordering.desc:hover .glyphicon-sort-by-alphabet,
+.ordering.desc:hover .glyphicon-sort-by-alphabet-alt{
+    display: none;
+}
+.ordering.desc:hover .no-sort{
+    display: inline-block;
+}
+.pagination-outer{
+    text-align: center;
+    padding-top: 10px;
+}
+.data-grid .editable-input{
+    border: 1px solid #aaa;
+    padding: 1px 0;
+}
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
+
+.export{
+    float: right;
+}
+.show-export{
+    float: right;
+}

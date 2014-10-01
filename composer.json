@@ -1,0 +1,7 @@
+{
+	"name": "mesour/datagrid",
+	"description": "Mesour DataGrid",
+	"autoload": {
+		"classmap": ["DataGrid/"]
+	}
+}
