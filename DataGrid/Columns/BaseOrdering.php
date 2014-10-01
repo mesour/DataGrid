@@ -1,17 +1,16 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+use \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\BaseOrderingColumn
+ * Description of \DataGrid\Column\BaseOrdering
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-abstract class BaseOrderingColumn extends BaseColumn {
+abstract class BaseOrdering extends Base {
 
 	/**
 	 * Possible option key

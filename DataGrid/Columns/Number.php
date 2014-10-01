@@ -1,17 +1,17 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\NumberColumn
+ * Description of \DataGrid\Column\Number
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class NumberColumn extends BaseOrderingColumn {
+class Number extends BaseOrdering {
 
 	/**
 	 * Possible option key
@@ -19,14 +19,6 @@ class NumberColumn extends BaseOrderingColumn {
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
 	    THOUSANDS_SEP = 'thousands_sep';
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
 
 	public function setDecimals($decimals) {
 		$this->option[self::DECIMALS] = $decimals;
@@ -80,7 +72,7 @@ class NumberColumn extends BaseOrderingColumn {
 		parent::createBody($data);
 
 		$span = Html::el($container);
-		if (isset($this->data[$this->option[self::ID]]) === FALSE) {
+		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 

@@ -77,7 +77,7 @@
 						{if is_array($link)}
 							{var $href_link = $link['href']}
 						{/if}
-						{var $href_link = \DataGrid\BaseColumn::checkLinkPermission($href_link)}
+						{var $href_link = \DataGrid\Column\Base::checkLinkPermission($href_link)}
 						{continueIf $href_link === FALSE}
 						{if $href_link !== FALSE}
 							{var $one_active = TRUE}

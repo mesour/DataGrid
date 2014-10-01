@@ -1,17 +1,17 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\ButtonColumn
+ * Description of \DataGrid\Column\Button
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class ButtonColumn extends BaseColumn {
+class Button extends Base {
 
 	/**
 	 * Possible option key
@@ -19,14 +19,6 @@ class ButtonColumn extends BaseColumn {
 	const TEXT = 'text',
 	    	BUTTONS_OPTION = 'buttons_option';
 
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
-	
 	public function setText($text) {
 		$this->option[self::TEXT] = $text;
 		return $this;
@@ -75,7 +67,7 @@ class ButtonColumn extends BaseColumn {
 		$container = Html::el('div', array('class' => 'thumbnailx buttons-count-' . $count));
 
 		foreach ($this->option[self::BUTTONS_OPTION] as $button) {
-			$button = new Button($button, $this->presenter, $this->data);
+			$button = new \DataGrid\Button($button, $this->grid->presenter, $this->data);
 			$container->add($button->create() . ' ');
 		}
 		$span->add($container);

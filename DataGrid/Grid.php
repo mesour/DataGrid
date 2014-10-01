@@ -2,6 +2,9 @@
 
 namespace DataGrid;
 
+use Nette\Application\UI\Form,
+    \Nette\Forms\Controls\SubmitButton;
+
 /**
  * Description of \DataGrid\Grid
  *
@@ -9,38 +12,38 @@ namespace DataGrid;
  * @package DataGrid
  */
 class Grid extends \Nette\Application\UI\Control {
-	
+
 	/**
 	 * DataGrid name
-	 * 
+	 *
 	 * @var string
 	 */
 	private $name;
 
 	/**
 	 * Columns array
-	 * 
+	 *
 	 * @var array
 	 */
 	private $column_arr = array();
 
 	/**
 	 * Total count of result
-	 * 
+	 *
 	 * @var int
 	 */
 	private $total_count = 0;
 
 	/**
 	 * True if total count was set
-	 * 
+	 *
 	 * @var bool
 	 */
 	private $total_count_set = FALSE;
 
 	/**
 	 * Limit for one page
-	 * 
+	 *
 	 * @var ing
 	 */
 	private $page_limit = 20;
@@ -54,28 +57,28 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Sortable url
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $sortable;
 
 	/**
 	 * Added sortable data
-	 * 
+	 *
 	 * @var array
 	 */
 	private $sort_data_arr = array();
 
 	/**
 	 * Key for table row id
-	 * 
+	 *
 	 * @var string
 	 */
 	private $line_id_key;
 
 	/**
 	 * Value for table row id, it is key i result array
-	 * 
+	 *
 	 * @var string
 	 */
 	private $line_id_name;
@@ -95,7 +98,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Data source
-	 * 
+	 *
 	 * @var \DataGrid\IDataSource
 	 */
 	private $data_source;
@@ -103,14 +106,14 @@ class Grid extends \Nette\Application\UI\Control {
 	/**
 	 * Checkbox selection
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	protected $selections = array();
 
 	/**
 	 * Checkbox selection key
 	 *
-	 * @var string 
+	 * @var string
 	 */
 	private $selection_key;
 
@@ -141,7 +144,7 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @var bool
 	 */
 	private $auto_filtering = TRUE;
-	
+
 	/**
 	 * Using SQL like operator in filtering
 	 *
@@ -151,7 +154,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Current count before apply limit
-	 * 
+	 *
 	 * @var integer
 	 */
 	private $count;
@@ -172,22 +175,22 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Create data source instance
-	 * 
+	 *
 	 * @param \DataGrid\IDataSource $data_source Data source
 	 * @param \Nette\ComponentModel\IContainer $parent
 	 * @param string $name Name of data source
 	 */
-	public function __construct(\DataGrid\IDataSource $data_source, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {		
+	public function __construct(\DataGrid\IDataSource $data_source, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 
 		$this->data_source = $data_source;
 		$this->name = $name;
 		$this->session_section = $this->presenter->getSession()->getSection('dataGrid_' . $this->getGridName());
 	}
-	
+
 	/**
 	 * Get presenter name with datagrid name
-	 * 
+	 *
 	 * @return String
 	 */
 	public function getGridName() {
@@ -196,30 +199,20 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Add data grid column
-	 * 
-	 * @param IColumn $column_option
+	 *
+	 * @param Column\IColumn $column_option
 	 */
-	public function column(IColumn $column_option) {
+	public function column(Column\IColumn $column_option) {
 		$this->column_arr[] = $column_option;
 	}
-	
+
 	/**
 	 * Get column array
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function getColumns() {
 		return $this->column_arr;
-	}
-
-	/**
-	 * Pager will be show and pager URL
-	 * 
-	 * @param String $pager_url
-	 * @deprecated Use enablePager() instead
-	 */
-	public function pagerUrl($pager_url) {
-		$this->enablePager();
 	}
 
 	/**
@@ -244,10 +237,23 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Set name of filter form
-	 * 
-	 * @param String $filter_form
+	 *
+	 * @param String $filter_form Form component name
+	 * @param bool $auto_filtering
+	 * @param bool $like
+	 * @throws Grid_Exception
 	 */
 	public function setFilterForm($filter_form, $auto_filtering = TRUE, $like = TRUE) {
+		$component = $this->presenter->getComponent($filter_form);
+		if(!$component instanceof Form) {
+			throw new Grid_Exception('Filter form component must be instanceof Nette\Application\UI\Form.');
+		}
+		if(!isset($component['reset']) || !isset($component['filter'])) {
+			throw new Grid_Exception('Filter form component have required submit buttons with names "reset" and "filter".');
+		}
+		if(!$component['reset'] instanceof SubmitButton || !$component['reset'] instanceof SubmitButton) {
+			throw new Grid_Exception('Filter form\'s components "reset" and "filter" must be instanceof \Nette\Forms\Controls\SubmitButton.');
+		}
 		$this->filter_form = $filter_form;
 		$this->auto_filtering = $auto_filtering;
 		$this->auto_filter_like = $like;
@@ -257,7 +263,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Get data source
-	 * 
+	 *
 	 * @return \DataGrid\IDataSource
 	 */
 	public function getDataSource() {
@@ -266,7 +272,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Get count without where and limit
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function getTotalCount() {
@@ -278,7 +284,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Get current count without limit
-	 * 
+	 *
 	 * @return integer
 	 */
 	public function getCount() {
@@ -287,7 +293,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Set page limit
-	 * 
+	 *
 	 * @param integer $limit
 	 */
 	public function setPageLimit($limit) {
@@ -296,7 +302,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Get current page limit
-	 * 
+	 *
 	 * @return integer
 	 */
 	public function getPageLimit() {
@@ -305,12 +311,12 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Set sortable on data grid table
-	 * 
+	 *
 	 * @param String $sort_handler_link
 	 * @param Array $sort_data_arr
 	 */
 	public function sortable($sort_handler_link, $sort_data_arr = array()) {
-		$link = BaseColumn::checkLinkPermission($sort_handler_link);
+		$link = Column\Base::checkLinkPermission($sort_handler_link);
 		if ($link === FALSE) {
 			return FALSE;
 		}
@@ -320,7 +326,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Set line id for example: for sorting
-	 * 
+	 *
 	 * @param String $line_id_key
 	 * @param String $line_id_name
 	 */
@@ -331,7 +337,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Get filter values for manual filtering
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function getFilterValues() {
@@ -348,28 +354,28 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->session_section->filter_values = $values;
 		return $values;
 	}
-	
+
 	/**
 	 * Return filter
-	 * 
-	 * @return \Nette\Forms\UI\Form
+	 *
+	 * @return \Nette\Application\UI\Form
 	 */
 	public function getFilter() {
 		return $this->filter;
 	}
-	
+
 	/**
 	 * Return sortable link
-	 * 
+	 *
 	 * @return String
 	 */
 	public function getSortableLink() {
 		return $this->presenter->link($this->sortable, $this->sort_data_arr);
 	}
-	
+
 	/**
 	 * Return current line ID
-	 * 
+	 *
 	 * @param Array $data Row data
 	 * @return FALSE|String
 	 */
@@ -379,20 +385,20 @@ class Grid extends \Nette\Application\UI\Control {
 		}
 		return FALSE;
 	}
-	
+
 	/**
 	 * Check if grid have active lang checking
-	 * 
+	 *
 	 * @param Array $data Row data
 	 * @return Bool
 	 */
 	public function hasLangChecking($data) {
 		return $this->check_lang === TRUE && is_null($data[$this->lang_checking['column']]) === TRUE;
 	}
-	
+
 	/**
 	 * Check if grid have line ID
-	 * 
+	 *
 	 * @return Bool
 	 */
 	public function hasLineId() {
@@ -411,7 +417,7 @@ class Grid extends \Nette\Application\UI\Control {
 				$this->filter[$name]->setValue(NULL);
 			}
 		} elseif ($this->filter['filter']->isSubmittedBy()) {
-			
+
 		} else {
 			$this->filter->setValues($this->getFilterValues());
 		}
@@ -420,10 +426,10 @@ class Grid extends \Nette\Application\UI\Control {
 			$this->applyAutoFiltering();
 		}
 	}
-	
+
 	/**
 	 * Apply auto filtering
-	 * 
+	 *
 	 * @throws \DataGrid\Grid_Exception
 	 */
 	private function applyAutoFiltering() {
@@ -454,11 +460,7 @@ class Grid extends \Nette\Application\UI\Control {
 	 * Must called before render header
 	 */
 	public function beforeRender() {
-		if(isset($this->session_section->ordering) && !empty($this->session_section->ordering)) {
-			foreach($this->session_section->ordering as $key => $how_to_order) {
-				$this->data_source->orderBy($key, $how_to_order);
-			}
-		}
+		$this->ordering();
 		if ($this->called_before_render === TRUE){
 			return FALSE;
 		}
@@ -474,9 +476,24 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->called_before_render = TRUE;
 	}
 
+	private function ordering() {
+		if(isset($this->session_section->ordering) && !empty($this->session_section->ordering)) {
+			$data = array_keys($this->data_source->fetch());
+			foreach($this->session_section->ordering as $key => $value) {
+				if(!in_array($key, $data)) {
+					unset($this->session_section->ordering[$key]);
+				}
+			}
+
+			foreach($this->session_section->ordering as $key => $how_to_order) {
+				$this->data_source->orderBy($key, $how_to_order);
+			}
+		}
+	}
+
 	/**
 	 * Set lang checking for unfounded items
-	 * 
+	 *
 	 * @param String $description
 	 * @param Array $button_option
 	 * @param String $title
@@ -491,10 +508,10 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->lang_checking['column'] = $column;
 		$this->lang_checking['parent_column'] = $parent_column;
 	}
-	
+
 	/**
 	 * Get lang checking array
-	 * 
+	 *
 	 * @return FALSE|Array
 	 */
 	public function getLangChecking() {
@@ -506,7 +523,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Set selection via checkboxes
-	 * 
+	 *
 	 * @param String $selection_key
 	 * @param Array $url_array
 	 */
@@ -518,7 +535,7 @@ class Grid extends \Nette\Application\UI\Control {
 
 	/**
 	 * Fetch and get all results from data source
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function fetchAll() {
@@ -530,32 +547,32 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function beforeCreate() {
 		if (empty($this->selections) === FALSE) {
-			$this->column_arr[-1] = new SelectionColumn($this->presenter, array(
-			    SelectionColumn::ID => $this->selection_key,
-			    SelectionColumn::CHECKBOX_MAIN => $this->checkbox_main,
-			    SelectionColumn::CHECKBOX_ACTIONS => $this->selections
+			$this->column_arr[-1] = new Column\Selection(array(
+			    Column\Selection::ID => $this->selection_key,
+			    Column\Selection::CHECKBOX_MAIN => $this->checkbox_main,
+			    Column\Selection::CHECKBOX_ACTIONS => $this->selections
 			));
 		}
 		if (empty($this->sortable) === FALSE) {
-			$this->column_arr[-2] = new SortableColumn($this->presenter);
+			$this->column_arr[-2] = new Column\Sortable();
 		}
 		foreach($this->column_arr as $column) {
-			$column->setGridName($this->name);
+			$column->setGridComponent($this);
 		}
 		ksort($this->column_arr);
 		$this->checkEmptyColumns();
 	}
-	
+
 	/**
 	 * Check if empty columns
 	 */
 	private function checkEmptyColumns() {
 		if (empty($this->column_arr)) {
 			foreach (array_keys($this->data_source->fetch()) as $key) {
-				$column = new TextColumn($this->presenter, array(
-				    TextColumn::ID => $key,
+				$column = new Column\Text(array(
+				    Column\Text::ID => $key,
 				));
-				$column->setGridName($this->name);
+				$column->setGridComponent($this);
 				$this->column_arr[] = $column;
 			}
 		}
@@ -583,7 +600,7 @@ class Grid extends \Nette\Application\UI\Control {
 	}
 
 	public function getOrdering($column_id) {
-		if(!isset($this->session_section->ordering[$column_id])) {
+		if(!isset($this->session_section->ordering) || !isset($this->session_section->ordering[$column_id])) {
 			return NULL;
 		} else {
 			return $this->session_section->ordering[$column_id];
@@ -604,15 +621,11 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->redrawControl();
 		$this->presenter->redrawControl();
 	}
-	
-	//protected function createComponentPager($name) {
-	//	return new \DataGrid\Pager($this, $name);
-	//}
 }
 
 /**
  * Data grid exceptioin
  */
 class Grid_Exception extends \Exception {
-	
+
 }

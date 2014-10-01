@@ -1,16 +1,17 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
-use \Nette\Application\UI\Presenter;
+use \Nette\ComponentModel\IComponent,
+	DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\BaseColumn
+ * Description of \DataGrid\Column\Base
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-abstract class BaseColumn implements IColumn {
+abstract class Base implements IColumn {
 
 	/**
 	 * Inner defaults
@@ -50,32 +51,28 @@ abstract class BaseColumn implements IColumn {
 
 	/**
 	 *
-	 * @var \Nette\Application\UI\Presenter
+	 * @var \Nette\ComponentModel\IComponent
 	 */
-	protected $presenter;
+	protected $grid;
 
 	/**
-	 * @var String
-	 */
-	protected $grid_name;
-
-	/**
-	 * @param \Nette\Application\UI\Presenter $presenter
 	 * @param array $option
 	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		$this->presenter = $presenter;
+	public function __construct(array $option = array()) {
 		if(!empty($option)) {
 			$this->option = $option;
 		}
 	}
 
-	public function setGridName($grid_name) {
-		$this->grid_name = $grid_name;
+	/**
+	 * @param \Nette\ComponentModel\IComponent $grid
+	 */
+	public function setGridComponent(IComponent $grid) {
+		$this->grid = $grid;
 	}
 
 	protected function getGrid() {
-		return $this->presenter[$this->grid_name];
+		return $this->grid;
 	}
 
 	public function createHeader() {
@@ -84,7 +81,7 @@ abstract class BaseColumn implements IColumn {
 
 	public function createBody($data) {
 		if (empty($data)) {
-			throw new Grid_Exception('Empty data');
+			//throw new Grid_Exception('Empty data');
 		}
 		$this->data = $data;
 	}
@@ -122,16 +119,32 @@ abstract class BaseColumn implements IColumn {
 		return $link;
 	}
 
+	static public function getLink($link, array $arguments = array(), $data = NULL) {
+		if (!empty($arguments)) {
+			foreach ($arguments as $key => $value) {
+				$params[$key] = self::parseValue($value, is_null($data) ? array() : $data);
+			}
+		} else {
+			$params = array();
+		}
+		$to_href = self::checkLinkPermission($link);
+		if ($to_href === FALSE) {
+			return FALSE;
+		}
+		return array($to_href, $params);
+	}
+
 	/**
 	 * Fix column option
 	 *
 	 * @throws Grid_Exception
 	 */
 	private function fixOption() {
-		if ((!$this instanceof ButtonColumn && !$this instanceof SortableColumn) && array_key_exists('id', $this->option) === FALSE) {
+		$isnt_special = (!$this instanceof Button && !$this instanceof Sortable && !$this instanceof Dropdown);
+		if ($isnt_special && array_key_exists('id', $this->option) === FALSE) {
 			throw new Grid_Exception('Column ID can not be empty.');
 		}
-		if ((!$this instanceof ButtonColumn && !$this instanceof SortableColumn) && array_key_exists('text', $this->option) === FALSE) {
+		if ($isnt_special && array_key_exists('text', $this->option) === FALSE) {
 			$this->option['text'] = $this->option['id'];
 		}
 	}

@@ -1,17 +1,17 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\ActionColumn
+ * Description of \DataGrid\Columns\Action
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class ActionColumn extends BaseColumn {
+class Action extends Base {
 
 	/**
 	 * Possible option key
@@ -20,14 +20,6 @@ class ActionColumn extends BaseColumn {
 		LINK = 'link',
 		ACTIVE_BUTTON_CLASS = 'act_button_class',
 	    	USE_ITEM_ID = 'item_id';
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
 
 	public function setId($id) {
 		$this->option[self::ID] = $id;
@@ -59,7 +51,7 @@ class ActionColumn extends BaseColumn {
 		parent::createHeader();
 
 		if (array_key_exists(self::LINK, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\ButtonColumn::LINK is required.');
+			throw new Grid_Exception('Option \DataGrid\ActionColumn::LINK is required.');
 		}
 
 		$th = Html::el('th', array('class' => 'act buttons-count-1'));
@@ -91,7 +83,7 @@ class ActionColumn extends BaseColumn {
 
 		if (isset($this->option[self::USE_ITEM_ID]) && $this->option[self::USE_ITEM_ID]) {
 			$params = array(
-			    'id' => $this->presenter->getParameter('id'),
+			    'id' => $this->grid->presenter->getParameter('id'),
 			    'item_id' => $this->data[$this->option[self::ID]]
 			);
 		} else {
@@ -104,7 +96,7 @@ class ActionColumn extends BaseColumn {
 			$params['status'] = self::$actions['unactive'];
 			$link = Html::el('a', array(
 			    'class' => 'ajax btn btn-sm btn-success' . $added_class,
-			    'href' => $this->presenter->link($to_href, $params),
+			    'href' => $this->grid->presenter->link($to_href, $params),
 			    'title' => 'Set as unactive (active)'
 			));
 			$link->add(Html::el('b', array('class' => 'glyphicon glyphicon-ok-circle')));
@@ -114,7 +106,7 @@ class ActionColumn extends BaseColumn {
 			$params['status'] = self::$actions['active'];
 			$link = Html::el('a', array(
 			    'class' => 'ajax btn btn-sm btn-danger' . $added_class,
-			    'href' => $this->presenter->link($to_href, $params),
+			    'href' => $this->grid->presenter->link($to_href, $params),
 			    'title' => 'Set as active (unactive)'
 			));
 			$td->class('is-unactive');

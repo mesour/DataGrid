@@ -1,30 +1,22 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\DateColumn
+ * Description of \DataGrid\Column\Date
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class DateColumn extends BaseOrderingColumn {
+class Date extends BaseOrdering {
 
 	/**
 	 * Possible option key
 	 */
 	const FORMAT = 'format';
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
@@ -62,7 +54,7 @@ class DateColumn extends BaseOrderingColumn {
 		parent::createBody($data);
 
 		$span = Html::el($container);
-		if (isset($this->data[$this->option[self::ID]]) === FALSE) {
+		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 

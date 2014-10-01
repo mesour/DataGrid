@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 /**
- * Description of \DataGrid\IColumn
+ * Description of \DataGrid\Column\IColumn
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid

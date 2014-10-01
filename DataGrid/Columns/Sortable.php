@@ -1,31 +1,21 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+use \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\SortableColumn
+ * Description of \DataGrid\Column\Sortable
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class SortableColumn extends BaseColumn {
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter) {
-		parent::__construct($presenter, array());
-	}
+class Sortable extends Base {
 
 	/**
 	 * Create HTML header
 	 * 
 	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
 	 */
 	public function createHeader() {
 		parent::createHeader();

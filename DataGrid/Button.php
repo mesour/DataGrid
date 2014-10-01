@@ -3,7 +3,8 @@
 namespace DataGrid;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \Nette\Application\UI\Presenter,
+	DataGrid\Column;
 
 /**
  * Description of \DataGrid\Button
@@ -115,50 +116,37 @@ class Button {
 			));
 		}
 
-		if (array_key_exists(self::HREF, $this->option)) {
-			$button->addAttributes(array(
-			    'href' => $this->option[self::HREF]
-			));
-		} else if (array_key_exists(self::HREF_LINK, $this->option)) {
-			if (isset($this->option[self::HREF_LINK_DATA])) {
-				foreach ($this->option[self::HREF_LINK_DATA] as $key => $value) {
-					$params[$key] = BaseColumn::parseValue($value, $this->data);
-				}
-			} else {
-				$params = array();
-			}
-			$to_href = BaseColumn::checkLinkPermission($this->option[self::HREF_LINK]);
-			if ($to_href === FALSE) {
-				return '';
-			}
-			$button->addAttributes(array(
-			    'href' => $this->presenter->link($to_href, $params)
-			));
+		$output = $this->addLinkAttr($button, 'href', self::HREF, self::HREF_LINK, self::HREF_LINK_DATA);
+		if($output === FALSE) {
+			return '';
 		}
-		if (array_key_exists(self::DATA_HREF, $this->option)) {
-			$button->addAttributes(array(
-			    'data-href' => $this->option[self::DATA_HREF]
-			));
-		} else if (array_key_exists(self::DATA_HREF_LINK, $this->option)) {
-			if (isset($this->option[self::DATA_HREF_LINK_DATA])) {
-				foreach ($this->option[self::DATA_HREF_LINK_DATA] as $key => $value) {
-					$params[$key] = BaseColumn::parseValue($value, $this->data);
-				}
-			} else {
-				$params = array();
-			}
-			$to_href = BaseColumn::checkLinkPermission($this->option[self::DATA_HREF_LINK]);
-			if ($to_href === FALSE) {
-				return '';
-			}
-			$button->addAttributes(array(
-			    'data-href' => $this->presenter->link($to_href, $params)
-			));
+		$output = $this->addLinkAttr($button, 'href', self::DATA_HREF,  self::DATA_HREF_LINK, self::DATA_HREF_LINK_DATA);
+		if($output === FALSE) {
+			return '';
 		}
+
 		if(isset($icon) && isset($icon_color)) {
 			$button->add(Html::el('b', array('class' => 'glyphicon ' . $icon . ' ' . $icon_color)));
 		}
 		return $button;
+	}
+
+	public function addLinkAttr(& $button, $attr_name, $opt_name, $link_opt_name, $params_opt_name) {
+		if (array_key_exists($opt_name, $this->option)) {
+			$button->addAttributes(array(
+			    $attr_name => $this->option[$opt_name]
+			));
+		} else if (array_key_exists($link_opt_name, $this->option)) {
+			$link = Column\Base::getLink($this->option[$link_opt_name], isset($this->option[$params_opt_name]) ? array() : isset($this->option[$params_opt_name]), $this->data);
+			if ($link === FALSE) {
+				return FALSE;
+			}
+			list($to_href, $params) = $link;
+			$button->addAttributes(array(
+			    $attr_name => $this->presenter->link($to_href, $params)
+			));
+		}
+		return TRUE;
 	}
 
 	/**

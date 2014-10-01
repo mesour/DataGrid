@@ -1,31 +1,24 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\SelectionColumn
+ * Description of \DataGrid\Column\Selection
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class SelectionColumn extends BaseColumn {
+class Selection extends Base {
+
 	/**
 	 * Possible option key
 	 */
 	const ID = 'id',
 	    CHECKBOX_ACTIONS = 'checkbox_acts',
 	    CHECKBOX_MAIN = 'checkbox_main';
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
 
 	public function setId($id) {
 		$this->option[self::ID] = $id;

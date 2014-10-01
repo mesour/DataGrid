@@ -122,8 +122,6 @@ class FilterFormRenderer extends \Nette\Forms\Rendering\DefaultFormRenderer
 		foreach ($this->form->getControls() as $name => $control) {
 			if($control instanceof \Nette\Forms\Controls\TextArea || $control instanceof \Nette\Forms\Controls\SelectBox) {
 				$control->setAttribute('class', $c['.textarea-class'] . ' ' . $control->getControlPrototype()->class);
-			} elseif($control instanceof \Nette\Forms\Controls\SubmitButton === FALSE) {
-				$control->setAttribute('placeholder', $control->getLabel()->getText());
 			} elseif($control instanceof \Nette\Forms\Controls\SubmitButton) {
 				if($name === 'reset') {
 					$control->getControlPrototype()

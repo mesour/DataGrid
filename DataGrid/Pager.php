@@ -27,9 +27,6 @@ class Pager extends \Nette\Application\UI\Control {
 	public function __construct($session_prefix, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 		$this->private_session = $this->presenter->getSession()->getSection($session_prefix . $name);
-		if(!$this->private_session->page) {
-			$this->private_session->page = 1;
-		}
 		$this->paginator = new \Nette\Utils\Paginator;
 	}
 
@@ -40,7 +37,7 @@ class Pager extends \Nette\Application\UI\Control {
 	public function setCounts($total_count, $limit) {
 		$this->paginator->setItemCount($total_count);
 		$this->paginator->setItemsPerPage($limit);
-		$this->paginator->setPage($this->private_session->page);
+		$this->paginator->setPage(isset($this->private_session->page) ? $this->private_session->page : 1);
 	}
 
 	/**

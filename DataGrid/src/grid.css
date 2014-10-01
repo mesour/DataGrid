@@ -143,3 +143,7 @@ table.table td.with-checkbox{
 .ordering.desc:hover .no-sort{
     display: inline-block;
 }
+.pagination-outer{
+    text-align: center;
+    padding-top: 10px;
+}

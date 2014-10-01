@@ -1,31 +1,23 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \Nette\Application\UI\Presenter;
+    \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\TextColumn
+ * Description of \DataGrid\Column\Text
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class TextColumn extends BaseOrderingColumn {
+class Text extends BaseOrdering {
 
 	/**
 	 * Possible option key
 	 */
 	const CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
-
-	/**
-	 * @param \Nette\Application\UI\Presenter
-	 * @param array $option
-	 */
-	public function __construct(Presenter $presenter, array $option = array()) {
-		parent::__construct($presenter, $option);
-	}
 
 	public function setCallback(callable $callback) {
 		$this->option[self::CALLBACK] = $callback;
@@ -66,7 +58,7 @@ class TextColumn extends BaseOrderingColumn {
 
 		$span = Html::el($container);
 		if (array_key_exists(self::CALLBACK, $this->option) === FALSE) {
-			if (isset($this->data[$this->option[self::ID]]) === FALSE) {
+			if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
 				throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 			}
 			$span->setHtml($this->data[$this->option[self::ID]]);
