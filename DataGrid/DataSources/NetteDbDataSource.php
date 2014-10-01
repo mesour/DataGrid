@@ -80,13 +80,21 @@ class NetteDbDataSource implements IDataSource {
 	}
 
 	/**
-	 * Get searched values witp applied limit, offset and where
+	 * Get searched values with applied limit, offset and where
 	 * 
 	 * @return \DibiRow
 	 */
 	public function fetchAll() {
 		$output = array();
 		foreach($this->nette_table->fetchAll() as $data) {
+			$output[] = $data->toArray();
+		}
+		return $output;
+	}
+
+	public function fetchAllForExport() {
+		$output = array();
+		foreach($this->nette_original_table->fetchAll() as $data) {
 			$output[] = $data->toArray();
 		}
 		return $output;

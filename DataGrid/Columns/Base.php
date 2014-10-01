@@ -53,6 +53,18 @@ abstract class Base extends Option implements IColumn {
 		return $this->grid;
 	}
 
+	public function getId() {
+		return isset($this->option['id']) ? $this->option['id'] : NULL;
+	}
+
+	public function getText() {
+		return isset($this->option['text']) ? $this->option['text'] : NULL;
+	}
+
+	public function isEditable() {
+		return isset($this->option['editable']) ? $this->option['editable'] : FALSE;
+	}
+
 	public function createHeader() {
 		$this->fixOption();
 	}

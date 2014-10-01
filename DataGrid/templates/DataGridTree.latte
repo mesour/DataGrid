@@ -1,7 +1,7 @@
 {snippet dataGrid}
 	<div class="data-grid data-grid-tree">
 		{snippet $control->getGridName()}
-			<div class="data-grid"{if $control->isEditable()} data-editable-link="{plink $control->getEditableLink()}"{/if}>
+			<div class="data-grid"{if $control->isEditable()} data-editable-link="{$control->getEditableLink()}"{/if}>
 				{if empty($filter_form) === FALSE}
 					{var $filter = $control->getFilter()}
 					{if $filter instanceof Nette\Application\UI\IRenderable}
@@ -25,13 +25,13 @@
 				</div>
 				
 				{var $data_array = $control->getDataSource()->fetchAssoc()}
-				{if isset($data_array[0])}{include #grid, data_arr => $data_array[0], data_array => $data_array, first => TRUE, sortable => $sortable}{/if}
+				{if isset($data_array[0])}{include #grid, data_arr => $data_array[0], data_array => $data_array, first => TRUE}{/if}
 				{? $control->beforeRender()}
 				{block #grid}
 					{if empty($data_arr) === FALSE}
 						{if isset($first) && $first}
-							{if empty($sortable) === FALSE}<ul class="grid-ul sortable" data-sort-href="{!$control->getSortableLink()}">{/if}
-							{if empty($sortable) === TRUE}<ul class="grid-ul">{/if}
+							{if $control->isSortable()}<ul class="grid-ul sortable" data-sort-href="{!$control->getSortableLink()}">{/if}
+							{if !$control->isSortable()}<ul class="grid-ul">{/if}
 						{else}
 							<ul class="grid-ul">
 						{/if}
@@ -67,7 +67,7 @@
 				
 			</div>
 			<style>{!=file_get_contents($grid_dir . '/src/grid.css')}</style>
-			<script n:if="empty($sortable) === FALSE">{!=(file_get_contents($grid_dir . '/src/grid_tree_sortable.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))}</script>
+			<script n:if="$control->isSortable()">{!=(file_get_contents($grid_dir . '/src/grid_tree_sortable.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))}</script>
 			<div class="datagrid-bottom">
 				<div n:if="empty($selections) === FALSE" class="btn-group" id="checkbox-button" style="cursor: not-allowed;">
 					<button class="btn btn-default dropdown-toggle disabled" type="button" data-toggle="dropdown">
@@ -105,6 +105,11 @@
 				{if $control->isPagerEnabled()}
                                 	{control pager}
                                 {/if}
+                                {if $control->isExportEnabled()}
+					<div class="export">
+						<a href="{$control->getExportLink()}" class="show-export btn btn-primary btn-sm">Export to csv</a>
+					</div>
+				{/if}
 			</div>
 			<hr style="clear:both;border:none;">
 		{/snippet}

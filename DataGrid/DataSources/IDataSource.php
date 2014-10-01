@@ -43,6 +43,13 @@ interface IDataSource {
 	 * @return mixed
 	 */
 	public function fetchAll();
+
+	/**
+	 * Get data with applied where without limit and offset
+	 *
+	 * @return mixed
+	 */
+	public function fetchAllForExport();
 	
 	/**
 	 * Get first element from data

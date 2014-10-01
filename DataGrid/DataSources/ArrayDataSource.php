@@ -145,6 +145,10 @@ class ArrayDataSource implements IDataSource {
 		return array_slice($this->getAppliedSearched(), $this->offset, $this->limit);
 	}
 
+	public function fetchAllForExport() {
+		return $this->getAppliedSearched();
+	}
+
 	public function fetchAssoc() {
 		$output = array();
 		foreach($this->fetchAll() as $value) {

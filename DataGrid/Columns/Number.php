@@ -83,11 +83,20 @@ class Number extends BaseOrdering {
 		}
 
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			$span->addAttributes(array('data-editable' => $this->option[self::ID]));
+			$span->addAttributes(array(
+			    'data-editable' => $this->option[self::ID],
+			    'data-editable-type' => 'number',
+			    'data-separator' => $this->option[self::THOUSANDS_SEP],
+			));
 		}
 
-		$span->setText(number_format($this->data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]));
+		$span->setText($this->getParsedValue($data));
 		return $span;
+	}
+
+	public function getParsedValue($data) {
+		parent::createBody($data);
+		return number_format($this->data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]);
 	}
 
 }

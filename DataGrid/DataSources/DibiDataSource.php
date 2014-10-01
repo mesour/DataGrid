@@ -80,6 +80,11 @@ class DibiDataSource implements IDataSource {
 		return $this->dibi_data_source->fetchAssoc($this->parent_key.',#');
 	}
 
+	public function fetchAllForExport() {
+		$this->applyLimit(1000000, 0);
+		return $this->dibi_data_source->fetchAll();
+	}
+
 	public function orderBy($row, $sorting = 'ASC') {
 		return $this->dibi_data_source->orderBy($row, $sorting);
 	}

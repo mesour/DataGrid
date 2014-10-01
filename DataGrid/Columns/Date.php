@@ -17,10 +17,16 @@ class Date extends BaseOrdering {
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
+	    TIME_FORMAT = 'time_format',
 	    EDITABLE = 'editable';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
+		return $this;
+	}
+
+	public function setTimeFormat($time_format) {
+		$this->option[self::TIME_FORMAT] = $time_format;
 		return $this;
 	}
 
@@ -31,6 +37,7 @@ class Date extends BaseOrdering {
 
 	protected function setDefaults() {
 		return array(
+		    self::TIME_FORMAT => '',
 		    self::EDITABLE => TRUE
 		);
 	}
@@ -71,18 +78,94 @@ class Date extends BaseOrdering {
 		}
 
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			$span->addAttributes(array('data-editable' => $this->option[self::ID]));
+			if(!empty($this->option[self::TIME_FORMAT])) {
+				$date_format = $this->formatToJqueryUiFormat(trim(str_replace($this->option[self::TIME_FORMAT], '', $this->option[self::FORMAT])));
+				$time_format = $this->formatToJqueryUiFormat($this->option[self::TIME_FORMAT]);
+			} else {
+				$date_format = $this->formatToJqueryUiFormat($this->option[self::FORMAT]);
+				$time_format = '';
+			}
+			$span->addAttributes(array(
+			    'data-editable' => $this->option[self::ID],
+			    'data-editable-type' => 'date',
+			    'data-date-format' => $date_format,
+			    'data-time-format' => $time_format
+			));
 		}
 
+		$span->setText($this->getParsedValue($data));
+		return $span;
+	}
+
+	public function getParsedValue($data) {
+		parent::createBody($data);
 		if (is_numeric($this->data[$this->option[self::ID]])) {
 			$date = new \DateTime();
 			$date->setTimestamp($this->data[$this->option[self::ID]]);
 		} else {
 			$date = new \DateTime($this->data[$this->option[self::ID]]);
 		}
+		return $date->format($this->option[self::FORMAT]);
+	}
 
-		$span->setText($date->format($this->option[self::FORMAT]));
-		return $span;
+	private function formatToJqueryUiFormat($php_format) {
+		$symbols = array(
+			// Day
+		    'd' => 'dd',
+		    'D' => 'D',
+		    'j' => 'd',
+		    'l' => 'DD',
+		    'N' => '',
+		    'S' => '',
+		    'w' => '',
+		    'z' => 'o',
+			// Week
+		    'W' => '',
+			// Month
+		    'F' => 'MM',
+		    'm' => 'mm',
+		    'M' => 'M',
+		    'n' => 'm',
+		    't' => '',
+			// Year
+		    'L' => '',
+		    'o' => '',
+		    'Y' => 'yy',
+		    'y' => 'y',
+			// Time
+		    'a' => '',
+		    'A' => '',
+		    'B' => '',
+		    'g' => 'h',
+		    'G' => 'H',
+		    'h' => 'hh',
+		    'H' => 'HH',
+		    'i' => 'mm',
+		    's' => 'ss',
+		    'u' => ''
+		);
+		$jqueryui_format = "";
+		$escaping = false;
+		for ($i = 0; $i < strlen($php_format); $i++) {
+			$char = $php_format[$i];
+			if ($char === '\\') // PHP date format escaping character
+			{
+				$i++;
+				if ($escaping) $jqueryui_format .= $php_format[$i];
+				else $jqueryui_format .= '\'' . $php_format[$i];
+				$escaping = true;
+			} else {
+				if ($escaping) {
+					$jqueryui_format .= "'";
+					$escaping = false;
+				}
+				if (isset($symbols[$char]))
+					$jqueryui_format .= $symbols[$char];
+				else
+					$jqueryui_format .= $char;
+			}
+		}
+		return $jqueryui_format;
 	}
 
 }

@@ -71,23 +71,31 @@ class Text extends BaseOrdering {
 		$span = Html::el($container);
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
 			$this->checkColumnId();
-			$span->addAttributes(array('data-editable' => $this->option[self::ID]));
+			$span->addAttributes(array(
+			    'data-editable' => $this->option[self::ID],
+			    'data-editable-type' => 'text'
+			));
 		}
+		$span->setHtml($this->getParsedValue($data));
+		return $span;
+	}
+
+	public function getParsedValue($data) {
+		parent::createBody($data);
 		if (array_key_exists(self::CALLBACK, $this->option) === FALSE) {
 			$this->checkColumnId();
-			$span->setHtml($this->data[$this->option[self::ID]]);
+			return $this->data[$this->option[self::ID]];
 		} else {
 			if (is_callable($this->option[self::CALLBACK])) {
 				$args = array($this->data);
 				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
 					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 				}
-				$span->setHtml(call_user_func_array($this->option[self::CALLBACK], $args));
+				return call_user_func_array($this->option[self::CALLBACK], $args);
 			} else {
 				throw new Grid_Exception('Callback in column options is not callable.');
 			}
 		}
-		return $span;
 	}
 
 	private function checkColumnId() {
