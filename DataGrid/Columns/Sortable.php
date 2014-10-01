@@ -38,7 +38,7 @@ class Sortable extends Base {
 
 		$td = Html::el($container);
 
-		$link = Html::el('a', array('class' => 'btn btn-default move handler', 'href' => '#'));
+		$link = Html::el('a', array('class' => 'btn btn-sm btn-default move handler', 'href' => '#'));
 		$link->add(Html::el('b', array('class' => 'glyphicon glyphicon-move')));
 		$td->add($link);
 		return $td;

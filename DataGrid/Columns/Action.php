@@ -3,7 +3,8 @@
 namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+    \DataGrid\Grid_Exception,
+    \DataGrid\Utils\Link;
 
 /**
  * Description of \DataGrid\Columns\Action
@@ -55,7 +56,7 @@ class Action extends Base {
 		}
 
 		$th = Html::el('th', array('class' => 'act buttons-count-1'));
-		$link = self::checkLinkPermission($this->option[self::LINK]);
+		$link = Link::checkLinkPermission($this->option[self::LINK]);
 		if ($link === FALSE) {
 			return '';
 		}
@@ -75,7 +76,7 @@ class Action extends Base {
 
 		$td = Html::el($container);
 
-		$to_href = self::checkLinkPermission($this->option[self::LINK]);
+		$to_href = Link::checkLinkPermission($this->option[self::LINK]);
 		$added_class = isset($this->option[self::ACTIVE_BUTTON_CLASS]) ? ' ' . $this->option[self::ACTIVE_BUTTON_CLASS] : '';
 		if ($to_href === FALSE) {
 			return '';

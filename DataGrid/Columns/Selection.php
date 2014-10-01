@@ -3,7 +3,7 @@
 namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+    \DataGrid\Utils\Link;
 
 /**
  * Description of \DataGrid\Column\Selection
@@ -39,7 +39,6 @@ class Selection extends Base {
 	 * Create HTML header
 	 * 
 	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
 	 */
 	public function createHeader() {
 		parent::createHeader();
@@ -48,7 +47,7 @@ class Selection extends Base {
 		$this->option[self::CHECKBOX_ACTIONS] = isset($this->option[self::CHECKBOX_ACTIONS]) ? $this->option[self::CHECKBOX_ACTIONS] : array();
 		$one_active = FALSE;
 		foreach ($this->option[self::CHECKBOX_ACTIONS] as $link) {
-			if (self::checkLinkPermission($link) === FALSE) {
+			if (Link::checkLinkPermission($link) === FALSE) {
 				//$one_unactive = TRUE;
 			} else {
 				$one_active = TRUE;
@@ -96,7 +95,7 @@ class Selection extends Base {
 		$th = Html::el($container, array('class' => 'with-checkbox'));
 		$one_active = FALSE;
 		foreach ($this->option[self::CHECKBOX_ACTIONS] as $link) {
-			if (self::checkLinkPermission($link) === FALSE) {
+			if (Link::checkLinkPermission($link) === FALSE) {
 				//$one_unactive = TRUE;
 			} else {
 				$one_active = TRUE;

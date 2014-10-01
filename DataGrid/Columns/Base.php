@@ -3,7 +3,8 @@
 namespace DataGrid\Column;
 
 use \Nette\ComponentModel\IComponent,
-	DataGrid\Grid_Exception;
+	DataGrid\Grid_Exception,
+    DataGrid\Utils\Option;
 
 /**
  * Description of \DataGrid\Column\Base
@@ -11,7 +12,7 @@ use \Nette\ComponentModel\IComponent,
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-abstract class Base implements IColumn {
+abstract class Base extends Option implements IColumn {
 
 	/**
 	 * Inner defaults
@@ -29,20 +30,6 @@ abstract class Base implements IColumn {
 	);
 
 	/**
-	 * Valid permission callback
-	 *
-	 * @var Mixed
-	 */
-	static public $checkPermissionCallback;
-
-	/**
-	 * Option for this column
-	 *
-	 * @var Array
-	 */
-	protected $option = array();
-
-	/**
 	 * Data for current row
 	 *
 	 * @var mixed
@@ -51,18 +38,9 @@ abstract class Base implements IColumn {
 
 	/**
 	 *
-	 * @var \Nette\ComponentModel\IComponent
+	 * @var \DataGrid\Grid
 	 */
 	protected $grid;
-
-	/**
-	 * @param array $option
-	 */
-	public function __construct(array $option = array()) {
-		if(!empty($option)) {
-			$this->option = $option;
-		}
-	}
 
 	/**
 	 * @param \Nette\ComponentModel\IComponent $grid
@@ -84,54 +62,6 @@ abstract class Base implements IColumn {
 			//throw new Grid_Exception('Empty data');
 		}
 		$this->data = $data;
-	}
-
-	/**
-	 * Parse value with {identifier}
-	 * 
-	 * @param String $value
-	 * @param Array $data
-	 * @return Array
-	 */
-	static public function parseValue($value, $data) {
-		if (substr($value, 0, 1) === '{' && substr($value, -1) === '}') {
-			$key = substr($value, 1, strlen($value) - 2);
-			if (array_key_exists($key, $data)) {
-				return $data[$key];
-			} else {
-				return $value;
-			}
-		} else {
-			return $value;
-		}
-	}
-
-	/**
-	 * Check permissions for link
-	 * 
-	 * @param String $link
-	 * @return String|FALSE
-	 */
-	static public function checkLinkPermission($link) {
-		if (is_callable(self::$checkPermissionCallback)) {
-			return call_user_func_array(self::$checkPermissionCallback, array($link));
-		}
-		return $link;
-	}
-
-	static public function getLink($link, array $arguments = array(), $data = NULL) {
-		if (!empty($arguments)) {
-			foreach ($arguments as $key => $value) {
-				$params[$key] = self::parseValue($value, is_null($data) ? array() : $data);
-			}
-		} else {
-			$params = array();
-		}
-		$to_href = self::checkLinkPermission($link);
-		if ($to_href === FALSE) {
-			return FALSE;
-		}
-		return array($to_href, $params);
 	}
 
 	/**

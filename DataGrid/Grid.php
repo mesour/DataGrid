@@ -174,6 +174,13 @@ class Grid extends \Nette\Application\UI\Control {
 	private $pager_enabled = FALSE;
 
 	/**
+	 * Link for editable columns
+	 *
+	 * @var String
+	 */
+	private $editable_link;
+
+	/**
 	 * Create data source instance
 	 *
 	 * @param \DataGrid\IDataSource $data_source Data source
@@ -224,6 +231,21 @@ class Grid extends \Nette\Application\UI\Control {
 		}
 		$this->pager_enabled = TRUE;
 		new Pager($this->getGridName(), $this, 'pager');
+	}
+
+	public function setEditableLink($link) {
+		if(!$this->line_id_key) {
+			throw new Grid_Exception('DataGrid editable required line ID. Use setLineId.');
+		}
+		$this->editable_link = $link;
+	}
+
+	public function getEditableLink() {
+		return $this->editable_link;
+	}
+
+	public function isEditable() {
+		return (bool) $this->editable_link;
 	}
 
 	/**
@@ -316,7 +338,10 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @param Array $sort_data_arr
 	 */
 	public function sortable($sort_handler_link, $sort_data_arr = array()) {
-		$link = Column\Base::checkLinkPermission($sort_handler_link);
+		if(!$this->line_id_key) {
+			throw new Grid_Exception('DataGrid sortable required line ID. Use setLineId.');
+		}
+		$link = Utils\Link::checkLinkPermission($sort_handler_link);
 		if ($link === FALSE) {
 			return FALSE;
 		}

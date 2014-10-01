@@ -67,7 +67,7 @@ class Button extends Base {
 		$container = Html::el('div', array('class' => 'thumbnailx buttons-count-' . $count));
 
 		foreach ($this->option[self::BUTTONS_OPTION] as $button) {
-			$button = new \DataGrid\Button($button, $this->grid->presenter, $this->data);
+			$button = new \DataGrid\Utils\Button($this->grid->presenter, $button, $this->data);
 			$container->add($button->create() . ' ');
 		}
 		$span->add($container);

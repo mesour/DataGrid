@@ -16,16 +16,28 @@ class Date extends BaseOrdering {
 	/**
 	 * Possible option key
 	 */
-	const FORMAT = 'format';
+	const FORMAT = 'format',
+	    EDITABLE = 'editable';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
 		return $this;
 	}
 
+	public function setEditable($editable) {
+		$this->option[self::EDITABLE] = (bool)$editable;
+		return $this;
+	}
+
+	protected function setDefaults() {
+		return array(
+		    self::EDITABLE => TRUE
+		);
+	}
+
 	/**
 	 * Create HTML header
-	 * 
+	 *
 	 * @return \Nette\Utils\Html
 	 * @throws \DataGrid\Grid_Exception
 	 */
@@ -58,7 +70,11 @@ class Date extends BaseOrdering {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
-		if(is_numeric($this->data[$this->option[self::ID]])) {
+		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
+			$span->addAttributes(array('data-editable' => $this->option[self::ID]));
+		}
+
+		if (is_numeric($this->data[$this->option[self::ID]])) {
 			$date = new \DateTime();
 			$date->setTimestamp($this->data[$this->option[self::ID]]);
 		} else {

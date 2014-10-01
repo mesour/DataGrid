@@ -90,8 +90,8 @@ class DibiDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		if($this->dibi_data_source->fetch()) {
-			return $this->dibi_data_source->fetch()->toArray();
+		if($row = $this->dibi_data_source->fetch()) {
+			return $row->toArray();
 		} else {
 			return array();
 		}	

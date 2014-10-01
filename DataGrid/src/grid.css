@@ -147,3 +147,7 @@ table.table td.with-checkbox{
     text-align: center;
     padding-top: 10px;
 }
+.data-grid .editable-input{
+    border: 1px solid #aaa;
+    padding: 1px 0;
+}

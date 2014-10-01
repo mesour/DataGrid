@@ -4,7 +4,8 @@ namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
     \DataGrid\Grid_Exception,
-    \DataGrid\Link;
+    \DataGrid\Utils\Link,
+    \DataGrid\Utils;
 
 /**
  * Description of \DataGrid\Column\Dropdown
@@ -18,11 +19,24 @@ class Dropdown extends Base {
 	 * Possible option key
 	 */
 	const TEXT = 'text',
+	        NAME = 'name',
 	    	LINKS = 'links',
-		TYPE = 'type';
+		TYPE = 'type',
+	    	BUTTON_CLASS_NAME = 'class_name',
+	    	SIZE_CLASS = 'size_class';
 
 	public function setText($text) {
 		$this->option[self::TEXT] = $text;
+		return $this;
+	}
+
+	public function setName($name) {
+		$this->option[self::NAME] = $name;
+		return $this;
+	}
+
+	public function setButtonClassName($class_name) {
+		$this->option[self::BUTTON_CLASS_NAME] = $class_name;
 		return $this;
 	}
 
@@ -36,11 +50,12 @@ class Dropdown extends Base {
 		return $this;
 	}
 
-	public function setLink($href, $name, array $parameters = array()) {
+	public function setLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
 		$this->option[self::LINKS][] = new Link(array(
 		    Link::HREF => $href,
 		    Link::PARAMS => $parameters,
-		    Link::NAME => $name
+		    Link::NAME => $name,
+		    Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;
 	}
@@ -55,6 +70,16 @@ class Dropdown extends Base {
 		return $this;
 	}
 
+	protected function setDefaults() {
+		return array(
+		    self::TYPE => 'btn-default',
+		    self::LINKS => array(),
+		    self::NAME => 'Actions',
+		    self::BUTTON_CLASS_NAME => '',
+		    self::SIZE_CLASS => 'btn-xs'
+		);
+	}
+
 	/**
 	 * Create HTML header
 	 * 
@@ -66,12 +91,6 @@ class Dropdown extends Base {
 
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DropdownColumn::TEXT is required.');
-		}
-		if (array_key_exists(self::LINKS, $this->option) === FALSE) {
-			$this->option[self::LINKS] = array();
-		}
-		if (array_key_exists(self::TYPE, $this->option) === FALSE) {
-			$this->option[self::TYPE] = 'btn-default';
 		}
 		$th = Html::el('th', array('class' => 'dropdown-column'));
 		$th->setText($this->option[self::TEXT]);
@@ -89,42 +108,11 @@ class Dropdown extends Base {
 		parent::createBody($data);
 
 		$span = Html::el($container, array('class' => 'right-buttons'));
-		$container = Html::el('div', array('class' => 'dropdown'));
 
-		$has_links = FALSE;
-		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
-		foreach ($this->option[self::LINKS] as $link) {
-			if($link instanceof Link) {
-				$link = $link->create();
-				if(!$link) {
-					continue;
-				}
-				list($to_href, $params, $name) = $link;
+		$dropdown = new Utils\Dropdown($this->grid->presenter, $this->option, $data);
 
-				$li = Html::el('li', array('role' => 'presentation'));
-				$a = Html::el('a', array('role' => 'menuitem', 'tabindex' => '-1', 'href' => $this->grid->presenter->link($to_href, $params)));
-				$a->setText($name);
+		$span->add($dropdown->create());
 
-				$li->add($a);
-				$ul->add($li);
-				$has_links = TRUE;
-			} elseif(is_string($link)) {
-				$li = Html::el('li', array('role' => 'presentation', 'class' => $link));
-				$ul->add($li);
-			} elseif(is_array($link) && isset($link[0]) && isset($link[1])) {
-				$li = Html::el('li', array('role' => 'presentation', 'class' => $link[0]));
-				$li->setText($link[1]);
-				$ul->add($li);
-			}
-		}
-		if($has_links) {
-			$button = Html::el('button', array('class' => 'btn ' . $this->option[self::TYPE] . ' dropdown-toggle btn-xs', 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
-			$button->setHtml('Dropdown <span class="caret"></span>');
-			$container->add($button);
-			$container->add($ul);
-		}
-
-		$span->add($container);
 		return $span;
 	}
 

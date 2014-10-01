@@ -18,7 +18,8 @@ class Number extends BaseOrdering {
 	 */
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
-	    THOUSANDS_SEP = 'thousands_sep';
+	    THOUSANDS_SEP = 'thousands_sep',
+	    EDITABLE = 'editable';
 
 	public function setDecimals($decimals) {
 		$this->option[self::DECIMALS] = $decimals;
@@ -35,6 +36,20 @@ class Number extends BaseOrdering {
 		return $this;
 	}
 
+	public function setEditable($editable) {
+		$this->option[self::EDITABLE] = (bool)$editable;
+		return $this;
+	}
+
+	protected function setDefaults() {
+		return array(
+		    self::DECIMALS => 0,
+		    self::DEC_POINT => '.',
+		    self::THOUSANDS_SEP => ',',
+		    self::EDITABLE => TRUE
+		);
+	}
+
 	/**
 	 * Create HTML header
 	 * 
@@ -46,15 +61,6 @@ class Number extends BaseOrdering {
 		$th = Html::el('th');
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\NumberColumn::TEXT is required.');
-		}
-		if(!isset($this->option[self::DECIMALS])) {
-			$this->option[self::DECIMALS] = 0;
-		}
-		if(!isset($this->option[self::DEC_POINT])) {
-			$this->option[self::DEC_POINT] = '.';
-		}
-		if(!isset($this->option[self::THOUSANDS_SEP])) {
-			$this->option[self::THOUSANDS_SEP] = ',';
 		}
 		$this->addHeaderOrdering($th);
 		return $th;
@@ -74,6 +80,10 @@ class Number extends BaseOrdering {
 		$span = Html::el($container);
 		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
+		}
+
+		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
+			$span->addAttributes(array('data-editable' => $this->option[self::ID]));
 		}
 
 		$span->setText(number_format($this->data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]));

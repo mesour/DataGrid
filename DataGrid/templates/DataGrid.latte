@@ -1,7 +1,7 @@
 {snippet dataGrid}
 	<div class="data-grid">
 		{snippet $control->getGridName()}
-			<div class="data-grid">
+			<div class="data-grid"{if $control->isEditable()} data-editable-link="{plink $control->getEditableLink()}"{/if}>
 				{if empty($filter_form) === FALSE}
 					{var $filter = $control->getFilter()}
 					{if $filter instanceof Nette\Application\UI\IRenderable}
@@ -11,6 +11,9 @@
 						<div class="panel-heading">Filter</div>
 						<div class="panel-body filter">{!$filter->render()}</div>
 					</div>
+				{/if}
+				{if $control->isEditable()}
+					<script>{!=file_get_contents($grid_dir . '/src/grid_editable.js')}</script>
 				{/if}
 				<table class="table table-striped table-condensed">
 					<thead>
@@ -40,7 +43,7 @@
 									</td>
 									<td class="right-buttons">
 										<div class="thumbnailx">
-											{!=new \DataGrid\Button($lang_checking['button_option'], $presenter, $data)}
+											{!=new \DataGrid\Utils\Button($presenter, $lang_checking['button_option'], $data)}
 										</div>
 									</td>
 							{else}
@@ -69,7 +72,7 @@
 						{if is_array($link)}
 							{var $href_link = $link['href']}
 						{/if}
-						{var $href_link = \DataGrid\Column\Base::checkLinkPermission($href_link)}
+						{var $href_link = \DataGrid\Utils\Link::checkLinkPermission($href_link)}
 						{continueIf $href_link === FALSE}
 						{if $href_link !== FALSE}
 							{var $one_active = TRUE}
