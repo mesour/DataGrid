@@ -1,0 +1,106 @@
+{snippet dataGrid}
+	<div class="data-grid data-grid-tree">
+		{snippet $control->getGridName()}
+			<div class="data-grid">
+				{if empty($filter_form) === FALSE}
+					{var $filter = $control->getFilter()}
+					{if $filter instanceof Nette\Application\UI\IRenderable}
+						{$filter->validateControl()}
+					{/if}
+					<div class="panel panel-default">
+						<div class="panel-heading">Filter</div>
+						<div class="panel-body">{!$filter}</div>
+					</div>
+				{/if}
+				
+				{var $control->beforeCreate()}
+				
+				<div class="grid-selection" n:inner-foreach="$control->getColumns() as $column">
+					{continueIf $column->getType() !== \DataGrid\Column::CHECKBOX_SELECTION}
+					{!$column->createHeader()}
+				</div>
+				
+				{var $data_array = $control->getDataSource()->fetchAssoc()}
+				{if isset($data_array[0])}{include #grid, data_arr => $data_array[0], data_array => $data_array, first => TRUE, sortable => $sortable}{/if}
+				{var $control->beforeRender()}
+				{block #grid}
+					{if empty($data_arr) === FALSE}
+						{if isset($first) && $first}
+							{if empty($sortable) === FALSE}<ul class="grid-ul sortable" data-sort-href="{!$control->getSortableLink()}">{/if}
+							{if empty($sortable) === TRUE}<ul class="grid-ul">{/if}
+						{else}
+							<ul class="grid-ul">
+						{/if}
+						{foreach $data_arr as $data}
+							{var $column_arr = $control->getColumns()}
+							{if $control->hasLangChecking($data)}
+								{var $lang_checking = $control->getLangChecking()}
+								<tr>
+									<td colspan="{count($column_arr)-1}">
+										<span class="label pop label-info" rel="popover" data-content="{$lang_checking['description']}" data-original-title="{$lang_checking['title']}">
+											{$lang_checking['title']} - {$data[$lang_checking['parent_column']]}
+										</span>
+									</td>
+									<td class="actions">
+										<div class="thumbnailx">
+											{!=new \DataGrid\Button($lang_checking['button_option'], $data)}
+										</div>
+									</td>
+							{else}
+								<li{if $control->hasLineId($data)} id="{$control->getLineId($data)}"{/if}><div>
+								{foreach $column_arr as $column}
+									{!$column->createBody($data)}
+								{/foreach}
+							{/if}
+							</div>
+							{if isset($data_array[$data[$control->getDataSource()->getPrimaryKey()]])}{include #grid, data_arr => $data_array[$data[$control->getDataSource()->getPrimaryKey()]], data_array => $data_array, first => FALSE}{/if}
+						</li>{/foreach}
+						</ul>
+					{/if}
+				{/block}
+				
+			</div>
+			<style>{!=file_get_contents($grid_dir . '/src/grid.css')}</style>
+			<script n:if="empty($sortable) === FALSE">{!=(file_get_contents($grid_dir . '/src/grid_tree_sortable.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))}</script>
+			<div class="datagrid-bottom">
+				<div n:if="empty($selections) === FALSE" class="btn-group" id="checkbox-button" style="cursor: not-allowed;">
+					<button class="btn btn-default dropdown-toggle disabled" type="button" data-toggle="dropdown">
+						Selected 
+						<span class="caret"></span>
+					</button>
+					{var $output = ""}
+					{var $one_active = FALSE}
+					<ul n:inner-foreach="$selections as $name => $link" class="dropdown-menu" role="menu">
+						{var $href_link = $link}
+						{if is_array($link)}
+							{var $href_link = $link['href']}
+						{/if}
+						{var $href_link = \DataGrid\Column::checkLinkPermission($href_link)}
+						{continueIf $href_link === FALSE}
+						{if $href_link !== FALSE}
+							{var $one_active = TRUE}
+						{/if}
+						{var $href = $presenter->link($href_link, isset($link['href_data']) ? $link['href_data'] : array())}
+						{if is_array($link)}
+							{var $link['href'] = $href}
+							{var $button = \Nette\Utils\Html::el('a', $link)->setText($name)}
+						{else}
+							{var $button = \Nette\Utils\Html::el('a', array('href' => $href))->setText($name)}
+						{/if}
+						{var $output .= "<li>".$button."</li>"}
+						{if $iterator->isLast() && $one_active}
+							{!$output}
+						{/if}
+					</ul>
+					{if $one_active}
+						<script>{!=file_get_contents($grid_dir . '/src/grid_selection.js')}</script>
+					{/if}
+				</div>
+				{if $control->getPagerUrl()}
+					{control pager $control->getPagerUrl(), $control->getCount(), $control->getGridName(), TRUE, $control->getPageLimit()}
+				{/if}
+			</div>
+			<hr style="clear:both;border:none;">
+		{/snippet}
+	</div>
+{/snippet}
