@@ -123,7 +123,7 @@ class Dropdown extends Option {
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
 		foreach ($this->option[self::LINKS] as $link) {
 			if($link instanceof Link) {
-				$href = $link->create();
+				$href = $link->create($this->data);
 				if(!$href) {
 					continue;
 				}
