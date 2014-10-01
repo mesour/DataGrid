@@ -7,49 +7,65 @@ namespace DataGrid;
  */
 class Pager extends \Nette\Application\UI\Control {
 
-	const DEFAULT_LIMIT = 20;
+	/**
+	 * Private session section
+	 *
+	 * @var \Nette\Http\SessionSection
+	 */
+	private $private_session;
 
-	static public $advanced = FALSE;
-	public $add_types = array('dialog');
+	/**
+	 * @var \Nette\Utils\Paginator
+	 */
+	private $paginator;
+
+	/**
+	 * @param string $session_prefix
+	 * @param \Nette\ComponentModel\IContainer $parent
+	 * @param null|string $name
+	 */
+	public function __construct($session_prefix, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
+		parent::__construct($parent, $name);
+		$this->private_session = $this->presenter->getSession()->getSection($session_prefix . $name);
+		if(!$this->private_session->page) {
+			$this->private_session->page = 1;
+		}
+		$this->paginator = new \Nette\Utils\Paginator;
+	}
+
+	/**
+	 * @param numeric $total_count
+	 * @param numeric $limit
+	 */
+	public function setCounts($total_count, $limit) {
+		$this->paginator->setItemCount($total_count);
+		$this->paginator->setItemsPerPage($limit);
+		$this->paginator->setPage($this->private_session->page);
+	}
 
 	/**
 	 * Create pager
-	 * @param string $link
-	 * @param numeric $total_count
-	 * @param bool $advanced default: FALSE
 	 */
-	public function render($link, $total_count, $name, $advanced = NULL, $limit = 0) {
-		if (is_null($advanced) === FALSE)
-			self::$advanced = $advanced;
-		$params = $this->presenter->getRequest()->getParameters();
-		$param = isset($params[self::getParamName($link, $name)]) ? $params[self::getParamName($link, $name)] : NULL;
-		$this->presenter->session->getSection('pager-' . $link . $name)->page =
-			is_null($param) === TRUE && isset($this->presenter->session->getSection('pager-' . $link . $name)->page) === TRUE ? $this->presenter->session->getSection('pager-' . $link . $name)->page : (
-			is_null($param) === FALSE ? $param : 0
-			);
-		$current_page = self::getCurrentPage($link, $name, $param);
-		$this->template->link = $link;
-		$this->template->name = $name;
-		$this->template->total_count = $total_count;
-		$limit = $limit > 0 ? $limit : self::DEFAULT_LIMIT;
-		$this->template->pages_count = $total_count == 0 ? 0 : round(( $total_count + ( $limit - ($total_count % $limit))) / $limit, 0, PHP_ROUND_HALF_UP);
-		$this->template->current_page = $current_page;
-		if($this->presenter->isAjax())
-			$this->presenter->redrawControl();
+	public function render() {
+		$this->template->paginator = $this->paginator;
+
 		$this->template->setFile(dirname(__FILE__) . '/templates/Pager.latte');
 		$this->template->render();
 	}
 
-	static public function getCurrentPage($link, $name, $param = NULL) {
-		$presenter = \Nette\Environment::getApplication()->getPresenter();
-		return $presenter->session->getSection(self::getParamName($link, $name))->page =
-			is_null($param) === TRUE && isset($presenter->session->getSection('pager-' . $link . $name)->page) === TRUE ? $presenter->session->getSection('pager-' . $link . $name)->page : (
-			is_null($param) === FALSE ? $param : 0
-			);
+	public function handleChangePage($page) {
+		$this->private_session->page = $page;
+		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
-	static public function getParamName($link, $name) {
-		return 'page' . $link . $name;
+	/**
+	 * Returns current page index
+	 *
+	 * @return int
+	 */
+	public function getCurrentPageIndex() {
+		return $this->paginator->getPage() - 1;
 	}
 
 }

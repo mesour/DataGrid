@@ -40,15 +40,39 @@ interface IDataSource {
 	/**
 	 * Get data with applied where, limit and offset
 	 * 
-	 * @return Array
+	 * @return mixed
 	 */
 	public function fetchAll();
 	
 	/**
 	 * Get first element from data
 	 * 
-	 * @return Array
+	 * @return mixed
 	 */
 	public function fetch();
+
+	/**
+	 * Get data with applied where, limit and offset and returns tree.
+	 *
+	 * @return Array
+	 */
+	public function fetchAssoc();
+
+	/**
+	 * Selects columns to order by.
+	 *
+	 * @param String $row
+	 * @param String $sorting sorting direction
+	 * @return void
+	 */
+	public function orderBy($row, $sorting = 'ASC');
+
+	public function getPrimaryKey();
+
+	public function setPrimaryKey($primary_key);
+
+	public function getParentKey();
+
+	public function setParentKey($parent_key);
 
 }

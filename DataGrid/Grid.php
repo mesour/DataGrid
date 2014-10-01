@@ -39,13 +39,6 @@ class Grid extends \Nette\Application\UI\Control {
 	private $total_count_set = FALSE;
 
 	/**
-	 * Url for component pager
-	 * 
-	 * @var string
-	 */
-	private $pager_url;
-
-	/**
 	 * Limit for one page
 	 * 
 	 * @var ing
@@ -164,6 +157,20 @@ class Grid extends \Nette\Application\UI\Control {
 	private $count;
 
 	/**
+	 * Private grid session
+	 *
+	 * @var \Nette\Http\SessionSection
+	 */
+	private $session_section;
+
+	/**
+	 * Enbled pager
+	 *
+	 * @var bool
+	 */
+	private $pager_enabled = FALSE;
+
+	/**
 	 * Create data source instance
 	 * 
 	 * @param \DataGrid\IDataSource $data_source Data source
@@ -172,31 +179,28 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function __construct(\DataGrid\IDataSource $data_source, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {		
 		parent::__construct($parent, $name);
-		
+
 		$this->data_source = $data_source;
-		$this->name = $parent->getName() . $name;
+		$this->name = $name;
+		$this->session_section = $this->presenter->getSession()->getSection('dataGrid_' . $this->getGridName());
 	}
 	
 	/**
-	 * Get datagrid name
+	 * Get presenter name with datagrid name
 	 * 
 	 * @return String
 	 */
 	public function getGridName() {
-		return $this->name;
+		return $this->presenter->getName() . $this->name;
 	}
 
 	/**
 	 * Add data grid column
 	 * 
-	 * @param Array|Column $column_option
+	 * @param IColumn $column_option
 	 */
-	public function column($column_option) {
-		if($column_option instanceof \DataGrid\Column) {
-			$this->column_arr[] = $column_option;
-		} else {
-			$this->column_arr[] = new \DataGrid\Column($column_option);
-		}
+	public function column(IColumn $column_option) {
+		$this->column_arr[] = $column_option;
 	}
 	
 	/**
@@ -212,9 +216,30 @@ class Grid extends \Nette\Application\UI\Control {
 	 * Pager will be show and pager URL
 	 * 
 	 * @param String $pager_url
+	 * @deprecated Use enablePager() instead
 	 */
 	public function pagerUrl($pager_url) {
-		$this->pager_url = $pager_url;
+		$this->enablePager();
+	}
+
+	/**
+	 * Pager will be show
+	 */
+	public function enablePager() {
+		if($this->pager_enabled) {
+			return;
+		}
+		$this->pager_enabled = TRUE;
+		new Pager($this->getGridName(), $this, 'pager');
+	}
+
+	/**
+	 * Returns true if pager is enabled
+	 *
+	 * @return bool
+	 */
+	public function isPagerEnabled() {
+		return $this->pager_enabled;
 	}
 
 	/**
@@ -237,15 +262,6 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function getDataSource() {
 		return $this->data_source;
-	}
-
-	/**
-	 * Get current page URL if set
-	 * 
-	 * @return String|NULL
-	 */
-	public function getPagerUrl() {
-		return $this->pager_url;
 	}
 
 	/**
@@ -294,7 +310,7 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @param Array $sort_data_arr
 	 */
 	public function sortable($sort_handler_link, $sort_data_arr = array()) {
-		$link = \DataGrid\Column::checkLinkPermission($sort_handler_link);
+		$link = BaseColumn::checkLinkPermission($sort_handler_link);
 		if ($link === FALSE) {
 			return FALSE;
 		}
@@ -324,12 +340,12 @@ class Grid extends \Nette\Application\UI\Control {
 		} elseif ($this->filter['filter']->isSubmittedBy()) {
 			$values = $this->filter->getValues(TRUE);
 		} else {
-			$values = $this->presenter->getSession()->getSection('dataGrid_' . $this->name)->filter_values;
+			$values = $this->session_section->filter_values;
 		}
 		if(is_array($values) === FALSE) {
 			$values = array();
 		}
-		$this->presenter->getSession()->getSection('dataGrid_' . $this->name)->filter_values = $values;
+		$this->session_section->filter_values = $values;
 		return $values;
 	}
 	
@@ -420,6 +436,12 @@ class Grid extends \Nette\Application\UI\Control {
 				} else {
 					$this->data_source->where('%n', $key, ' = %s', $value);
 				}
+			} elseif($this->data_source instanceof \DataGrid\NetteDbDataSource) {
+				if($this->auto_filter_like) {
+					$this->data_source->where($key . ' LIKE ?', '%' . $value . '%');
+				} else {
+					$this->data_source->where($key . ' = ?', $value);
+				}
 			} elseif($this->data_source instanceof \DataGrid\ArrayDataSource) {
 				$this->data_source->where($key, $value);
 			} else {
@@ -432,6 +454,11 @@ class Grid extends \Nette\Application\UI\Control {
 	 * Must called before render header
 	 */
 	public function beforeRender() {
+		if(isset($this->session_section->ordering) && !empty($this->session_section->ordering)) {
+			foreach($this->session_section->ordering as $key => $how_to_order) {
+				$this->data_source->orderBy($key, $how_to_order);
+			}
+		}
 		if ($this->called_before_render === TRUE){
 			return FALSE;
 		}
@@ -440,9 +467,9 @@ class Grid extends \Nette\Application\UI\Control {
 		}
 		$this->count = $this->data_source->count();
 
-		if (empty($this->pager_url) === FALSE) {
-			$offset = \DataGrid\Pager::getCurrentPage($this->pager_url, $this->name, $this->presenter->getParam(\DataGrid\Pager::getParamName($this->pager_url, $this->name)));
-			$this->data_source->applyLimit($this->page_limit, $offset * $this->page_limit);
+		if ($this->pager_enabled) {
+			$this['pager']->setCounts($this->getCount(), $this->getPageLimit());
+			$this->data_source->applyLimit($this->page_limit, ($this['pager']->getCurrentPageIndex()) * $this->page_limit);
 		}
 		$this->called_before_render = TRUE;
 	}
@@ -503,17 +530,17 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function beforeCreate() {
 		if (empty($this->selections) === FALSE) {
-			$this->column_arr[-1] = new \DataGrid\Column(array(
-			    \DataGrid\Column::_TYPE => \DataGrid\Column::CHECKBOX_SELECTION,
-			    \DataGrid\Column::_ID => $this->selection_key,
-			    \DataGrid\Column::_CHECKBOX_MAIN => $this->checkbox_main,
-			    \DataGrid\Column::_CHECKBOX_ACTIONS => $this->selections
+			$this->column_arr[-1] = new SelectionColumn($this->presenter, array(
+			    SelectionColumn::ID => $this->selection_key,
+			    SelectionColumn::CHECKBOX_MAIN => $this->checkbox_main,
+			    SelectionColumn::CHECKBOX_ACTIONS => $this->selections
 			));
 		}
 		if (empty($this->sortable) === FALSE) {
-			$this->column_arr[-2] = new \DataGrid\Column(array(
-			    \DataGrid\Column::_TYPE => \DataGrid\Column::SORT
-			));
+			$this->column_arr[-2] = new SortableColumn($this->presenter);
+		}
+		foreach($this->column_arr as $column) {
+			$column->setGridName($this->name);
 		}
 		ksort($this->column_arr);
 		$this->checkEmptyColumns();
@@ -525,9 +552,11 @@ class Grid extends \Nette\Application\UI\Control {
 	private function checkEmptyColumns() {
 		if (empty($this->column_arr)) {
 			foreach (array_keys($this->data_source->fetch()) as $key) {
-				$this->column_arr[] = new \DataGrid\Column(array(
-				    \DataGrid\Column::_ID => $key,
+				$column = new TextColumn($this->presenter, array(
+				    TextColumn::ID => $key,
 				));
+				$column->setGridName($this->name);
+				$this->column_arr[] = $column;
 			}
 		}
 	}
@@ -552,10 +581,33 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->template->setFile( dirname( __FILE__ ) . '/templates/DataGrid.latte' );
                 $this->template->render();
 	}
-	
-	protected function createComponentPager($name) {
-		return new \DataGrid\Pager($this, $name);
+
+	public function getOrdering($column_id) {
+		if(!isset($this->session_section->ordering[$column_id])) {
+			return NULL;
+		} else {
+			return $this->session_section->ordering[$column_id];
+		}
 	}
+
+	public function handleOrdering($column_id) {
+		if(!isset($this->session_section->ordering)) {
+			$this->session_section->ordering = array();
+		}
+		if(!isset($this->session_section->ordering[$column_id])) {
+			$this->session_section->ordering[$column_id] = 'ASC';
+		} elseif($this->session_section->ordering[$column_id] === 'ASC') {
+			$this->session_section->ordering[$column_id] = 'DESC';
+		} else {
+			unset($this->session_section->ordering[$column_id]);
+		}
+		$this->redrawControl();
+		$this->presenter->redrawControl();
+	}
+	
+	//protected function createComponentPager($name) {
+	//	return new \DataGrid\Pager($this, $name);
+	//}
 }
 
 /**

@@ -13,16 +13,16 @@
 					</div>
 				{/if}
 				
-				{var $control->beforeCreate()}
+				{? $control->beforeCreate()}
 				
 				<div class="grid-selection" n:inner-foreach="$control->getColumns() as $column">
-					{continueIf $column->getType() !== \DataGrid\Column::CHECKBOX_SELECTION}
+					{continueIf !$column instanceof \DataGrid\SelectionColumn}
 					{!$column->createHeader()}
 				</div>
 				
 				{var $data_array = $control->getDataSource()->fetchAssoc()}
 				{if isset($data_array[0])}{include #grid, data_arr => $data_array[0], data_array => $data_array, first => TRUE, sortable => $sortable}{/if}
-				{var $control->beforeRender()}
+				{? $control->beforeRender()}
 				{block #grid}
 					{if empty($data_arr) === FALSE}
 						{if isset($first) && $first}
@@ -33,23 +33,25 @@
 						{/if}
 						{foreach $data_arr as $data}
 							{var $column_arr = $control->getColumns()}
+						<li{if $control->hasLineId($data)} id="{$control->getLineId($data)}"{/if}>
+							<div>
 							{if $control->hasLangChecking($data)}
 								{var $lang_checking = $control->getLangChecking()}
-								<tr>
-									<td colspan="{count($column_arr)-1}">
+									{foreach $column_arr as $column}
+										{continueIf !$column instanceof \DataGrid\ActionColumn && !$column instanceof \DataGrid\SortableColumn && !$column instanceof \DataGrid\SelectionColumn}
+										{!$column->createBody($data, 'span')}
+									{/foreach}
+									<span>
 										<span class="label pop label-info" rel="popover" data-content="{$lang_checking['description']}" data-original-title="{$lang_checking['title']}">
 											{$lang_checking['title']} - {$data[$lang_checking['parent_column']]}
 										</span>
-									</td>
-									<td class="actions">
-										<div class="thumbnailx">
-											{!=new \DataGrid\Button($lang_checking['button_option'], $data)}
-										</div>
-									</td>
+									</span>
+									<span>
+										{!=new \DataGrid\Button($lang_checking['button_option'], $presenter, $data)}
+									</span>
 							{else}
-								<li{if $control->hasLineId($data)} id="{$control->getLineId($data)}"{/if}><div>
 								{foreach $column_arr as $column}
-									{!$column->createBody($data)}
+									{!$column->createBody($data, 'span')}
 								{/foreach}
 							{/if}
 							</div>
@@ -75,7 +77,7 @@
 						{if is_array($link)}
 							{var $href_link = $link['href']}
 						{/if}
-						{var $href_link = \DataGrid\Column::checkLinkPermission($href_link)}
+						{var $href_link = \DataGrid\BaseColumn::checkLinkPermission($href_link)}
 						{continueIf $href_link === FALSE}
 						{if $href_link !== FALSE}
 							{var $one_active = TRUE}
@@ -96,9 +98,9 @@
 						<script>{!=file_get_contents($grid_dir . '/src/grid_selection.js')}</script>
 					{/if}
 				</div>
-				{if $control->getPagerUrl()}
-					{control pager $control->getPagerUrl(), $control->getCount(), $control->getGridName(), TRUE, $control->getPageLimit()}
-				{/if}
+				{if $control->isPagerEnabled()}
+                                	{control pager}
+                                {/if}
 			</div>
 			<hr style="clear:both;border:none;">
 		{/snippet}

@@ -60,6 +60,17 @@ class ArrayDataSource implements IDataSource {
 	private $offset = 0;
 
 	/**
+	 * Obtain how to order an array
+	 *
+	 * @var Array
+	 */
+	private $ordering = array();
+
+	private $parent_key = 'parent_id';
+
+	private $primary_key = 'id';
+
+	/**
 	 * Create instance
 	 * 
 	 * @param Array $data
@@ -133,6 +144,18 @@ class ArrayDataSource implements IDataSource {
 	public function fetchAll() {
 		return array_slice($this->getAppliedSearched(), $this->offset, $this->limit);
 	}
+
+	public function fetchAssoc() {
+		$output = array();
+		foreach($this->fetchAll() as $value) {
+			$output[$value[$this->parent_key]][] = $value;
+		}
+		return $output;
+	}
+
+	public function orderBy($row, $sorting = 'ASC') {
+		$this->ordering[$row] = $sorting;
+	}
 	
 	
 	/**
@@ -142,6 +165,22 @@ class ArrayDataSource implements IDataSource {
 	 */
 	public function fetch() {
 		return $this->getAppliedSearched(TRUE);
+	}
+
+	public function getPrimaryKey() {
+		return $this->primary_key;
+	}
+
+	public function setPrimaryKey($primary_key) {
+		$this->primary_key = $primary_key;
+	}
+
+	public function getParentKey() {
+		return $this->parent_key;
+	}
+
+	public function setParentKey($parent_key) {
+		$this->parent_key = $parent_key;
 	}
 
 	/**
@@ -177,6 +216,9 @@ class ArrayDataSource implements IDataSource {
 			}
 			
 		}
+		if(!empty($this->ordering)) {
+			$this->applyOrdering($output);
+		}
 		return $output;
 	}
 
@@ -208,6 +250,23 @@ class ArrayDataSource implements IDataSource {
 			}
 		}
 		return $searched;
+	}
+
+	private function applyOrdering(& $output) {
+		$arguments = array();
+		foreach ($output as $rec) {
+			$x = 0;
+			foreach($this->ordering as $key => $sorting) {
+				$arguments[$x][] = is_numeric($rec[$key]) ? $rec[$key] : strtolower($rec[$key]);
+				$arguments[$x+1] = $sorting === 'ASC' ? SORT_ASC : SORT_DESC;
+				$x = $x+2;
+			}
+		}
+		$x = 0;
+		foreach($this->ordering as $key => $sorting) {
+			array_multisort($arguments[$x], $arguments[$x+1], $output);
+			$x = $x+2;
+		}
 	}
 	
 	/**

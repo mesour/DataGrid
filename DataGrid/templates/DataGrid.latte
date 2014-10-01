@@ -14,34 +14,40 @@
 				{/if}
 				<table class="table table-striped table-condensed">
 					<thead>
-						{var $control->beforeCreate()}
+						{? $control->beforeCreate()}
 						<tr n:inner-foreach="$control->getColumns() as $column">
 							{!$column->createHeader()}
 						</tr>
 					</thead>
 					{if empty($sortable) === FALSE}<tbody class="sortable" data-sort-href="{!$control->getSortableLink()}">{/if}
 					{if empty($sortable) === TRUE}<tbody>{/if}
-						{var $control->beforeRender()}
+						{? $control->beforeRender()}
 						{foreach $control->getDataSource()->fetchAll() as $data}
 							{var $column_arr = $control->getColumns()}
 							{if $control->hasLangChecking($data)}
 								{var $lang_checking = $control->getLangChecking()}
 								<tr>
-									<td colspan="{count($column_arr)-1}">
-										<span class="label pop label-info" rel="popover" data-content="{$lang_checking['description']}" data-original-title="{$lang_checking['title']}">
+									{var $count_of_used_columns = 0}
+									{foreach $column_arr as $column}
+										{continueIf !$column instanceof \DataGrid\ActionColumn && !$column instanceof \DataGrid\SortableColumn && !$column instanceof \DataGrid\SelectionColumn}
+										{!$column->createBody($data)}
+										{? $count_of_used_columns++}
+									{/foreach}
+									<td colspan="{count($column_arr)-1-$count_of_used_columns}">
+										<span class="label pop label-info" data-toggle="popover" data-content="{$lang_checking['description']}" title="{$lang_checking['title']}">
 											{$lang_checking['title']} - {$data[$lang_checking['parent_column']]}
 										</span>
 									</td>
-									<td class="actions">
+									<td class="right-buttons">
 										<div class="thumbnailx">
-											{!=new \DataGrid\Button($lang_checking['button_option'], $data)}
+											{!=new \DataGrid\Button($lang_checking['button_option'], $presenter, $data)}
 										</div>
 									</td>
 							{else}
 								<tr{if $control->hasLineId($data)} id="{$control->getLineId($data)}"{/if}>
 								
 								{foreach $column_arr as $column}
-									{!$column->createBody($data, $container = 'td')}
+									{!$column->createBody($data)}
 								{/foreach}
 							{/if}
 						</tr>{/foreach}
@@ -63,7 +69,7 @@
 						{if is_array($link)}
 							{var $href_link = $link['href']}
 						{/if}
-						{var $href_link = \DataGrid\Column::checkLinkPermission($href_link)}
+						{var $href_link = \DataGrid\BaseColumn::checkLinkPermission($href_link)}
 						{continueIf $href_link === FALSE}
 						{if $href_link !== FALSE}
 							{var $one_active = TRUE}
@@ -84,8 +90,8 @@
 						<script>{!=file_get_contents($grid_dir . '/src/grid_selection.js')}</script>
 					{/if}
 				</div>
-				{if $control->getPagerUrl()}
-					{control pager $control->getPagerUrl(), $control->getCount(), $control->getGridName(), TRUE, $control->getPageLimit()}
+				{if $control->isPagerEnabled()}
+					{control pager}
 				{/if}
 			</div>
 			<hr style="clear:both;border:none;">

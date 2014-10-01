@@ -79,6 +79,10 @@ class DibiDataSource implements IDataSource {
 	public function fetchAssoc() {
 		return $this->dibi_data_source->fetchAssoc($this->parent_key.',#');
 	}
+
+	public function orderBy($row, $sorting = 'ASC') {
+		return $this->dibi_data_source->orderBy($row, $sorting);
+	}
 	
 	/**
 	 * Return first element from data
