@@ -1,6 +1,6 @@
 # Mesour DataGrid
 
-Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.
+Mesour DataGrid is datagrid for Nette with options like to dump tree, sort data using jQuery.ui.nestedSortable and much more.
 
 - [Documentation/Demo](http://grid.mesour.com)
 - [Author](http://mesour.com)
