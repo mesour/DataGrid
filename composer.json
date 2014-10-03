@@ -1,7 +1,19 @@
 {
-	"name": "mesour/datagrid",
-	"description": "Mesour DataGrid",
-	"autoload": {
-		"classmap": ["DataGrid/"]
-	}
+    "name": "mesour/datagrid",
+    "description": "Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.",
+    "license": ["BSD-3-Clause", "GPL-3.0"],
+    "homepage": "http://grid.mesour.com",
+    "authors": [
+        {
+            "name": "Matouš Němec",
+            "homepage": "http://mesour.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "nette/nette": ">=2.1.0"
+    },
+    "autoload": {
+        "classmap": ["DataGrid/"]
+    }
 }
