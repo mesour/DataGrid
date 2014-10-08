@@ -3,7 +3,7 @@
 namespace DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Utils\Link;
+    \DataGrid\Components\Link;
 
 /**
  * Description of \DataGrid\Column\Selection
@@ -35,27 +35,29 @@ class Selection extends Base {
 		return $this;
 	}
 
-	/**
-	 * Create HTML header
-	 * 
-	 * @return \Nette\Utils\Html
-	 */
-	public function createHeader() {
-		parent::createHeader();
-
-		$th = Html::el('th', array('class' => 'act act-select'));
+	private function checkPermissions() {
 		$this->option[self::CHECKBOX_ACTIONS] = isset($this->option[self::CHECKBOX_ACTIONS]) ? $this->option[self::CHECKBOX_ACTIONS] : array();
 		$one_active = FALSE;
 		foreach ($this->option[self::CHECKBOX_ACTIONS] as $link) {
-			if (Link::checkLinkPermission($link) === FALSE) {
-				//$one_unactive = TRUE;
-			} else {
+			if (Link::checkLinkPermission($link) !== FALSE) {
 				$one_active = TRUE;
 			}
 		}
 		if (!$one_active) {
-			return '';
+			return FALSE;
 		}
+		return TRUE;
+	}
+
+	public function getHeaderAttributes() {
+		$this->fixOption();
+		if (!$this->checkPermissions()) {
+			return FALSE;
+		}
+		return array('class' => 'act act-select');
+	}
+
+	public function getHeaderContent() {
 		$div = Html::el('div', array('class' => 'btn-group', 'id' => 'checkbox-selector'));
 		$button = Html::el('button', array('type' => 'button'));
 		$checkbox = Html::el('a', array('type' => 'button', 'class' => 'btn btn-xs btn-default main-checkbox'));
@@ -78,36 +80,20 @@ class Selection extends Base {
 			$button->class('btn btn-default btn-xs');
 		}
 		$div->add($button);
-		$th->add($div);
-		return $th;
+		return $div;
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param $data
-	 * @param string $container
-	 * @return Html|string|void
-	 */
-	public function createBody($data, $container = 'th') {
-		parent::createBody($data);
+	public function getBodyAttributes($data) {
+		if (!$this->checkPermissions()) {
+			return FALSE;
+		}
+		return array('class' => 'with-checkbox');
+	}
 
-		$th = Html::el($container, array('class' => 'with-checkbox'));
-		$one_active = FALSE;
-		foreach ($this->option[self::CHECKBOX_ACTIONS] as $link) {
-			if (Link::checkLinkPermission($link) === FALSE) {
-				//$one_unactive = TRUE;
-			} else {
-				$one_active = TRUE;
-			}
-		}
-		if (!$one_active) {
-			return '';
-		}
-		$checkbox = Html::el('a', array('data-value' => $this->data[$this->option[self::ID]], 'class' => 'btn btn-default btn-xs select-checkbox'));
+	public function getBodyContent($data) {
+		$checkbox = Html::el('a', array('data-value' => $data[$this->option[self::ID]], 'class' => 'btn btn-default btn-xs select-checkbox'));
 		$checkbox->add('&nbsp;&nbsp;&nbsp;&nbsp;');
-		$th->add($checkbox);
-		return $th;
+		return $checkbox;
 	}
 
 }

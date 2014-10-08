@@ -2,10 +2,8 @@
 
 namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception,
-    \DataGrid\Utils\Link,
-    \DataGrid\Utils;
+use \DataGrid\Grid_Exception,
+    \DataGrid\Components;
 
 /**
  * Description of \DataGrid\Column\Dropdown
@@ -19,11 +17,11 @@ class Dropdown extends Base {
 	 * Possible option key
 	 */
 	const TEXT = 'text',
-	        NAME = 'name',
-	    	LINKS = 'links',
-		TYPE = 'type',
-	    	BUTTON_CLASS_NAME = 'class_name',
-	    	SIZE_CLASS = 'size_class';
+	    NAME = 'name',
+	    LINKS = 'links',
+	    TYPE = 'type',
+	    BUTTON_CLASS_NAME = 'class_name',
+	    SIZE_CLASS = 'size_class';
 
 	public function setText($text) {
 		$this->option[self::TEXT] = $text;
@@ -45,22 +43,22 @@ class Dropdown extends Base {
 		return $this;
 	}
 
-	public function setHeader($name) {
+	public function addHeader($name) {
 		$this->option[self::LINKS][] = array('dropdown-header', $name);
 		return $this;
 	}
 
-	public function setLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
-		$this->option[self::LINKS][] = new Link(array(
-		    Link::HREF => $href,
-		    Link::PARAMS => $parameters,
-		    Link::NAME => $name,
-		    Link::USE_NETTE_LINK => $is_nette_link
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+		$this->option[self::LINKS][] = new Components\Link(array(
+		    Components\Link::HREF => $href,
+		    Components\Link::PARAMS => $parameters,
+		    Components\Link::NAME => $name,
+		    Components\Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;
 	}
 
-	public function setSeparator() {
+	public function addSeparator() {
 		$this->option[self::LINKS][] = 'divider';
 		return $this;
 	}
@@ -80,40 +78,25 @@ class Dropdown extends Base {
 		);
 	}
 
-	/**
-	 * Create HTML header
-	 * 
-	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	public function createHeader() {
-		parent::createHeader();
-
+	public function getHeaderAttributes() {
+		$this->fixOption();
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DropdownColumn::TEXT is required.');
 		}
-		$th = Html::el('th', array('class' => 'dropdown-column'));
-		$th->setText($this->option[self::TEXT]);
-		return $th;
+		return array('class' => 'dropdown-column');
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param mixed $data
-	 * @param string $container
-	 * @return Html|void
-	 */
-	public function createBody($data, $container = 'td') {
-		parent::createBody($data);
+	public function getHeaderContent() {
+		return $this->option[self::TEXT];
+	}
 
-		$span = Html::el($container, array('class' => 'right-buttons'));
+	public function getBodyAttributes($data) {
+		return array('class' => 'right-buttons');
+	}
 
-		$dropdown = new Utils\Dropdown($this->grid->presenter, $this->option, $data);
-
-		$span->add($dropdown->create());
-
-		return $span;
+	public function getBodyContent($data) {
+		$dropdown = new Components\Dropdown($this->grid->presenter, $this->option, $data);
+		return $dropdown->create();
 	}
 
 }

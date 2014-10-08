@@ -2,8 +2,7 @@
 
 namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+use \DataGrid\Grid_Exception;
 
 /**
  * Description of \DataGrid\Column\Text
@@ -41,65 +40,48 @@ class Text extends BaseOrdering {
 		);
 	}
 
-	/**
-	 * Create HTML header
-	 *
-	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	public function createHeader() {
-		parent::createHeader();
-		$th = Html::el('th');
+	public function getHeaderAttributes() {
+		$this->fixOption();
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\TextColumn::TEXT is required.');
 		}
-		$this->addHeaderOrdering($th);
-		return $th;
+		return array();
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param mixed $data
-	 * @param string $container
-	 * @return Html|void
-	 * @throws Grid_Exception
-	 */
-	public function createBody($data, $container = 'td') {
-		parent::createBody($data);
+	public function getHeaderContent() {
+		return parent::getHeaderContent();
+	}
 
-		$span = Html::el($container);
+	public function getBodyAttributes($data) {
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			$this->checkColumnId();
-			$span->addAttributes(array(
+			$this->checkColumnId($data);
+			return array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'text'
-			));
+			);
 		}
-		$span->setHtml($this->getParsedValue($data));
-		return $span;
+		return array();
 	}
 
-	public function getParsedValue($data) {
-		parent::createBody($data);
+	public function getBodyContent($data) {
 		if (array_key_exists(self::CALLBACK, $this->option) === FALSE) {
-			$this->checkColumnId();
-			return $this->data[$this->option[self::ID]];
+			$this->checkColumnId($data);
+			return $data[$this->option[self::ID]];
 		} else {
 			if (is_callable($this->option[self::CALLBACK])) {
-				$args = array($this->data);
+				$args = array($data);
 				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
 					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 				}
 				return call_user_func_array($this->option[self::CALLBACK], $args);
 			} else {
-				throw new Grid_Exception('Callback in column options is not callable.');
+				throw new Grid_Exception('Callback in column setting is not callable.');
 			}
 		}
 	}
 
-	private function checkColumnId() {
-		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
+	private function checkColumnId($data) {
+		if (isset($data[$this->option[self::ID]]) === FALSE && is_null($data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 	}

@@ -12,36 +12,23 @@ use \Nette\Utils\Html;
  */
 class Sortable extends Base {
 
-	/**
-	 * Create HTML header
-	 * 
-	 * @return \Nette\Utils\Html
-	 */
-	public function createHeader() {
-		parent::createHeader();
-
-		$th = Html::el('th', array('class' => 'act buttons-count-1'));
-		$th->add(Html::el('b', array('class' => 'glyphicon glyphicon-move')));
-		return $th;
+	public function getHeaderAttributes() {
+		$this->fixOption();
+		return array('class' => 'act buttons-count-1');
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param null $data
-	 * @param string $container
-	 * @return Html|string|void
-	 * @throws Grid_Exception
-	 */
-	public function createBody($data = NULL, $container = 'td') {
-		parent::createBody($data);
+	public function getHeaderContent() {
+		return Html::el('b', array('class' => 'glyphicon glyphicon-move'));
+	}
 
-		$td = Html::el($container);
+	public function getBodyAttributes($data) {
+		return array();
+	}
 
+	public function getBodyContent($data) {
 		$link = Html::el('a', array('class' => 'btn btn-sm btn-default move handler', 'href' => '#'));
 		$link->add(Html::el('b', array('class' => 'glyphicon glyphicon-move')));
-		$td->add($link);
-		return $td;
+		return $link;
 	}
 
 }

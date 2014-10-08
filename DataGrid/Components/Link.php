@@ -1,15 +1,16 @@
 <?php
 
-namespace DataGrid\Utils;
-use Nette\Utils\ArrayHash;
+namespace DataGrid\Components;
+
+use DataGrid\Setting;
 
 /**
- * Description of \DataGrid\Utils\Link
+ * Description of \DataGrid\Components\Link
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class Link extends Option {
+class Link extends Setting {
 
 	/**
 	 * Possible option key
@@ -43,6 +44,11 @@ class Link extends Option {
 
 	public function setUseNetteLink($nette = TRUE) {
 		$this->option[self::USE_NETTE_LINK] = $nette;
+		return $this;
+	}
+
+	public function addParameter($name, $value) {
+		$this->option[self::PARAMS][$name] = $value;
 		return $this;
 	}
 

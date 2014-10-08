@@ -1,18 +1,20 @@
 <?php
 
-namespace DataGrid\Utils;
+namespace DataGrid\Components;
 
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
-	DataGrid\Column;
+	DataGrid\Column,
+	DataGrid\Setting,
+	DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Utils\Button
+ * Description of \DataGrid\Components\Button
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class Button extends Option {
+class Button extends Setting {
 
 	/**
 	 * Possible option key
@@ -47,11 +49,15 @@ class Button extends Option {
 	 * @param Array|NULL $data
 	 * @throws \DataGrid\Grid_Exception
 	 */
-	public function __construct(Presenter $presenter, array $option = array(), $data = NULL) {
+	public function __construct(Presenter $presenter = NULL, array $option = array(), $data = NULL) {
 		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
+		$this->presenter = $presenter;
+	}
+
+	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
 	}
 
@@ -127,6 +133,10 @@ class Button extends Option {
 	public function create($data = NULL) {
 		if (empty($data) === FALSE) {
 			$this->data = $data;
+		}
+
+		if(is_null($this->presenter)) {
+			throw new Grid_Exception('Presenter is not set for Button.');
 		}
 
 		if(isset($this->option[self::BUTTON_CLASSES])) {

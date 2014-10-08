@@ -2,6 +2,8 @@
 
 namespace DataGrid;
 
+use \Nette\Application\UI\Form;
+
 /**
  * Pager datagrid component
  */
@@ -18,6 +20,12 @@ class Pager extends \Nette\Application\UI\Control {
 	 * @var \Nette\Utils\Paginator
 	 */
 	private $paginator;
+
+	private $max_for_normal = 15;
+
+	private $edge_page_count = 3;
+
+	private $middle_page_count = 2;
 
 	/**
 	 * @param string $session_prefix
@@ -37,6 +45,9 @@ class Pager extends \Nette\Application\UI\Control {
 	public function setCounts($total_count, $limit) {
 		$this->paginator->setItemCount($total_count);
 		$this->paginator->setItemsPerPage($limit);
+		if($this->private_session->page > $this->paginator->getPageCount()) {
+			$this->private_session->page = $this->paginator->getPageCount();
+		}
 		$this->paginator->setPage(isset($this->private_session->page) ? $this->private_session->page : 1);
 	}
 
@@ -45,8 +56,15 @@ class Pager extends \Nette\Application\UI\Control {
 	 */
 	public function render() {
 		$this->template->paginator = $this->paginator;
+		$this->template->max_for_normal = $this->max_for_normal;
+		$this->template->edge_page_count = $this->edge_page_count;
+		$this->template->middle_page_count = $this->middle_page_count;
 
-		$this->template->setFile(dirname(__FILE__) . '/templates/Pager.latte');
+		if($this->paginator->getPageCount() > $this->max_for_normal) {
+			$this->template->setFile(dirname(__FILE__) . '/templates/PagerAdvanced.latte');
+		} else {
+			$this->template->setFile(dirname(__FILE__) . '/templates/Pager.latte');
+		}
 		$this->template->render();
 	}
 
@@ -63,6 +81,30 @@ class Pager extends \Nette\Application\UI\Control {
 	 */
 	public function getCurrentPageIndex() {
 		return $this->paginator->getPage() - 1;
+	}
+
+	protected function createComponentPageForm() {
+		$form = new Form;
+
+		$form->getElementPrototype()
+			->action($this->link('toPage'));
+
+		$form->addText('number');
+
+		$form->addSubmit('to_page', 'Go!');
+
+		return $form;
+	}
+
+	public function handleToPage() {
+		$values = $this->parent->getHttpRequest()->getPost();
+		$number = (int) trim($values['number']);
+		if($number <= 0) {
+			$number = 1;
+		}
+		$this->private_session->page = $number;
+		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
 }

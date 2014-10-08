@@ -1,5 +1,5 @@
 {snippet dataGrid}
-	<div class="data-grid">
+	<div class="data-grid{if $control instanceof \DataGrid\GridTree} data-grid-tree{/if}">
 		{snippet $control->getGridName()}
 			<div class="data-grid"{if $control->isEditable()} data-editable-link="{$control->getEditableLink()}"{/if}>
 				{if empty($filter_form) === FALSE}
@@ -16,50 +16,10 @@
 					<script>{!=file_get_contents($grid_dir . '/src/grid_editable.js')}</script>
 					<script>{!=file_get_contents($grid_dir . '/src/jquery.ui.timepicker.js')}</script>
 				{/if}
-				<table class="table table-striped table-condensed">
-					<thead>
-						{? $control->beforeCreate()}
-						<tr n:inner-foreach="$control->getColumns() as $column">
-							{!$column->createHeader()}
-						</tr>
-					</thead>
-					{if $control->isSortable()}<tbody class="sortable" data-sort-href="{!$control->getSortableLink()}">{/if}
-					{if !$control->isSortable()}<tbody>{/if}
-						{? $control->beforeRender()}
-						{foreach $control->getDataSource()->fetchAll() as $data}
-							{var $column_arr = $control->getColumns()}
-							{if $control->hasLangChecking($data)}
-								{var $lang_checking = $control->getLangChecking()}
-								<tr>
-									{var $count_of_used_columns = 0}
-									{foreach $column_arr as $column}
-										{continueIf !$column instanceof \DataGrid\ActionColumn && !$column instanceof \DataGrid\SortableColumn && !$column instanceof \DataGrid\SelectionColumn}
-										{!$column->createBody($data)}
-										{? $count_of_used_columns++}
-									{/foreach}
-									<td colspan="{count($column_arr)-1-$count_of_used_columns}">
-										<span class="label pop label-info" data-toggle="popover" data-content="{$lang_checking['description']}" title="{$lang_checking['title']}">
-											{$lang_checking['title']} - {$data[$lang_checking['parent_column']]}
-										</span>
-									</td>
-									<td class="right-buttons">
-										<div class="thumbnailx">
-											{!=new \DataGrid\Utils\Button($presenter, $lang_checking['button_option'], $data)}
-										</div>
-									</td>
-							{else}
-								<tr{if $control->hasLineId($data)} id="{$control->getLineId($data)}"{/if}>
-								
-								{foreach $column_arr as $column}
-									{!$column->createBody($data)}
-								{/foreach}
-							{/if}
-						</tr>{/foreach}
-					</tbody>
-				</table>
+				{!$content->create()}
 			</div>
 			<style>{!=file_get_contents($grid_dir . '/src/grid.css')}</style>
-			<script n:if="$control->isSortable()">{!=(file_get_contents($grid_dir . '/src/grid_sortable.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))}</script>
+			<script n:if="$control->isSortable()">{!=(file_get_contents($grid_dir . '/src/'.($control instanceof \DataGrid\GridTree ? 'grid_tree_sortable' : 'grid_sortable').'.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))}</script>
 			<div class="datagrid-bottom">
 				<div n:if="empty($selections) === FALSE" class="btn-group" id="checkbox-button" style="cursor: not-allowed;">
 					<button class="btn btn-default dropdown-toggle disabled" type="button" data-toggle="dropdown">
@@ -73,7 +33,7 @@
 						{if is_array($link)}
 							{var $href_link = $link['href']}
 						{/if}
-						{var $href_link = \DataGrid\Utils\Link::checkLinkPermission($href_link)}
+						{var $href_link = \DataGrid\Components\Link::checkLinkPermission($href_link)}
 						{continueIf $href_link === FALSE}
 						{if $href_link !== FALSE}
 							{var $one_active = TRUE}
@@ -95,6 +55,7 @@
 					{/if}
 				</div>
 				{if $control->isPagerEnabled()}
+					<script>{!=file_get_contents($grid_dir . '/src/grid_pager.js')}</script>
 					{control pager}
 				{/if}
 				{if $control->isExportEnabled()}

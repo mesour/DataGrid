@@ -2,6 +2,7 @@
 
 namespace DataGrid;
 
+use DataGrid\Render\Table\Renderer;
 use Nette\Application\UI\Form,
     \Nette\Forms\Controls\SubmitButton;
 
@@ -220,6 +221,10 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->http_request = $http_request;
 	}
 
+	public function getHttpRequest() {
+		return $this->http_request;
+	}
+
 	/**
 	 * Get presenter name with datagrid name
 	 *
@@ -253,6 +258,9 @@ class Grid extends \Nette\Application\UI\Control {
 	public function enablePager() {
 		if ($this->pager_enabled) {
 			return;
+		}
+		if ($this->http_request === FALSE) {
+			throw new Grid_Exception('DataGrid pager require HTTP request. Use injectHttpRequest.');
 		}
 		$this->pager_enabled = TRUE;
 		new Pager($this->getGridName(), $this, 'pager');
@@ -336,10 +344,10 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function editable(callable $callback) {
 		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid editable required line ID. Use setLineId.');
+			throw new Grid_Exception('DataGrid editable require line ID. Use setLineId.');
 		}
 		if ($this->http_request === FALSE) {
-			throw new Grid_Exception('DataGrid editable required HTTP request. Use injectHttpRequest.');
+			throw new Grid_Exception('DataGrid editable require HTTP request. Use injectHttpRequest.');
 		}
 		$this->editable_callback = $callback;
 	}
@@ -474,10 +482,10 @@ class Grid extends \Nette\Application\UI\Control {
 	 */
 	public function sortable(callable $callback) {
 		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid sortable required line ID. Use setLineId.');
+			throw new Grid_Exception('DataGrid sortable require line ID. Use setLineId.');
 		}
 		if ($this->http_request === FALSE) {
-			throw new Grid_Exception('DataGrid editable required HTTP request. Use injectHttpRequest.');
+			throw new Grid_Exception('DataGrid editable require HTTP request. Use injectHttpRequest.');
 		}
 		$this->sortable_callback = $callback;
 	}
@@ -773,8 +781,95 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->template->selections = $this->selections;
 		$this->template->grid_dir = __DIR__;
 
-		$this->template->setFile(dirname(__FILE__) . '/templates/DataGrid.latte');
+		$factory = new Render\Table\RendererFactory($this);
+		$table = $this->createBody($factory);
+		$this->template->content = $table;
+
+		$this->template->setFile(dirname(__FILE__) . '/templates/Grid.latte');
 		$this->template->render();
+	}
+
+	protected function createBody(Render\IRendererFactory $factory) {
+		$this->beforeCreate();
+		$table = $factory->createTable();
+		if($factory instanceof Render\Tree\RendererFactory) {
+			$table_class = 'tree-grid';
+		} else {
+			$table_class = 'table table-striped table-condensed';
+		}
+		$table->setAttributes(array(
+		    'class' => $table_class
+		));
+		$header = $factory->createHeader();
+		$header->setAttributes(array('class' => 'grid-header'));
+		foreach($this->getColumns() as $column) {
+			$header->addCell($factory->createHeaderCell($column));
+		}
+		$table->setHeader($header);
+
+		$this->beforeRender();
+		if($factory instanceof Render\Tree\RendererFactory) {
+			$data = $this->data_source->fetchAssoc();
+			$body = $factory->createBody();
+			$body_attributes = array(
+			    'class' => 'grid-ul'
+			);
+			if($this->isSortable()) {
+				$body_attributes['class'] = 'grid-ul sortable';
+				$body_attributes['data-sort-href'] = $this->getSortableLink();
+			}
+			$body->setAttributes($body_attributes);
+			foreach($data[0] as $rowData) {
+				$this->addTreeRow($factory, $body, $rowData, $data);
+			}
+			$table->setBody($body);
+		} else {
+			$body = $factory->createBody();
+			if($this->isSortable()) {
+				$body->setAttributes(array(
+				    'class' => 'sortable',
+				    'data-sort-href' => $this->getSortableLink()
+				));
+			}
+			foreach($this->data_source->fetchAll() as $rowData) {
+				$this->addRow($factory, $body, $rowData);
+			}
+			$table->setBody($body);
+		}
+		return $table;
+	}
+
+	private function addRow(&$factory, &$body, $rowData) {
+		$row = $factory->createRow($rowData, $this->getColumns());
+		if($this->hasLineId()) {
+			$row->setAttributes(array(
+			    'id' => $this->getLineId($rowData)
+			));
+		}
+		foreach($this->getColumns() as $column) {
+			$row->addCell($factory->createCell($rowData, $column));
+		}
+		$body->addRow($row);
+		return $row;
+	}
+
+	private function rowsWalkRecursive(&$factory, &$row, $rowId, $groupData) {
+		$sub_body = $factory->createBody();
+		$sub_body->setAttributes(array(
+		    'class' => 'grid-ul'
+		));
+		foreach($groupData[$rowId] as $rowData) {
+			$this->addTreeRow($factory, $sub_body, $rowData, $groupData);
+		}
+		$row->setBody($sub_body);
+	}
+
+	private function addTreeRow(&$factory, &$body, $rowData, $groupData) {
+		$row = $this->addRow($factory, $body, $rowData);
+		$sub_id = $rowData[$this->data_source->getPrimaryKey()];
+		if(isset($groupData[$sub_id])) {
+			$this->rowsWalkRecursive($factory, $row, $sub_id, $groupData);
+		}
 	}
 
 	/**
@@ -805,6 +900,7 @@ class Grid extends \Nette\Application\UI\Control {
 		} else {
 			unset($this->session_section->ordering[$column_id]);
 		}
+
 		$this->redrawControl();
 		$this->presenter->redrawControl();
 	}

@@ -10,8 +10,18 @@ namespace DataGrid\Column;
  */
 interface IColumn {
 
-	public function createHeader();
+	public function getId();
 
-	public function createBody($data);
+	public function getText();
+
+	public function isEditable();
+
+	public function getHeaderAttributes();
+
+	public function getHeaderContent();
+
+	public function getBodyAttributes($data);
+
+	public function getBodyContent($data);
 
 } 

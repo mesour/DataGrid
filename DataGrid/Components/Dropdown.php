@@ -1,18 +1,19 @@
 <?php
 
-namespace DataGrid\Utils;
+namespace DataGrid\Components;
 
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
-	DataGrid\Column;
+	DataGrid\Column,
+    DataGrid\Setting;
 
 /**
- * Description of \DataGrid\Utils\Dropdown
+ * Description of \DataGrid\Components\Dropdown
  *
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-class Dropdown extends Option {
+class Dropdown extends Setting {
 
 	/**
 	 * Possible option key
@@ -70,12 +71,12 @@ class Dropdown extends Option {
 		return $this;
 	}
 
-	public function setHeader($name) {
+	public function addHeader($name) {
 		$this->option[self::LINKS][] = array('dropdown-header', $name);
 		return $this;
 	}
 
-	public function setLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
 		$this->option[self::LINKS][] = new Link(array(
 		    Link::HREF => $href,
 		    Link::PARAMS => $parameters,
@@ -85,7 +86,7 @@ class Dropdown extends Option {
 		return $this;
 	}
 
-	public function setSeparator() {
+	public function addSeparator() {
 		$this->option[self::LINKS][] = 'divider';
 		return $this;
 	}

@@ -2,8 +2,7 @@
 
 namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+use \DataGrid\Grid_Exception;
 
 /**
  * Description of \DataGrid\Column\Date
@@ -42,68 +41,50 @@ class Date extends BaseOrdering {
 		);
 	}
 
-	/**
-	 * Create HTML header
-	 *
-	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	public function createHeader() {
-		parent::createHeader();
-		$th = Html::el('th');
+	public function getHeaderAttributes() {
+		$this->fixOption();
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DateColumn::TEXT is required.');
 		}
 		if (array_key_exists(self::FORMAT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DateColumn::FORMAT is required.');
 		}
-		$this->addHeaderOrdering($th);
-		return $th;
+		return array();
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param mixed $data
-	 * @param string $container
-	 * @return Html|void
-	 * @throws Grid_Exception
-	 */
-	public function createBody($data, $container = 'td') {
-		parent::createBody($data);
+	public function getHeaderContent() {
+		return parent::getHeaderContent();
+	}
 
-		$span = Html::el($container);
-		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
+	public function getBodyAttributes($data) {
+		if (isset($data[$this->option[self::ID]]) === FALSE && is_null($data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			if(!empty($this->option[self::TIME_FORMAT])) {
+			if (!empty($this->option[self::TIME_FORMAT])) {
 				$date_format = $this->formatToJqueryUiFormat(trim(str_replace($this->option[self::TIME_FORMAT], '', $this->option[self::FORMAT])));
 				$time_format = $this->formatToJqueryUiFormat($this->option[self::TIME_FORMAT]);
 			} else {
 				$date_format = $this->formatToJqueryUiFormat($this->option[self::FORMAT]);
 				$time_format = '';
 			}
-			$span->addAttributes(array(
+			return array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'date',
 			    'data-date-format' => $date_format,
 			    'data-time-format' => $time_format
-			));
+			);
 		}
-
-		$span->setText($this->getParsedValue($data));
-		return $span;
+		return array();
 	}
 
-	public function getParsedValue($data) {
-		parent::createBody($data);
-		if (is_numeric($this->data[$this->option[self::ID]])) {
+	public function getBodyContent($data) {
+		if (is_numeric($data[$this->option[self::ID]])) {
 			$date = new \DateTime();
-			$date->setTimestamp($this->data[$this->option[self::ID]]);
+			$date->setTimestamp($data[$this->option[self::ID]]);
 		} else {
-			$date = new \DateTime($this->data[$this->option[self::ID]]);
+			$date = new \DateTime($data[$this->option[self::ID]]);
 		}
 		return $date->format($this->option[self::FORMAT]);
 	}

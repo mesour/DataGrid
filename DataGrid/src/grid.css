@@ -80,10 +80,50 @@ table.table td.with-checkbox{
 	background: #747474 !important;
 	border-radius: 0px;
 }
+.data-grid-tree .grid-header{
+    margin-bottom: 10px;
+}
+.data-grid-tree span.act{
+    display: none;
+}
+.data-grid-tree span.act.act-select{
+    display: inline-block;
+    margin-right: 10px;
+}
+.data-grid-tree span.act.act-select span.separator{
+    display: none;
+}
+.data-grid .pagination-outer{
+    position: relative;
+}
+.data-grid .pagination{
+    display: inline-block;
+}
+.data-grid .pager-form{
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 95px;
+}
+.data-grid .pager-form .number{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.data-grid-tree span.separator{
+    padding: 0 5px;
+}
 .data-grid-tree ul.grid-ul{
 	list-style-type: none;
 	padding-left: 20px;
 	padding-right: 20px;
+}
+.data-grid-tree .tree-grid > ul.grid-ul{
+    padding-left: 0;
+}
+.data-grid-tree .tree-grid ul li > div > span{
+    display: inline-block;
+    margin: 0 2px;
 }
 .data-grid-tree ul.grid-ul ul{
 	list-style-type: none;

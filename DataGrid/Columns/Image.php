@@ -18,8 +18,10 @@ class Image extends Base {
 	 */
 	const ID = 'id',
 	    TEXT = 'text',
-	    MAX_WIDTH = 'ordering',
-	    MAX_HEIGHT = 'function';
+	    MAX_WIDTH = 'max_width',
+	    MAX_HEIGHT = 'max_height',
+	    CALLBACK = 'function',
+	    CALLBACK_ARGS = 'func_args';
 
 	public function setId($id) {
 		$this->option[self::ID] = $id;
@@ -41,50 +43,61 @@ class Image extends Base {
 		return $this;
 	}
 
-	/**
-	 * Create HTML header
-	 * 
-	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	public function createHeader() {
-		parent::createHeader();
-		$th = Html::el('th');
+	public function setCallback(callable $callback) {
+		$this->option[self::CALLBACK] = $callback;
+		return $this;
+	}
+
+	public function setCallbackArguments(array $arguments) {
+		$this->option[self::CALLBACK_ARGS] = $arguments;
+		return $this;
+	}
+
+	public function getHeaderAttributes() {
+		$this->fixOption();
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\ImageColumn::TEXT is required.');
 		}
-		$th->setText($this->option[self::TEXT]);
-		return $th;
+		return array();
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param mixed $data
-	 * @param string $container
-	 * @return Html|void
-	 * @throws Grid_Exception
-	 */
-	public function createBody($data, $container = 'td') {
-		parent::createBody($data);
-
-		$span = Html::el($container);
-		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
-			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
-		}
-
-		$img = Html::el('img', array('src' => $this->data[$this->option[self::ID]]));
-		if(isset($this->option[self::MAX_WIDTH]) === TRUE) {
-			$img->style('max-width:'.self::fixPixels($this->option[self::MAX_WIDTH]), TRUE);
-		}
-		if(isset($this->option[self::MAX_HEIGHT]) === TRUE) {
-			$img->style('max-height:'.self::fixPixels($this->option[self::MAX_HEIGHT]), TRUE);
-		}
-		$span->add($img);
-		return $span;
+	public function getHeaderContent() {
+		return $this->option[self::TEXT];
 	}
 
-	static private function fixPixels($value) {
+	public function getBodyAttributes($data) {
+		return array();
+	}
+
+	public function getBodyContent($data) {
+		if (array_key_exists(self::CALLBACK, $this->option) === FALSE) {
+			if (isset($data[$this->option[self::ID]]) === FALSE && is_null($data[$this->option[self::ID]]) === FALSE) {
+				throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
+			}
+			$src = $data[$this->option[self::ID]];
+		} else {
+			if (is_callable($this->option[self::CALLBACK])) {
+				$args = array($data);
+				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
+					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
+				}
+				$src = call_user_func_array($this->option[self::CALLBACK], $args);
+			} else {
+				throw new Grid_Exception('Callback in column setting is not callable.');
+			}
+		}
+
+		$img = Html::el('img', array('src' => $src));
+		if (isset($this->option[self::MAX_WIDTH]) === TRUE) {
+			$img->style('max-width:' . $this->fixPixels($this->option[self::MAX_WIDTH]), TRUE);
+		}
+		if (isset($this->option[self::MAX_HEIGHT]) === TRUE) {
+			$img->style('max-height:' . $this->fixPixels($this->option[self::MAX_HEIGHT]), TRUE);
+		}
+		return $img;
+	}
+
+	private function fixPixels($value) {
 		return is_numeric($value) ? ($value . 'px') : $value;
 	}
 

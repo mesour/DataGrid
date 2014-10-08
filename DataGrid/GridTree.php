@@ -16,10 +16,13 @@ class GridTree extends Grid {
 	public function render() {
 		$this->template->filter_form = $this->filter_form;
 		$this->template->selections = $this->selections;
-		$this->template->sortable = $this->sortable;
 		$this->template->grid_dir = __DIR__;
 
-		$this->template->setFile( dirname( __FILE__ ) . '/templates/DataGridTree.latte' );
+		$factory = new Render\Tree\RendererFactory($this);
+		$table = $this->createBody($factory);
+		$this->template->content = $table;
+
+		$this->template->setFile(dirname(__FILE__) . '/templates/Grid.latte');
                 $this->template->render();
 	}
 	

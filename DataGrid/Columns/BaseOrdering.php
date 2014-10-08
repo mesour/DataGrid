@@ -34,8 +34,8 @@ abstract class BaseOrdering extends Base {
 		return $this;
 	}
 
-	protected function addHeaderOrdering(& $th) {
-		if(!isset($this->option[self::ORDERING])) {
+	public function getHeaderContent() {
+		if (!isset($this->option[self::ORDERING])) {
 			$this->option[self::ORDERING] = TRUE;
 		}
 		if (isset($this->option[self::ORDERING]) && $this->option[self::ORDERING]) {
@@ -45,9 +45,9 @@ abstract class BaseOrdering extends Base {
 			$link->add(Html::el('span', array('class' => 'glyphicon no-sort'))->setHtml('&nbsp;'));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet')));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet-alt')));
-			$th->add($link);
+			return $link;
 		} else {
-			$th->setText($this->option[self::TEXT]);
+			return $this->option[self::TEXT];
 		}
 	}
 

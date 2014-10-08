@@ -1,7 +1,6 @@
 <?php
 
-namespace DataGrid\Utils;
-use DataGrid\Grid_Exception;
+namespace DataGrid;
 
 /**
  * Description of \DataGrid\Utils\Option
@@ -9,7 +8,7 @@ use DataGrid\Grid_Exception;
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-abstract class Option {
+abstract class Setting {
 
 	/**
 	 * Option for this column

@@ -3,8 +3,8 @@
 namespace DataGrid\Column;
 
 use \Nette\ComponentModel\IComponent,
-	DataGrid\Grid_Exception,
-    DataGrid\Utils\Option;
+    DataGrid\Grid_Exception,
+    DataGrid\Setting;
 
 /**
  * Description of \DataGrid\Column\Base
@@ -12,7 +12,7 @@ use \Nette\ComponentModel\IComponent,
  * @author mesour <matous.nemec@mesour.com>
  * @package DataGrid
  */
-abstract class Base extends Option implements IColumn {
+abstract class Base extends Setting implements IColumn {
 
 	/**
 	 * Inner defaults
@@ -28,13 +28,6 @@ abstract class Base extends Option implements IColumn {
 	    'active' => 1,
 	    'unactive' => 0
 	);
-
-	/**
-	 * Data for current row
-	 *
-	 * @var mixed
-	 */
-	protected $data = array();
 
 	/**
 	 *
@@ -65,15 +58,13 @@ abstract class Base extends Option implements IColumn {
 		return isset($this->option['editable']) ? $this->option['editable'] : FALSE;
 	}
 
-	public function createHeader() {
+	public function getHeaderAttributes() {
 		$this->fixOption();
+		return array();
 	}
 
-	public function createBody($data) {
-		if (empty($data)) {
-			//throw new Grid_Exception('Empty data');
-		}
-		$this->data = $data;
+	public function getBodyAttributes($data) {
+		return array();
 	}
 
 	/**
@@ -81,7 +72,7 @@ abstract class Base extends Option implements IColumn {
 	 *
 	 * @throws Grid_Exception
 	 */
-	private function fixOption() {
+	protected function fixOption() {
 		$isnt_special = (!$this instanceof Button && !$this instanceof Sortable && !$this instanceof Dropdown);
 		if ($isnt_special && array_key_exists('id', $this->option) === FALSE) {
 			throw new Grid_Exception('Column ID can not be empty.');

@@ -2,8 +2,7 @@
 
 namespace DataGrid\Column;
 
-use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+use \DataGrid\Grid_Exception;
 
 /**
  * Description of \DataGrid\Column\Number
@@ -50,53 +49,35 @@ class Number extends BaseOrdering {
 		);
 	}
 
-	/**
-	 * Create HTML header
-	 * 
-	 * @return \Nette\Utils\Html
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	public function createHeader() {
-		parent::createHeader();
-		$th = Html::el('th');
+	public function getHeaderAttributes() {
+		$this->fixOption();
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\NumberColumn::TEXT is required.');
 		}
-		$this->addHeaderOrdering($th);
-		return $th;
+		return array();
 	}
 
-	/**
-	 * Create HTML body
-	 *
-	 * @param mixed $data
-	 * @param string $container
-	 * @return Html|void
-	 * @throws Grid_Exception
-	 */
-	public function createBody($data, $container = 'td') {
-		parent::createBody($data);
+	public function getHeaderContent() {
+		return parent::getHeaderContent();
+	}
 
-		$span = Html::el($container);
-		if (isset($this->data[$this->option[self::ID]]) === FALSE && is_null($this->data[$this->option[self::ID]]) === FALSE) {
+	public function getBodyAttributes($data) {
+		if (isset($data[$this->option[self::ID]]) === FALSE && is_null($data[$this->option[self::ID]]) === FALSE) {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
 		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			$span->addAttributes(array(
+			return array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',
 			    'data-separator' => $this->option[self::THOUSANDS_SEP],
-			));
+			);
 		}
-
-		$span->setText($this->getParsedValue($data));
-		return $span;
+		return array();
 	}
 
-	public function getParsedValue($data) {
-		parent::createBody($data);
-		return number_format($this->data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]);
+	public function getBodyContent($data) {
+		return number_format($data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]);
 	}
 
 }
