@@ -255,7 +255,7 @@ class Grid extends \Nette\Application\UI\Control {
 	/**
 	 * Pager will be show
 	 */
-	public function enablePager() {
+	public function enablePager($max_for_normal = 15, $edge_page_count = 3, $middle_page_count = 2) {
 		if ($this->pager_enabled) {
 			return;
 		}
@@ -264,6 +264,9 @@ class Grid extends \Nette\Application\UI\Control {
 		}
 		$this->pager_enabled = TRUE;
 		new Pager($this->getGridName(), $this, 'pager');
+		$this['pager']->setMaxForNormal($max_for_normal)
+			->setEdgePageCount($edge_page_count)
+			->setMiddlePageCount($middle_page_count);
 	}
 
 	public function setCacheDir($dir) {

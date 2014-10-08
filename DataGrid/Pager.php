@@ -38,6 +38,21 @@ class Pager extends \Nette\Application\UI\Control {
 		$this->paginator = new \Nette\Utils\Paginator;
 	}
 
+	public function setMaxForNormal($max_for_normal) {
+		$this->max_for_normal = $max_for_normal;
+		return $this;
+	}
+
+	public function setEdgePageCount($edge_page_count) {
+		$this->edge_page_count = $edge_page_count;
+		return $this;
+	}
+
+	public function setMiddlePageCount($middle_page_count) {
+		$this->middle_page_count = $middle_page_count;
+		return $this;
+	}
+
 	/**
 	 * @param numeric $total_count
 	 * @param numeric $limit
@@ -89,7 +104,8 @@ class Pager extends \Nette\Application\UI\Control {
 		$form->getElementPrototype()
 			->action($this->link('toPage'));
 
-		$form->addText('number');
+		$form->addText('number')
+			->setAttribute('placeholder', 'Page');
 
 		$form->addSubmit('to_page', 'Go!');
 
