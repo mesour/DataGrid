@@ -18,7 +18,7 @@ class GridTree extends Grid {
 		$table = $this->createBody($factory);
 		$this->template->content = $table;
 
-		$this->template->setFile(dirname(__FILE__) . '/templates/Grid.latte');
+		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
                 $this->template->render();
 	}
 
