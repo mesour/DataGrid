@@ -3,10 +3,8 @@
 namespace DataGrid\Render;
 
 /**
- * Description of \DataGrid\Render\Header
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class Header {
 

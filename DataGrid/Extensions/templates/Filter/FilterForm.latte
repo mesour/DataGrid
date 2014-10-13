@@ -1,0 +1,18 @@
+{snippet filter}
+<script>mesour.filterValues = {=json_encode($settings)|noescape};</script>
+<script>{=file_get_contents($grid_dir . '/../src/grid_filter_form.js')|noescape}</script>
+
+{if $filter_form instanceof Nette\Application\UI\IRenderable}
+	{$filter_form->validateControl()}
+{/if}
+<div class="panel panel-default">
+	<div class="panel-heading">Filter</div>
+	<div class="panel-body filter custom-filter-form">
+		{if $form_template}
+		{include $form_template form => $filter_form}
+		{else}
+		{$filter_form->render()|noescape}
+		{/if}
+	</div>
+</div>
+{/snippet}

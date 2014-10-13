@@ -8,10 +8,8 @@ use \Nette\Utils\Html,
     DataGrid\Setting;
 
 /**
- * Description of \DataGrid\Components\Dropdown
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Dropdown extends Setting {
 
@@ -110,7 +108,7 @@ class Dropdown extends Setting {
 	 * Create button
 	 *
 	 * @param Array $data
-	 * @return String
+	 * @return Html
 	 * @throws \DataGrid\Grid_Exception
 	 */
 	public function create($data = NULL) {

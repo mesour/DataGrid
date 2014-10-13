@@ -17,7 +17,7 @@
 			toleranceElement: '> td',
 			stop: function() {
 				//console.log($(this).nestedSortable('serialize'));
-				$.post($(this).attr("data-sort-href"), $(this).nestedSortable('serialize'), function(data) {
+				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
 					//console.log(data);
 				});
 			},

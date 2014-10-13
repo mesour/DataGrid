@@ -1,20 +1,19 @@
 <?php
 
-namespace DataGrid;
+namespace DataGrid\Extensions;
 
 use \Nette\Application\UI\Form;
 
 /**
- * Pager datagrid component
+ * @author mesour <matous.nemec@mesour.com>
+ * @package Mesour DataGrid
  */
-class Pager extends \Nette\Application\UI\Control {
+class Pager extends BaseControl {
 
 	/**
-	 * Private session section
-	 *
-	 * @var \Nette\Http\SessionSection
+	 * @persistent
 	 */
-	private $private_session;
+	public $number;
 
 	/**
 	 * @var \Nette\Utils\Paginator
@@ -27,14 +26,8 @@ class Pager extends \Nette\Application\UI\Control {
 
 	private $middle_page_count = 2;
 
-	/**
-	 * @param string $session_prefix
-	 * @param \Nette\ComponentModel\IContainer $parent
-	 * @param null|string $name
-	 */
-	public function __construct($session_prefix, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
+	public function __construct(\Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
-		$this->private_session = $this->presenter->getSession()->getSection($session_prefix . $name);
 		$this->paginator = new \Nette\Utils\Paginator;
 	}
 
@@ -60,10 +53,13 @@ class Pager extends \Nette\Application\UI\Control {
 	public function setCounts($total_count, $limit) {
 		$this->paginator->setItemCount($total_count);
 		$this->paginator->setItemsPerPage($limit);
-		if($this->private_session->page > $this->paginator->getPageCount()) {
-			$this->private_session->page = $this->paginator->getPageCount();
+		if(!isset($this->settings['page'])) {
+			$this->settings['page'] = 1;
 		}
-		$this->paginator->setPage(isset($this->private_session->page) ? $this->private_session->page : 1);
+		if($this->settings['page'] > $this->paginator->getPageCount()) {
+			$this->settings['page'] = $this->paginator->getPageCount();
+		}
+		$this->paginator->setPage(isset($this->settings['page']) ? $this->settings['page'] : 1);
 	}
 
 	/**
@@ -74,17 +70,17 @@ class Pager extends \Nette\Application\UI\Control {
 		$this->template->max_for_normal = $this->max_for_normal;
 		$this->template->edge_page_count = $this->edge_page_count;
 		$this->template->middle_page_count = $this->middle_page_count;
+		$this->template->grid_dir = __DIR__;
 
 		if($this->paginator->getPageCount() > $this->max_for_normal) {
-			$this->template->setFile(dirname(__FILE__) . '/templates/PagerAdvanced.latte');
+			$this->template->setFile(dirname(__FILE__) . '/templates/Pager/PagerAdvanced.latte');
 		} else {
-			$this->template->setFile(dirname(__FILE__) . '/templates/Pager.latte');
+			$this->template->setFile(dirname(__FILE__) . '/templates/Pager/Pager.latte');
 		}
 		$this->template->render();
 	}
 
-	public function handleChangePage($page) {
-		$this->private_session->page = $page;
+	public function handleChangePage() {
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
 	}
@@ -113,12 +109,12 @@ class Pager extends \Nette\Application\UI\Control {
 	}
 
 	public function handleToPage() {
-		$values = $this->parent->getHttpRequest()->getPost();
-		$number = (int) trim($values['number']);
+
+		$number = (int) trim($this->number);
 		if($number <= 0) {
 			$number = 1;
 		}
-		$this->private_session->page = $number;
+		$this->settings['page'] = $number;
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
 	}

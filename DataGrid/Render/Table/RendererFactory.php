@@ -6,10 +6,8 @@ use \DataGrid\Column,
     DataGrid\Render;
 
 /**
- * Description of \DataGrid\Render\Table\RendererFactory
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class RendererFactory implements Render\IRendererFactory{
 

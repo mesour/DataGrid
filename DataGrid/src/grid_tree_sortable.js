@@ -16,7 +16,7 @@
 			tolerance: 'pointer',
 			toleranceElement: '> div',
 			stop: function() {
-				$.post($(this).attr("data-sort-href"), $(this).nestedSortable('serialize'), function(data) {
+				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
 					
 				});
 			},
@@ -38,7 +38,7 @@
 			tolerance: 'pointer',
 			toleranceElement: '> div',
 			stop: function() {
-				$.post($(this).attr("data-sort-href"), $(this).sortable('serialize'), function(data) {
+				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
 					
 				});
 			},

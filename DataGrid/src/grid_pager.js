@@ -5,10 +5,7 @@
             var $this = $(this);
             var number = $this.find('.number').val();
             if(!number) return;
-            $.post($this.attr('action'), {
-                number: number,
-                'to_page': $this.find('.to-page').val()
-            });
+            $.get(mesour.getUrlWithParam($this.attr('action'), 'pager', 'number', number));
         });
 	});
 })(jQuery);

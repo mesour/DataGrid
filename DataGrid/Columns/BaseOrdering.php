@@ -5,10 +5,8 @@ namespace DataGrid\Column;
 use \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\Column\BaseOrdering
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class BaseOrdering extends Base {
 
@@ -39,8 +37,8 @@ abstract class BaseOrdering extends Base {
 			$this->option[self::ORDERING] = TRUE;
 		}
 		if (isset($this->option[self::ORDERING]) && $this->option[self::ORDERING]) {
-			$ordering = $this->getGrid()->getOrdering($this->option[self::ID]);
-			$link = Html::el('a', array('href' => $this->getGrid()->link('ordering!', $this->option[self::ID]), 'class' => 'ajax ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : '')));
+			$ordering = $this->grid['ordering']->getOrdering($this->option[self::ID]);
+			$link = Html::el('a', array('href' => $this->grid['ordering']->link('ordering!', $this->option[self::ID]), 'class' => 'ajax ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : '')));
 			$link->setText($this->option[self::TEXT]);
 			$link->add(Html::el('span', array('class' => 'glyphicon no-sort'))->setHtml('&nbsp;'));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet')));

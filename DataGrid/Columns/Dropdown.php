@@ -6,10 +6,8 @@ use \DataGrid\Grid_Exception,
     \DataGrid\Components;
 
 /**
- * Description of \DataGrid\Column\Dropdown
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Dropdown extends Base {
 

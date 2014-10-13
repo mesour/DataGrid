@@ -5,10 +5,8 @@ namespace DataGrid\Column;
 use \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\Column\Sortable
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Sortable extends Base {
 

@@ -7,10 +7,8 @@ use \DataGrid\Column,
     \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\Render\Table\Header
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Header extends Render\Header{
 

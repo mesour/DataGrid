@@ -3,10 +3,8 @@
 namespace DataGrid;
 
 /**
- * Default data source for data grid
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 interface IDataSource {
 
@@ -50,7 +48,13 @@ interface IDataSource {
 	 * @return mixed
 	 */
 	public function fetchAllForExport();
-	
+
+	public function fetchFullData();
+
+	public function applyCheckers($column_name, array $value, $type);
+
+	public function applyCustom($column_name, array $custom, $type);
+
 	/**
 	 * Get first element from data
 	 * 

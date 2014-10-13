@@ -3,13 +3,10 @@
 namespace DataGrid\Render;
 
 use \DataGrid\Column;
-use DataGrid\Render\Tree\Renderer;
 
 /**
- * Description of \DataGrid\Render\IRendererFactory
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 interface IRendererFactory{
 

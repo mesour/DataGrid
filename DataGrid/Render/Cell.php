@@ -5,10 +5,8 @@ namespace DataGrid\Render;
 use \DataGrid\Column;
 
 /**
- * Description of \DataGrid\Render\Cell
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class Cell{
 

@@ -3,10 +3,8 @@
 namespace DataGrid;
 
 /**
- * Nette database data source for data grid
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class NetteDbDataSource implements IDataSource {
 	
@@ -15,18 +13,19 @@ class NetteDbDataSource implements IDataSource {
 	private $primary_key = 'id';
 
 	/**
-	 * Contains dibi data source instance
-	 *
 	 * @var \Nette\Database\Table\Selection
 	 */
-	private $nette_table = array();
+	private $nette_table;
 
 	/**
-	 * Contains dibi data source instance
-	 *
 	 * @var \Nette\Database\Table\Selection
 	 */
-	private $nette_original_table = array();
+	private $nette_original_table;
+
+	/**
+	 * @var \Nette\Database\Table\Selection
+	 */
+	private $nette_full_table;
 
 	private $total_count = 0;
 
@@ -37,6 +36,7 @@ class NetteDbDataSource implements IDataSource {
 	 */
 	public function __construct(\Nette\Database\Table\Selection $nette_table) {
 		$this->nette_original_table = $nette_table;
+		$this->nette_full_table = clone $nette_table;
 		$this->nette_table = clone $nette_table;
 		$this->total_count = $this->nette_original_table->count();
 	}
@@ -99,7 +99,104 @@ class NetteDbDataSource implements IDataSource {
 		}
 		return $output;
 	}
-	
+
+	private function customFilter($column_name, $how, $value, $type) {
+		$output = array();
+		$column_name = $type === 'date' ? ('DATE(' . $column_name . ')') : $column_name;
+		switch($how) {
+			case 'equal_to';
+				$output[] = $column_name . ' = ?';
+				$output[] = $value;
+				break;
+			case 'not_equal_to';
+				$output[] = $column_name . ' != ?';
+				$output[] = $value;
+				break;
+			case 'bigger';
+				$output[] = $column_name . ' > ?';
+				$output[] = $value;
+				break;
+			case 'not_bigger';
+				$output[] = $column_name . ' <= ?';
+				$output[] = $value;
+				break;
+			case 'smaller';
+				$output[] = $column_name . ' < ?';
+				$output[] = $value;
+				break;
+			case 'not_smaller';
+				$output[] = $column_name . ' >= ?';
+				$output[] = $value;
+				break;
+			case 'start_with';
+				$output[] = $column_name . ' LIKE ?';
+				$output[] = $value . '%';
+				break;
+			case 'not_start_with';
+				$output[] = $column_name . ' NOT LIKE ?';
+				$output[] = $value . '%';
+				break;
+			case 'end_with';
+				$output[] = $column_name . ' LIKE ?';
+				$output[] = '%' . $value;
+				break;
+			case 'not_end_with';
+				$output[] = $column_name . ' NOT LIKE ?';
+				$output[] = '%' . $value;
+				break;
+			case 'equal';
+				$output[] = $column_name . ' LIKE ?';
+				$output[] = '%' . $value . '%';
+				break;
+			case 'not_equal';
+				$output[] = $column_name . ' NOT LIKE ?';
+				$output[] = '%' . $value . '%';
+				break;
+			default:
+				throw new Grid_Exception('Unexpected key for custom filtering.');
+		}
+		return $output;
+	}
+
+	public function applyCustom($column_name, array $custom, $type) {
+		$values = array();
+		if(!empty($custom['how1']) && !empty($custom['val1'])) {
+			$values[] = $this->customFilter($column_name, $custom['how1'], $custom['val1'], $type);
+		}
+		if(!empty($custom['how2']) && !empty($custom['val2'])) {
+			$values[] = $this->customFilter($column_name, $custom['how2'], $custom['val2'], $type);
+		}
+		if(count($values) === 2) {
+			if($custom['operator'] === 'and') {
+				$operator = 'AND';
+			} else {
+				$operator = 'OR';
+			}
+			$parameters = array('(' . $values[0][0] . ' ' . $operator . ' ' . $values[1][0] . ')', $values[0][1], $values[1][1]);
+		} else {
+			$parameters = array($values[0][0], $values[0][1]);
+		}
+		call_user_func_array(array($this, 'where'), $parameters);
+	}
+
+	public function applyCheckers($column_name, array $value, $type) {
+		$this->where($type === 'date' ? 'DATE('.$column_name.')' : $column_name, $value);
+	}
+
+	public function fetchFullData($date_format = 'Y-m-d') {
+		$output = array();
+		foreach($this->nette_full_table->fetchAll() as $data) {
+			$current_data = $data->toArray();
+			foreach($current_data as $key => $val) {
+				if($val instanceof \Nette\Utils\DateTime) {
+					$current_data[$key] = $val->format($date_format);
+				}
+			}
+			$output[] = $current_data;
+		}
+		return $output;
+	}
+
 	public function fetchAssoc() {
 		$data = $this->fetchAll();
 		$output = array();

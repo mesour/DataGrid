@@ -5,10 +5,8 @@ namespace DataGrid\Column;
 use \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Column\Number
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Number extends BaseOrdering {
 
@@ -54,7 +52,9 @@ class Number extends BaseOrdering {
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\NumberColumn::TEXT is required.');
 		}
-		return array();
+		return array(
+		    'class' => 'grid-column-' . $this->option[self::ID]
+		);
 	}
 
 	public function getHeaderContent() {
@@ -66,7 +66,7 @@ class Number extends BaseOrdering {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
-		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
+		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
 			return array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',

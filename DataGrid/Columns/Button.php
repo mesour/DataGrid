@@ -7,10 +7,8 @@ use \Nette\Utils\Html,
     \DataGrid\Components;
 
 /**
- * Description of \DataGrid\Column\Button
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Button extends Base {
 

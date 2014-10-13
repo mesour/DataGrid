@@ -7,10 +7,8 @@ use \DataGrid\Column,
     \Nette\Utils\Html;
 
 /**
- * Description of \DataGrid\Render\Tree\Cell
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Cell extends Render\Cell{
 

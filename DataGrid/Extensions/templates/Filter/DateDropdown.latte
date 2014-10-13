@@ -1,0 +1,102 @@
+<div class="dropdown" data-filter="{$column->getId()}" data-type="date">
+	<button class="btn btn-default dropdown-toggle" type="button">
+		<span class="glyphicon glyphicon-ok"></span>
+		{$column->getText()}
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li class="dropdown-submenu">
+			<span>
+				<button type="button" class="btn btn-success btn-xs reset-filter" title="Reset filter"><span class="glyphicon glyphicon-ok"></span><span class="glyphicon glyphicon-remove"></span></button>
+				<button type="button" class="btn btn-primary btn-xs open-modal edit-filter" title="Edit filter"><span class="glyphicon glyphicon-pencil"></span></button>
+				Date filters
+			</span>
+			<ul class="dropdown-menu">
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Rovná se</a></li>
+				<li role="presentation" class="divider"></li>
+				<li class="dropdown-submenu">
+					<a tabindex="-1" href="#">Časové období</a>
+					<ul class="dropdown-menu">
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="last_week_start" data-second-value="last_week_end">Minulý týden</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="this_week_start" data-second-value="this_week_end">Tento týden</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="next_week_start" data-second-value="next_week_end">Příští týden</a></li>
+						<li role="presentation" class="divider"></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="last_month_start" data-second-value="last_month_end">Minulý měsíc</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="this_month_start" data-second-value="this_month_end">Tento měsíc</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="next_month_start" data-second-value="next_month_end">Příští měsíc</a></li>
+						<li role="presentation" class="divider"></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="last_quarter_start" data-second-value="last_quarter_end">Minulé čtvrtletí</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="this_quarter_start" data-second-value="this_quarter_end">Toto čtvrtletí</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="next_quarter_start" data-second-value="next_quarter_end">Příští čtvrtletí</a></li>
+						<li role="presentation" class="divider"></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="last_year_start" data-second-value="last_year_end">Minulý rok</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="this_year_start" data-second-value="this_year_end">Tento rok</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller" data-first-value="next_year_start" data-second-value="next_year_end">Příští rok</a></li>
+					</ul>
+				</li>
+				<li role="presentation" class="divider"></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to" data-first-value="yesterday">Včera</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to" data-first-value="today">Dnes</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to" data-first-value="tommorow">Zítra</a></li>
+				<li role="presentation" class="divider"></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-first-value="this_year_start">Od začátku roku</a></li>
+				<li role="presentation" class="divider"></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller">Před</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger">Po</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller">Mezi</a></li>
+				<li role="presentation" class="divider"></li>
+				{*<li class="dropdown-submenu">
+					<a tabindex="-1" href="#">Všechny data v období</a>
+					<ul class="dropdown-menu">
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Čtvrtletí 1</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Čtvrtletí 2</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Čtvrtletí 3</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Čtvrtletí 4</a></li>
+						<li role="presentation" class="divider"></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Leden</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Únor</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Březen</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Duben</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Květen</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Červen</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Červenec</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Srpen</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Září</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Říjen</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Listopad</a></li>
+						<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Prosinec</a></li>
+					</ul>
+				</li>
+				<li role="presentation" class="divider"></li>*}
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Vlastní filtr</a></li>
+			</ul>
+		</li>
+		<li role="presentation" class="divider"></li>
+		<li role="presentation">
+			<div class="inline-box">
+				<div class="search">
+					<input type="text" class="form-control search-input" placeholder="Search...">
+				</div>
+				<div class="box-inner">
+					<ul>
+						<li class="all-select-li">
+							<input type="checkbox" class="select-all">
+							<label>(Select all)</label>
+						</li>
+						<li class="all-select-searched-li">
+							<input type="checkbox" class="select-all-searched">
+							<label>(Select all searched)</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li role="presentation" class="divider"></li>
+		<li role="presentation" class="with-buttons">
+			<div class="buttons">
+				<button type="button" class="btn btn-primary btn-sm save-filter">Ok</button>
+				<button type="button" class="btn btn-danger btn-sm close-filter">Storno</button>
+			</div>
+		</li>
+	</ul>
+</div>

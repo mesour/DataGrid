@@ -1,0 +1,59 @@
+<div class="dropdown" data-filter="{$column->getId()}">
+	<button class="btn btn-default dropdown-toggle" type="button">
+		<span class="glyphicon glyphicon-ok"></span>
+		{$column->getText()}
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li class="dropdown-submenu">
+			<span>
+				<button type="button" class="btn btn-success btn-xs reset-filter" title="Reset filter"><span class="glyphicon glyphicon-ok"></span><span class="glyphicon glyphicon-remove"></span></button>
+				<button type="button" class="btn btn-primary btn-xs open-modal edit-filter" title="Edit filter"><span class="glyphicon glyphicon-pencil"></span></button>
+				Number filters
+			</span>
+			<ul class="dropdown-menu">
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Rovná se</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal_to">Nerovná se</a></li>
+				<li role="presentation" class="divider"></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger">Větší než</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="equal_to" data-operator="or">Větší než nebo rovno</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller">Menší než</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller" data-type-second="equal_to" data-operator="or">Menší než nebo rovno</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller">Mezi</a></li>
+				<li role="presentation" class="divider"></li>
+				{*<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Prvních 10</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Nad průměrem</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Pod průměrem</a></li>
+				<li role="presentation" class="divider"></li>*}
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Vlastní filtr</a></li>
+			</ul>
+		</li>
+		<li role="presentation" class="divider"></li>
+		<li role="presentation">
+			<div class="inline-box">
+				<div class="search">
+					<input type="text" class="form-control search-input" placeholder="Search...">
+				</div>
+				<div class="box-inner">
+					<ul>
+						<li class="all-select-li">
+							<input type="checkbox" class="select-all">
+							<label>(Select all)</label>
+						</li>
+						<li class="all-select-searched-li">
+							<input type="checkbox" class="select-all-searched">
+							<label>(Select all searched)</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li role="presentation" class="divider"></li>
+		<li role="presentation" class="with-buttons">
+			<div class="buttons">
+				<button type="button" class="btn btn-primary btn-sm save-filter">Ok</button>
+				<button type="button" class="btn btn-danger btn-sm close-filter">Storno</button>
+			</div>
+		</li>
+	</ul>
+</div>

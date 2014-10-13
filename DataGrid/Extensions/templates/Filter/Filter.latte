@@ -1,0 +1,136 @@
+{snippet filter}
+<style>{=file_get_contents($grid_dir . '/../src/grid_filter.css')|noescape}</style>
+<script>{=file_get_contents($grid_dir . '/../src/grid_filter_object.min.js')|noescape}</script>
+<div class="panel panel-default" data-grid="{$control->parent->getGridName()}">
+	<div class="panel-heading">Filter</div>
+	<div class="panel-body data-grid-filter">
+		<script>
+			mesour.gridValues = !mesour.gridValues ? {} : mesour.gridValues;
+			mesour.gridValues[{$control->parent->getGridName()}] = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
+			mesour.phpFilterDate = {$php_date};
+			mesour.jsFilterDate = {$js_date};
+			mesour.gridTranslates = {
+				months: {
+					1: 'January',
+					2: 'February',
+					3: 'March',
+					4: 'April',
+					5: 'May',
+					6: 'June',
+					7: 'July',
+					8: 'August',
+					9: 'September',
+					10: 'October',
+					11: 'November',
+					12: 'December'
+				}
+			};
+		</script>
+		{foreach $control->parent->getColumns() as $column}
+			{if $column instanceof \DataGrid\Column\Text}
+				{include TextDropdown.latte column => $column}
+			{elseif $column instanceof \DataGrid\Column\Number}
+				{include NumberDropdown.latte column => $column}
+			{elseif $column instanceof \DataGrid\Column\Date && !$control->parent->getDataSource() instanceof \DataGrid\ArrayDataSource}
+				{include DateDropdown.latte column => $column}
+			{/if}
+		{/foreach}
+		<script>
+			var initApply = function(){
+				$('.apply-filter').on('click', function(e){
+					e.preventDefault();
+					var $this = $(this);
+					var filterData = $this.closest('.panel-body').find('[data-filter-values]').val();
+					if(filterData !== '') {
+						$.get(mesour.getUrlWithParam($this.attr("data-href"), 'filter', 'settings', $.parseJSON(filterData)));
+					}
+				});
+			};
+			initApply();
+			$(document).on('ready', function(){
+				initApply();
+			});
+		</script>
+		<button type="button" class="btn btn-success apply-filter" data-href="{link applyDefaultFilter! settings => array()}">Apply filter</button>
+		<div class="grid-filter modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Custom filter</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-inline">
+						<p>Show rows where:</p>
+						<div class="form-group">
+							<label class="sr-only" for="grid-how-1">Email address</label>
+							<select id="grid-how-1" class="form-control">
+								<option></option>
+								<option value="equal_to">Je rovno</option>
+								<option value="not_equal_to">Není rovno</option>
+								<option value="bigger">Je větší než</option>
+								<option value="not_bigger">Není větší než</option>
+								<option value="smaller">Je menší než</option>
+								<option value="not_smaller">Není menší než</option>
+								<option value="start_with">Má na začátku</option>
+								<option value="not_start_with">Nemá na začátku</option>
+								<option value="end_with">Má na konci</option>
+								<option value="not_end_with">Nemá na konci</option>
+								<option value="equal">Obsahuje</option>
+								<option value="not_equal">Neobsahuje</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="grid-value-1">Value</label>
+							<div class="input-group date" id="grid-datepicker1">
+								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-1" placeholder="Value">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+						<br>
+						<div class="form-group grid-operators">
+							<input type="radio" name="operator" id="grid-operator-and" value="and" checked="checked"> <label for="grid-operator-and">and</label>
+							<input type="radio" name="operator" id="grid-operator-or" value="or"> <label for="grid-operator-or">or</label>
+						</div>
+						<br>
+						<div class="form-group">
+							<label class="sr-only" for="grid-how-2">Email address</label>
+							<select id="grid-how-2" class="form-control">
+								<option></option>
+								<option value="equal_to">Je rovno</option>
+								<option value="not_equal_to">Není rovno</option>
+								<option value="bigger">Je větší než</option>
+								<option value="not_bigger">Není větší než</option>
+								<option value="smaller">Je menší než</option>
+								<option value="not_smaller">Není menší než</option>
+								<option value="start_with">Má na začátku</option>
+								<option value="not_start_with">Nemá na začátku</option>
+								<option value="end_with">Má na konci</option>
+								<option value="not_end_with">Nemá na konci</option>
+								<option value="equal">Obsahuje</option>
+								<option value="not_equal">Neobsahuje</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="grid-value-2">Value</label>
+							<div class="input-group date" id="grid-datepicker2">
+								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-2" placeholder="Value">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-sm save-custom-filter">Ok</button>
+					<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Storno</button>
+				</div>
+				<input type="hidden" data-name="">
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+		<input type="hidden" data-filter-values="here" value='{=!empty($settings) ? json_encode($settings) : ''|noescape}'>
+	</div>
+</div>
+{/snippet}

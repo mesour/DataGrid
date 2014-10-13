@@ -5,10 +5,8 @@ namespace DataGrid\Column;
 use \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Column\Text
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Text extends BaseOrdering {
 
@@ -45,7 +43,9 @@ class Text extends BaseOrdering {
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\TextColumn::TEXT is required.');
 		}
-		return array();
+		return array(
+		    'class' => 'grid-column-' . $this->option[self::ID]
+		);
 	}
 
 	public function getHeaderContent() {
@@ -53,7 +53,7 @@ class Text extends BaseOrdering {
 	}
 
 	public function getBodyAttributes($data) {
-		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
+		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
 			$this->checkColumnId($data);
 			return array(
 			    'data-editable' => $this->option[self::ID],

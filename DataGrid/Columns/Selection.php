@@ -6,10 +6,8 @@ use \Nette\Utils\Html,
     \DataGrid\Components\Link;
 
 /**
- * Description of \DataGrid\Column\Selection
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Selection extends Base {
 

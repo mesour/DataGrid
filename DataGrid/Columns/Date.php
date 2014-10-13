@@ -5,10 +5,8 @@ namespace DataGrid\Column;
 use \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Column\Date
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Date extends BaseOrdering {
 
@@ -16,16 +14,10 @@ class Date extends BaseOrdering {
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
-	    TIME_FORMAT = 'time_format',
 	    EDITABLE = 'editable';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
-		return $this;
-	}
-
-	public function setTimeFormat($time_format) {
-		$this->option[self::TIME_FORMAT] = $time_format;
 		return $this;
 	}
 
@@ -36,7 +28,6 @@ class Date extends BaseOrdering {
 
 	protected function setDefaults() {
 		return array(
-		    self::TIME_FORMAT => '',
 		    self::EDITABLE => TRUE
 		);
 	}
@@ -49,7 +40,9 @@ class Date extends BaseOrdering {
 		if (array_key_exists(self::FORMAT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DateColumn::FORMAT is required.');
 		}
-		return array();
+		return array(
+		    'class' => 'grid-column-' . $this->option[self::ID]
+		);
 	}
 
 	public function getHeaderContent() {
@@ -61,19 +54,11 @@ class Date extends BaseOrdering {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
-		if ($this->grid->isEditable() && $this->option[self::EDITABLE]) {
-			if (!empty($this->option[self::TIME_FORMAT])) {
-				$date_format = $this->formatToJqueryUiFormat(trim(str_replace($this->option[self::TIME_FORMAT], '', $this->option[self::FORMAT])));
-				$time_format = $this->formatToJqueryUiFormat($this->option[self::TIME_FORMAT]);
-			} else {
-				$date_format = $this->formatToJqueryUiFormat($this->option[self::FORMAT]);
-				$time_format = '';
-			}
+		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
 			return array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'date',
-			    'data-date-format' => $date_format,
-			    'data-time-format' => $time_format
+			    'data-date-format' => $this->formatToMomentJsFormat($this->option[self::FORMAT])
 			);
 		}
 		return array();
@@ -89,34 +74,34 @@ class Date extends BaseOrdering {
 		return $date->format($this->option[self::FORMAT]);
 	}
 
-	private function formatToJqueryUiFormat($php_format) {
+	static public function formatToMomentJsFormat($php_format) {
 		$symbols = array(
 			// Day
-		    'd' => 'dd',
-		    'D' => 'D',
-		    'j' => 'd',
-		    'l' => 'DD',
-		    'N' => '',
+		    'd' => 'DD',
+		    'D' => 'ddd',
+		    'j' => 'D',
+		    'l' => 'dddd',
+		    'N' => 'E',
 		    'S' => '',
-		    'w' => '',
-		    'z' => 'o',
+		    'w' => 'e',
+		    'z' => 'DDD',
 			// Week
-		    'W' => '',
+		    'W' => 'W',
 			// Month
-		    'F' => 'MM',
-		    'm' => 'mm',
-		    'M' => 'M',
-		    'n' => 'm',
+		    'F' => 'MMMM',
+		    'm' => 'MM',
+		    'M' => 'MMM',
+		    'n' => 'M',
 		    't' => '',
 			// Year
 		    'L' => '',
 		    'o' => '',
-		    'Y' => 'yy',
-		    'y' => 'y',
+		    'Y' => 'YYYY',
+		    'y' => 'YY',
 			// Time
-		    'a' => '',
-		    'A' => '',
-		    'B' => '',
+		    'a' => 'a',
+		    'A' => 'A',
+		    'B' => 'SSS',
 		    'g' => 'h',
 		    'G' => 'H',
 		    'h' => 'hh',
@@ -125,28 +110,28 @@ class Date extends BaseOrdering {
 		    's' => 'ss',
 		    'u' => ''
 		);
-		$jqueryui_format = "";
+		$js_format = "";
 		$escaping = false;
 		for ($i = 0; $i < strlen($php_format); $i++) {
 			$char = $php_format[$i];
 			if ($char === '\\') // PHP date format escaping character
 			{
 				$i++;
-				if ($escaping) $jqueryui_format .= $php_format[$i];
-				else $jqueryui_format .= '\'' . $php_format[$i];
+				if ($escaping) $js_format .= $php_format[$i];
+				else $js_format .= '\'' . $php_format[$i];
 				$escaping = true;
 			} else {
 				if ($escaping) {
-					$jqueryui_format .= "'";
+					$js_format .= "'";
 					$escaping = false;
 				}
 				if (isset($symbols[$char]))
-					$jqueryui_format .= $symbols[$char];
+					$js_format .= $symbols[$char];
 				else
-					$jqueryui_format .= $char;
+					$js_format .= $char;
 			}
 		}
-		return $jqueryui_format;
+		return $js_format;
 	}
 
 }

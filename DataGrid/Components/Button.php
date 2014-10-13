@@ -9,10 +9,8 @@ use \Nette\Utils\Html,
 	DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Components\Button
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Button extends Setting {
 
@@ -127,7 +125,7 @@ class Button extends Setting {
 	 * Create button
 	 *
 	 * @param Array $data
-	 * @return String
+	 * @return Html
 	 * @throws \DataGrid\Grid_Exception
 	 */
 	public function create($data = NULL) {
@@ -180,14 +178,14 @@ class Button extends Setting {
 
 		if((array_key_exists(self::ICON, $this->option) && is_string($this->option[self::ICON])) || array_key_exists(self::ICON_CLASSES, $this->option)) {
 			if(isset($this->option[self::ICON_CLASSES])) {
-				$attrs = array('class' => $this->option[self::ICON_CLASSES]);
+				$attributes = array('class' => $this->option[self::ICON_CLASSES]);
 			} else {
-				$attrs = array('class' => 'glyphicon ' . $this->option[self::ICON]);
+				$attributes = array('class' => 'glyphicon ' . $this->option[self::ICON]);
 				if(isset($this->option[self::ICON_COLOR])) {
-					$attrs['style'] = 'color:' . $this->option[self::ICON_COLOR];
+					$attributes['style'] = 'color:' . $this->option[self::ICON_COLOR];
 				}
 			}
-			$button->add(Html::el('b', $attrs));
+			$button->add(Html::el('b', $attributes));
 		}
 		return $button;
 	}

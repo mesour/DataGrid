@@ -1,18 +1,24 @@
 <?php
+/**
+ * Mesour Nette DataGrid
+ *
+ * Documentation here: http://grid.mesour.com
+ *
+ * @license LGPL-3.0 and BSD-3-Clause
+ * @copyright (c) 2013 - 2014 Matous Nemec <matous.nemec@mesour.com>
+ */
 
 namespace DataGrid;
 
-use DataGrid\Render\Table\Renderer;
 use Nette\Application\UI\Form,
-    \Nette\Forms\Controls\SubmitButton;
+    \Nette\ComponentModel\IContainer,
+    \Nette\Application\UI\Control;
 
 /**
- * Description of \DataGrid\Grid
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
-class Grid extends \Nette\Application\UI\Control {
+class Grid extends Control {
 
 	/**
 	 * DataGrid name
@@ -31,21 +37,14 @@ class Grid extends \Nette\Application\UI\Control {
 	/**
 	 * Total count of result
 	 *
-	 * @var int
+	 * @var int|FALSE
 	 */
-	private $total_count = 0;
-
-	/**
-	 * True if total count was set
-	 *
-	 * @var bool
-	 */
-	private $total_count_set = FALSE;
+	private $total_count = FALSE;
 
 	/**
 	 * Limit for one page
 	 *
-	 * @var ing
+	 * @var int
 	 */
 	private $page_limit = 20;
 
@@ -55,13 +54,6 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @var bool
 	 */
 	private $called_before_render = FALSE;
-
-	/**
-	 * Sortable callback
-	 *
-	 * @var string
-	 */
-	protected $sortable_callback;
 
 	/**
 	 * Key for table row id
@@ -78,73 +70,11 @@ class Grid extends \Nette\Application\UI\Control {
 	private $line_id_name;
 
 	/**
-	 *
-	 * @var bool
-	 */
-	private $check_lang = FALSE;
-
-	/**
-	 * Lang checking option
-	 *
-	 * @var array
-	 */
-	private $lang_checking = array();
-
-	/**
 	 * Data source
 	 *
 	 * @var \DataGrid\IDataSource
 	 */
 	private $data_source;
-
-	/**
-	 * Checkbox selection
-	 *
-	 * @var array
-	 */
-	protected $selections = array();
-
-	/**
-	 * Checkbox selection key
-	 *
-	 * @var string
-	 */
-	private $selection_key;
-
-	/**
-	 * For selections
-	 *
-	 * @var bool
-	 */
-	private $checkbox_main = TRUE;
-
-	/**
-	 * Name of filter form
-	 *
-	 * @var string
-	 */
-	protected $filter_form;
-
-	/**
-	 * Contains filter form
-	 *
-	 * @var \Nette\Forms\Form
-	 */
-	private $filter;
-
-	/**
-	 * Auto filtering
-	 *
-	 * @var bool
-	 */
-	private $auto_filtering = TRUE;
-
-	/**
-	 * Using SQL like operator in filtering
-	 *
-	 * @var bool
-	 */
-	private $auto_filter_like = TRUE;
 
 	/**
 	 * Current count before apply limit
@@ -154,53 +84,18 @@ class Grid extends \Nette\Application\UI\Control {
 	private $count;
 
 	/**
-	 * Private grid session
-	 *
-	 * @var \Nette\Http\SessionSection
-	 */
-	private $session_section;
-
-	/**
-	 * Enbled pager
-	 *
-	 * @var bool
-	 */
-	private $pager_enabled = FALSE;
-
-	/**
-	 * Callback for editable columns
-	 *
-	 * @var String
-	 */
-	private $editable_callback;
-
-	/**
-	 * Http request
-	 *
-	 * @inject \Nette\Http\IRequest
-	 */
-	private $http_request = FALSE;
-
-	/**
-	 * Contains true if export is enabled
-	 *
-	 * @var bool
-	 */
-	private $export = FALSE;
-
-	/**
-	 * Restriction for some columns
+	 * Event which is triggered when sort data
 	 *
 	 * @var array
 	 */
-	private $export_columns = array();
+	public $onSort = array();
 
 	/**
-	 * Cache directory
+	 * Event which is triggered when edit column
 	 *
-	 * @var string
+	 * @var array
 	 */
-	private $cache_dir;
+	public $onEditCell = array();
 
 	/**
 	 * Create data source instance
@@ -209,24 +104,16 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @param \Nette\ComponentModel\IContainer $parent
 	 * @param string $name Name of data source
 	 */
-	public function __construct(\DataGrid\IDataSource $data_source, \Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
+	public function __construct(IDataSource $data_source, IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 
 		$this->data_source = $data_source;
 		$this->name = $name;
-		$this->session_section = $this->presenter->getSession()->getSection('dataGrid_' . $this->getGridName());
-	}
-
-	public function injectHttpRequest(\Nette\Http\IRequest $http_request) {
-		$this->http_request = $http_request;
-	}
-
-	public function getHttpRequest() {
-		return $this->http_request;
+		new Extensions\Ordering($this, 'ordering');
 	}
 
 	/**
-	 * Get presenter name with datagrid name
+	 * Get presenter name with data grid name
 	 *
 	 * @return String
 	 */
@@ -235,12 +122,12 @@ class Grid extends \Nette\Application\UI\Control {
 	}
 
 	/**
-	 * Add data grid column
+	 * Add column to data grid
 	 *
-	 * @param Column\IColumn $column_option
+	 * @param Column\IColumn $column
 	 */
-	public function column(Column\IColumn $column_option) {
-		$this->column_arr[] = $column_option;
+	public function column(Column\IColumn $column) {
+		$this->column_arr[] = $column;
 	}
 
 	/**
@@ -252,91 +139,78 @@ class Grid extends \Nette\Application\UI\Control {
 		return $this->column_arr;
 	}
 
+	public function enableFilter(Form $filer_form = NULL, $template = NULL, $date = 'Y-m-d') {
+		new Extensions\Filter($this, 'filter');
+		if(!is_null($filer_form)) {
+			$this['filter']->setFilterForm($filer_form, $template);
+		}
+		$this['filter']->setDateFormat($date);
+	}
+
 	/**
-	 * Pager will be show
+	 * Get filter values for manual filtering
+	 * If filter form is not set return NULL
+	 *
+	 * @return NULL|Array
 	 */
+	public function getFilterValues() {
+		return $this['filter']->getFilterValues();
+	}
+
 	public function enablePager($max_for_normal = 15, $edge_page_count = 3, $middle_page_count = 2) {
-		if ($this->pager_enabled) {
-			return;
-		}
-		if ($this->http_request === FALSE) {
-			throw new Grid_Exception('DataGrid pager require HTTP request. Use injectHttpRequest.');
-		}
-		$this->pager_enabled = TRUE;
-		new Pager($this->getGridName(), $this, 'pager');
+		new Extensions\Pager($this, 'pager');
 		$this['pager']->setMaxForNormal($max_for_normal)
-			->setEdgePageCount($edge_page_count)
-			->setMiddlePageCount($middle_page_count);
+		    ->setEdgePageCount($edge_page_count)
+		    ->setMiddlePageCount($middle_page_count);
 	}
 
-	public function setCacheDir($dir) {
-		if (!is_dir($dir)) {
-			throw new Grid_Exception('Cache dir is not a directory.');
-		}
-		if (!is_writable($dir)) {
-			throw new Grid_Exception('Cache dir is not a writable.');
-		}
-		$this->cache_dir = $dir;
+	public function enableExport($cache_dir, array $columns = array()) {
+		new Extensions\Export($this, 'export');
+		$this['export']->setCacheDir($cache_dir);
+		$this['export']->setColumns($columns);
 	}
 
-	public function enableExport(array $columns = array()) {
-		if (!$this->cache_dir) {
-			throw new Grid_Exception('Export required cache dir. Use setCacheDir.');
-		}
-		$this->export = TRUE;
-		$this->export_columns = $columns;
+	public function enableRowSelection($primary_key, array $url_array, $show_main_checkbox = TRUE) {
+		new Extensions\Selection($this, 'selection');
+		$this['selection']->setPrimaryKey($primary_key);
+		$this['selection']->setUrlArray($url_array);
+		$this['selection']->setMainCheckboxShowing($show_main_checkbox);
 	}
 
-	public function isExportEnabled() {
-		return $this->export;
+	public function enableSorting() {
+		if (!$this->line_id_key) {
+			throw new Grid_Exception('DataGrid sortable require line ID. Use setLineId.');
+		}
+		new Extensions\Sortable($this, 'sortable');
 	}
 
-	public function getExportLink() {
-		return $this->link('export!');
+	public function enableEditableCells() {
+		if (!$this->line_id_key) {
+			throw new Grid_Exception('DataGrid editable require line ID. Use setLineId.');
+		}
+		new Extensions\Editable($this, 'editable');
 	}
 
-	public function handleExport() {
-		$header_arr = array();
+	/**
+	 * @param $selection_key
+	 * @param array $url_array
+	 * @param bool $checkbox_main
+	 * @deprecated
+	 */
+	public function setCheckboxSelection($selection_key, array $url_array, $checkbox_main = TRUE) {
+		$this->enableRowSelection($selection_key, $url_array, $checkbox_main);
+	}
 
-		if ($this->filter_form && $this->auto_filtering) {
-			$this->applyAutoFiltering();
-		}
-
-		$file_name = $this->cache_dir . "/" . $this->getGridName() . time() . ".csv";
-		$file = fopen($file_name, "w");
-		foreach ($this->column_arr as $column) {
-			if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
-				if (empty($this->export_columns) || in_array($column->getId(), $this->export_columns)) {
-					$header_arr[] = $column->getText();
-				}
-			}
-		}
-		fputcsv($file, $header_arr);
-		foreach ($this->data_source->fetchAllForExport() as $data) {
-			$line_data = array();
-			foreach ($this->column_arr as $column) {
-				if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
-					if (empty($this->export_columns) || in_array($column->getId(), $this->export_columns)) {
-						$line_data[] = $data[$column->getId()];
-					}
-				}
-			}
-			fputcsv($file, $line_data);
-		}
-		fclose($file);
-
-		echo file_get_contents($file_name);
-		unlink($file_name);
-
-		header('Content-Description: File Transfer');
-		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="' . $this->getGridName() . '.csv"');
-		header('Content-Transfer-Encoding: binary');
-		header('Connection: Keep-Alive');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		exit;
+	/**
+	 * Set sortable on data grid table
+	 *
+	 * @param callable $callback
+	 * @throws Grid_Exception
+	 * @deprecated
+	 */
+	public function sortable($callback) {
+		$this->enableSorting();
+		$this->onSort[] = $callback;
 	}
 
 	/**
@@ -344,89 +218,33 @@ class Grid extends \Nette\Application\UI\Control {
 	 *
 	 * @param callable $callback
 	 * @throws Grid_Exception
+	 * @deprecated
 	 */
-	public function editable(callable $callback) {
-		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid editable require line ID. Use setLineId.');
-		}
-		if ($this->http_request === FALSE) {
-			throw new Grid_Exception('DataGrid editable require HTTP request. Use injectHttpRequest.');
-		}
-		$this->editable_callback = $callback;
+	public function editable($callback) {
+		$this->enableEditableCells();
+		$this->onEditCell[] = $callback;
 	}
 
 	/**
-	 * Get editable link
-	 *
-	 * @return string
-	 */
-	public function getEditableLink() {
-		return $this->link('editable!');
-	}
-
-	/**
-	 * Check if DataGrid is editable
-	 *
-	 * @return bool
-	 */
-	public function isEditable() {
-		return (bool)$this->editable_callback;
-	}
-
-	/**
-	 * @throws Grid_Exception
-	 */
-	public function handleEditable() {
-		$data = $this->http_request->getPost('data');
-		if (!is_array($data)) {
-			throw new Grid_Exception('Empty post data from column edit.');
-		}
-		$has_permission = FALSE;
-		foreach ($this->column_arr as $column) {
-			if ($column->getId() === $data['columnName'] && $column->isEditable()) {
-				$has_permission = TRUE;
-			}
-		}
-		if ($has_permission) {
-			call_user_func_array($this->editable_callback, array($data['lineId'], $data['columnName'], $data['newValue'], $data['oldValue']));
-		} else {
-			throw new Grid_Exception('Column with ID ' . $data['columnName'] . ' is not editable or does not exists in DataGrid columns.');
-		}
-	}
-
-	/**
-	 * Returns true if pager is enabled
-	 *
-	 * @return bool
-	 */
-	public function isPagerEnabled() {
-		return $this->pager_enabled;
-	}
-
-	/**
-	 * Set name of filter form
-	 *
-	 * @param String $filter_form Form component name
+	 * @param $filter_form
 	 * @param bool $auto_filtering
-	 * @param bool $like
-	 * @throws Grid_Exception
+	 * @deprecated
 	 */
-	public function setFilterForm($filter_form, $auto_filtering = TRUE, $like = TRUE) {
-		$component = $this->presenter->getComponent($filter_form);
-		if (!$component instanceof Form) {
-			throw new Grid_Exception('Filter form component must be instanceof Nette\Application\UI\Form.');
+	public function setFilterForm($filter_form, $auto_filtering = TRUE) {
+		if($auto_filtering) {
+			$this->enableFilter();
+		} else {
+			$this->enableFilter($this->presenter[$filter_form]);
 		}
-		if (!isset($component['reset']) || !isset($component['filter'])) {
-			throw new Grid_Exception('Filter form component have required submit buttons with names "reset" and "filter".');
-		}
-		if (!$component['reset'] instanceof SubmitButton || !$component['reset'] instanceof SubmitButton) {
-			throw new Grid_Exception('Filter form\'s components "reset" and "filter" must be instanceof \Nette\Forms\Controls\SubmitButton.');
-		}
-		$this->filter_form = $filter_form;
-		$this->auto_filtering = $auto_filtering;
-		$this->auto_filter_like = $like;
+	}
 
-		$this->filter = $this->presenter->getComponent($this->filter_form);
+	/**
+	 * Set page limit
+	 *
+	 * @param integer $limit
+	 */
+	public function setPageLimit($limit) {
+		$this->page_limit = $limit;
 	}
 
 	/**
@@ -444,73 +262,10 @@ class Grid extends \Nette\Application\UI\Control {
 	 * @return Integer
 	 */
 	public function getTotalCount() {
-		if (!$this->total_count_set) {
+		if (!$this->total_count === FALSE) {
 			$this->setTotalCount();
 		}
 		return $this->total_count;
-	}
-
-	/**
-	 * Get current count without limit
-	 *
-	 * @return integer
-	 */
-	public function getCount() {
-		return $this->count;
-	}
-
-	/**
-	 * Set page limit
-	 *
-	 * @param integer $limit
-	 */
-	public function setPageLimit($limit) {
-		$this->page_limit = $limit;
-	}
-
-	/**
-	 * Get current page limit
-	 *
-	 * @return integer
-	 */
-	public function getPageLimit() {
-		return $this->page_limit;
-	}
-
-	/**
-	 * Set sortable on data grid table
-	 *
-	 * @param callable $callback
-	 * @throws Grid_Exception
-	 */
-	public function sortable(callable $callback) {
-		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid sortable require line ID. Use setLineId.');
-		}
-		if ($this->http_request === FALSE) {
-			throw new Grid_Exception('DataGrid editable require HTTP request. Use injectHttpRequest.');
-		}
-		$this->sortable_callback = $callback;
-	}
-
-	/**
-	 * @throws Grid_Exception
-	 */
-	public function handleSortable() {
-		$data = $this->http_request->getPost($this->line_id_name);
-		if (!is_array($data)) {
-			throw new Grid_Exception('Empty post data from column sorting.');
-		}
-		call_user_func($this->sortable_callback, $data);
-	}
-
-	/**
-	 * Check if DataGrid is sortable
-	 *
-	 * @return bool
-	 */
-	public function isSortable() {
-		return (bool)$this->sortable_callback;
 	}
 
 	/**
@@ -524,50 +279,10 @@ class Grid extends \Nette\Application\UI\Control {
 		$this->line_id_name = $line_id_name;
 	}
 
-	/**
-	 * Get filter values for manual filtering
-	 *
-	 * @return Array
-	 */
-	public function getFilterValues() {
-		if ($this->filter['reset']->isSubmittedBy()) {
-			$values = array();
-		} elseif ($this->filter['filter']->isSubmittedBy()) {
-			$values = $this->filter->getValues(TRUE);
-		} else {
-			$values = $this->session_section->filter_values;
-		}
-		if (is_array($values) === FALSE) {
-			$values = array();
-		}
-		$this->session_section->filter_values = $values;
-		return $values;
+	public function getLineIdName() {
+		return $this->line_id_name;
 	}
 
-	/**
-	 * Return filter
-	 *
-	 * @return \Nette\Application\UI\Form
-	 */
-	public function getFilter() {
-		return $this->filter;
-	}
-
-	/**
-	 * Return sortable link
-	 *
-	 * @return String
-	 */
-	public function getSortableLink() {
-		return $this->link('sortable!');
-	}
-
-	/**
-	 * Return current line ID
-	 *
-	 * @param Array $data Row data
-	 * @return FALSE|String
-	 */
 	public function getLineId($data) {
 		if ($this->hasLineId()) {
 			return $this->line_id_name . '-' . $data[$this->line_id_key];
@@ -575,175 +290,33 @@ class Grid extends \Nette\Application\UI\Control {
 		return FALSE;
 	}
 
-	/**
-	 * Check if grid have active lang checking
-	 *
-	 * @param Array $data Row data
-	 * @return Bool
-	 */
-	public function hasLangChecking($data) {
-		return $this->check_lang === TRUE && is_null($data[$this->lang_checking['column']]) === TRUE;
-	}
-
-	/**
-	 * Check if grid have line ID
-	 *
-	 * @return Bool
-	 */
-	public function hasLineId() {
-		return empty($this->line_id_key) === FALSE && empty($this->line_id_name) === FALSE;
-	}
-
-	/**
-	 * Apply filter to data source
-	 */
-	public function applyFilter() {
-		if ($this->filter['reset']->isSubmittedBy()) {
-			foreach ($this->filter->getComponents() as $name => $component) {
-				if ($component instanceof \Nette\Forms\Controls\SubmitButton) {
-					continue;
-				}
-				$this->filter[$name]->setValue(NULL);
-			}
-		} elseif ($this->filter['filter']->isSubmittedBy()) {
-
-		} else {
-			$this->filter->setValues($this->getFilterValues());
-		}
-
-		if ($this->auto_filtering) {
-			$this->applyAutoFiltering();
-		}
-	}
-
-	/**
-	 * Apply auto filtering
-	 *
-	 * @throws \DataGrid\Grid_Exception
-	 */
-	private function applyAutoFiltering() {
-		foreach ($this->getFilterValues() as $key => $value) {
-			if (empty($value))
-				continue;
-			if ($this->data_source instanceof \DataGrid\DibiDataSource) {
-				if ($this->auto_filter_like) {
-					$this->data_source->where('%n', $key, ' LIKE %~like~', $value);
-				} else {
-					$this->data_source->where('%n', $key, ' = %s', $value);
-				}
-			} elseif ($this->data_source instanceof \DataGrid\NetteDbDataSource) {
-				if ($this->auto_filter_like) {
-					$this->data_source->where($key . ' LIKE ?', '%' . $value . '%');
-				} else {
-					$this->data_source->where($key . ' = ?', $value);
-				}
-			} elseif ($this->data_source instanceof \DataGrid\ArrayDataSource) {
-				$this->data_source->where($key, $value);
-			} else {
-				throw new \DataGrid\Grid_Exception('Not supported data source type for filtering.');
-			}
-		}
-	}
-
-	/**
-	 * Must called before render header
-	 */
-	public function beforeRender() {
-		$this->ordering();
-		if ($this->called_before_render === TRUE) {
-			return FALSE;
-		}
-		if (empty($this->filter_form) === FALSE) {
-			$this->applyFilter();
-		}
-		$this->count = $this->data_source->count();
-
-		if ($this->pager_enabled) {
-			$this['pager']->setCounts($this->getCount(), $this->getPageLimit());
-			$this->data_source->applyLimit($this->page_limit, ($this['pager']->getCurrentPageIndex()) * $this->page_limit);
-		}
-		$this->called_before_render = TRUE;
-	}
-
-	private function ordering() {
-		if (isset($this->session_section->ordering) && !empty($this->session_section->ordering)) {
-			$data = array_keys($this->data_source->fetch());
-			foreach ($this->session_section->ordering as $key => $value) {
-				if (!in_array($key, $data)) {
-					unset($this->session_section->ordering[$key]);
-				}
-			}
-
-			foreach ($this->session_section->ordering as $key => $how_to_order) {
-				$this->data_source->orderBy($key, $how_to_order);
-			}
-		}
-	}
-
-	/**
-	 * Set lang checking for unfounded items
-	 *
-	 * @param String $description
-	 * @param Array $button_option
-	 * @param String $title
-	 * @param String $column
-	 * @param String $parent_column
-	 */
-	public function setLangChecking($description, array $button_option, $title = 'Unfounded', $column = 'name', $parent_column = 'private_name') {
-		$this->check_lang = TRUE;
-		$this->lang_checking['description'] = $description;
-		$this->lang_checking['button_option'] = $button_option;
-		$this->lang_checking['title'] = $title;
-		$this->lang_checking['column'] = $column;
-		$this->lang_checking['parent_column'] = $parent_column;
-	}
-
-	/**
-	 * Get lang checking array
-	 *
-	 * @return FALSE|Array
-	 */
-	public function getLangChecking() {
-		if ($this->check_lang) {
-			return $this->lang_checking;
-		}
-		return FALSE;
-	}
-
-	/**
-	 * Set selection via checkboxes
-	 *
-	 * @param $selection_key
-	 * @param array $url_array
-	 * @param bool $checkbox_main
-	 */
-	public function setCheckboxSelection($selection_key, array $url_array, $checkbox_main = TRUE) {
-		$this->selection_key = $selection_key;
-		$this->selections = $url_array;
-		$this->checkbox_main = $checkbox_main;
-	}
-
-	/**
-	 * Fetch and get all results from data source
-	 *
-	 * @return Array
-	 */
 	public function fetchAll() {
 		return $this->data_source->fetchAll();
+	}
+
+	public function render() {
+		$this->template->grid_dir = __DIR__;
+
+		$factory = new Render\Table\RendererFactory($this);
+		$table = $this->createBody($factory);
+		$this->template->content = $table;
+
+		$this->template->setFile(dirname(__FILE__) . '/templates/Grid.latte');
+		$this->template->render();
+	}
+
+	private function hasLineId() {
+		return empty($this->line_id_key) === FALSE && empty($this->line_id_name) === FALSE;
 	}
 
 	/**
 	 * Must called before create body
 	 */
-	public function beforeCreate() {
-		if (empty($this->selections) === FALSE) {
-			$this->column_arr[-1] = new Column\Selection(array(
-			    Column\Selection::ID => $this->selection_key,
-			    Column\Selection::CHECKBOX_MAIN => $this->checkbox_main,
-			    Column\Selection::CHECKBOX_ACTIONS => $this->selections
-			));
+	private function beforeCreate() {
+		if (isset($this['selection'])) {
+			$this->column_arr[-1] = $this['selection']->getSelectionColumn();
 		}
-		if (empty($this->sortable_callback) === FALSE) {
+		if (isset($this['sortable'])) {
 			$this->column_arr[-2] = new Column\Sortable();
 		}
 		foreach ($this->column_arr as $column) {
@@ -754,7 +327,27 @@ class Grid extends \Nette\Application\UI\Control {
 	}
 
 	/**
-	 * Check if empty columns
+	 * Must called before render header
+	 */
+	private function beforeRender() {
+		$this['ordering']->applyOrder();
+		if ($this->called_before_render === TRUE) {
+			return FALSE;
+		}
+		if (isset($this['filter'])) {
+			$this['filter']->applyFilter();
+		}
+		$this->count = $this->data_source->count();
+
+		if (isset($this['pager'])) {
+			$this['pager']->setCounts($this->count, $this->page_limit);
+			$this->data_source->applyLimit($this->page_limit, ($this['pager']->getCurrentPageIndex()) * $this->page_limit);
+		}
+		$this->called_before_render = TRUE;
+	}
+
+	/**
+	 * Check if columns are empty, if empty, set default Text columns by DB
 	 */
 	private function checkEmptyColumns() {
 		if (empty($this->column_arr)) {
@@ -772,24 +365,7 @@ class Grid extends \Nette\Application\UI\Control {
 	 * Set total count of data grid
 	 */
 	private function setTotalCount() {
-		$this->total_count_set = TRUE;
 		$this->total_count = $this->data_source->getTotalCount();
-	}
-
-	/**
-	 * Render control
-	 */
-	public function render() {
-		$this->template->filter_form = $this->filter_form;
-		$this->template->selections = $this->selections;
-		$this->template->grid_dir = __DIR__;
-
-		$factory = new Render\Table\RendererFactory($this);
-		$table = $this->createBody($factory);
-		$this->template->content = $table;
-
-		$this->template->setFile(dirname(__FILE__) . '/templates/Grid.latte');
-		$this->template->render();
 	}
 
 	protected function createBody(Render\IRendererFactory $factory) {
@@ -817,9 +393,9 @@ class Grid extends \Nette\Application\UI\Control {
 			$body_attributes = array(
 			    'class' => 'grid-ul'
 			);
-			if($this->isSortable()) {
+			if(isset($this['sortable'])) {
 				$body_attributes['class'] = 'grid-ul sortable';
-				$body_attributes['data-sort-href'] = $this->getSortableLink();
+				$body_attributes['data-sort-href'] = $this['sortable']->link('sortData!');
 			}
 			$body->setAttributes($body_attributes);
 			foreach($data[0] as $rowData) {
@@ -828,10 +404,10 @@ class Grid extends \Nette\Application\UI\Control {
 			$table->setBody($body);
 		} else {
 			$body = $factory->createBody();
-			if($this->isSortable()) {
+			if(isset($this['sortable'])) {
 				$body->setAttributes(array(
 				    'class' => 'sortable',
-				    'data-sort-href' => $this->getSortableLink()
+				    'data-sort-href' => $this['sortable']->link('sortData!')
 				));
 			}
 			foreach($this->data_source->fetchAll() as $rowData) {
@@ -873,39 +449,6 @@ class Grid extends \Nette\Application\UI\Control {
 		if(isset($groupData[$sub_id])) {
 			$this->rowsWalkRecursive($factory, $row, $sub_id, $groupData);
 		}
-	}
-
-	/**
-	 * Ged ordering for column
-	 *
-	 * @param $column_id
-	 * @return null
-	 */
-	public function getOrdering($column_id) {
-		if (!isset($this->session_section->ordering) || !isset($this->session_section->ordering[$column_id])) {
-			return NULL;
-		} else {
-			return $this->session_section->ordering[$column_id];
-		}
-	}
-
-	/**
-	 * @param $column_id
-	 */
-	public function handleOrdering($column_id) {
-		if (!isset($this->session_section->ordering)) {
-			$this->session_section->ordering = array();
-		}
-		if (!isset($this->session_section->ordering[$column_id])) {
-			$this->session_section->ordering[$column_id] = 'ASC';
-		} elseif ($this->session_section->ordering[$column_id] === 'ASC') {
-			$this->session_section->ordering[$column_id] = 'DESC';
-		} else {
-			unset($this->session_section->ordering[$column_id]);
-		}
-
-		$this->redrawControl();
-		$this->presenter->redrawControl();
 	}
 }
 

@@ -5,10 +5,8 @@ namespace DataGrid\Components;
 use DataGrid\Setting;
 
 /**
- * Description of \DataGrid\Components\Link
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Link extends Setting {
 

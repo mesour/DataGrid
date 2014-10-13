@@ -3,10 +3,8 @@
 namespace DataGrid;
 
 /**
- * Description of \DataGrid\Utils\Option
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class Setting {
 

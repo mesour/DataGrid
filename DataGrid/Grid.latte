@@ -1,0 +1,36 @@
+{snippet dataGrid}
+	<div class="data-grid{if $control instanceof \DataGrid\GridTree} data-grid-tree{/if}">
+		{snippet $control->getGridName()}
+			<script>var gridName = {$control->getName()};</script>
+			<script>{=file_get_contents($grid_dir . '/src/grid.js')|noescape}</script>
+			<style>{=file_get_contents($grid_dir . '/src/grid.css')|noescape}</style>
+			<div class="data-grid"{if isset($control['editable'])} data-editable-link="{$control['editable']->link('editColumn!')}"{/if}>
+				{if isset($control['filter']) || isset($control['editable'])}
+					<style>{=file_get_contents($grid_dir . '/src/datetimepicker.css')|noescape}</style>
+					<script>{=file_get_contents($grid_dir . '/src/moment-with-locales.min.js')|noescape}</script>
+                                        <script>{=file_get_contents($grid_dir . '/src/datetimepicker.js')|noescape}</script>
+				{/if}
+				{if isset($control['filter'])}
+					{control filter}
+				{/if}
+				{if isset($control['editable'])}
+					<script>{=file_get_contents($grid_dir . '/src/grid_editable.js')|noescape}</script>
+				{/if}
+				{$content->create()|noescape}
+			</div>
+			<script n:if="isset($control['sortable'])">{=(file_get_contents($grid_dir . '/src/'.($control instanceof \DataGrid\GridTree ? 'grid_tree_sortable' : 'grid_sortable').'.js') . ';' . file_get_contents($grid_dir . '/src/jquery.ui.nestedSortable.js'))|noescape}</script>
+			<div class="datagrid-bottom">
+				{if isset($control['selection'])}
+					{control selection}
+				{/if}
+				{if isset($control['pager'])}
+					{control pager}
+				{/if}
+				{if isset($control['export'])}
+					{control export}
+				{/if}
+			</div>
+			<hr style="clear:both;border:none;">
+		{/snippet}
+	</div>
+{/snippet}

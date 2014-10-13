@@ -5,10 +5,8 @@ namespace DataGrid\Render;
 use \DataGrid\Column;
 
 /**
- * Description of \DataGrid\Render\Body
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class Body{
 

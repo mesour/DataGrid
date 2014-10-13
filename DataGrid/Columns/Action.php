@@ -7,10 +7,8 @@ use \Nette\Utils\Html,
     \DataGrid\Components\Link;
 
 /**
- * Description of \DataGrid\Columns\Action
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Action extends Base {
 
@@ -68,6 +66,9 @@ class Action extends Base {
 	public function getBodyAttributes($data) {
 		if (!$this->checkPermissions()) {
 			return FALSE;
+		}
+		if(!isset($data[self::$action_column_name])) {
+			throw new Grid_Exception('Column "' . self::$action_column_name . '" does not exist in data. Can use \DataGrid\Column\Base::$action_column_name = "your_column_name" for change this column name.');
 		}
 		if ($data[self::$action_column_name] == self::$actions['active']) {
 			return array('class' => 'is-unactive');

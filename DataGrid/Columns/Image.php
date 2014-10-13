@@ -6,10 +6,8 @@ use \Nette\Utils\Html,
     \DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Column\Image
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class Image extends Base {
 
@@ -58,7 +56,9 @@ class Image extends Base {
 		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\ImageColumn::TEXT is required.');
 		}
-		return array();
+		return array(
+		    'class' => 'grid-column-' . $this->option[self::ID]
+		);
 	}
 
 	public function getHeaderContent() {

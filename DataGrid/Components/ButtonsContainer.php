@@ -7,10 +7,8 @@ use \Nette\Application\UI\Presenter,
 	DataGrid\Grid_Exception;
 
 /**
- * Description of \DataGrid\Components\ButtonsContainer
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class ButtonsContainer extends Setting {
 
@@ -100,7 +98,7 @@ class ButtonsContainer extends Setting {
 	 * @return String
 	 */
 	public function __toString() {
-		return $this->create()->render();
+		return $this->create();
 	}
 
 }

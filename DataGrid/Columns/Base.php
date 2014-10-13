@@ -7,10 +7,8 @@ use \Nette\ComponentModel\IComponent,
     DataGrid\Setting;
 
 /**
- * Description of \DataGrid\Column\Base
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 abstract class Base extends Setting implements IColumn {
 

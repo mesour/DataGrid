@@ -2,73 +2,32 @@
 
 namespace DataGrid;
 
+use \Mesour\ArrayManage\Searcher\Select;
+
 /**
- * Default data source for data grid
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 class ArrayDataSource implements IDataSource {
-
-	/**
-	 * Data array
-	 *
-	 * @var Array
-	 */
-	private $data = array();
-
-	/**
-	 * Data count
-	 *
-	 * @var Integer
-	 */
-	private $count = 0;
-
-	/**
-	 * Array with where conditions
-	 *
-	 * @var Array 
-	 */
-	private $where_arr = array();
-	
-	/**
-	 * Operators => Name of operator function
-	 *
-	 * @var Array
-	 */
-	private $operators = array(
-	    '=' => 'Equal',
-	    '!=' => 'NotEqual',
-	    '<' => 'Smaller',
-	    '>' => 'Bigger',
-	    '<=' => 'BiggerEqual',
-	    '>=' => 'BiggerEqual',
-	);
-	
-	/**
-	 * Limit on array
-	 *
-	 * @var Integer|NULL
-	 */
-	private $limit = NULL;
-	
-	/**
-	 * Offset on array
-	 *
-	 * @var Integer|NULL
-	 */
-	private $offset = 0;
-
-	/**
-	 * Obtain how to order an array
-	 *
-	 * @var Array
-	 */
-	private $ordering = array();
 
 	private $parent_key = 'parent_id';
 
 	private $primary_key = 'id';
+
+	/**
+	 * @var Select
+	 */
+	private $select;
+
+	/**
+	 * @var Select
+	 */
+	private $export_select;
+
+	/**
+	 * @var Select
+	 */
+	private $full_select;
 
 	/**
 	 * Create instance
@@ -76,8 +35,9 @@ class ArrayDataSource implements IDataSource {
 	 * @param Array $data
 	 */
 	public function __construct(array $data) {
-		$this->count = count($data);
-		$this->data = $data;
+		$this->select = new Select($data);
+		$this->export_select = clone $this->select;
+		$this->full_select = clone $this->select;
 	}
 
 	/**
@@ -86,34 +46,12 @@ class ArrayDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function getTotalCount() {
-		return $this->count;
+		return $this->select->getTotalCount();
 	}
 
-	/**
-	 * Add where condition
-	 * 
-	 * Example with using match callback: <pre>
-	 *	function myMatch($value, $searched_value, $row_data){
-	 *		return ($value === $searched_value || $searched_value === $row_data['id']);
-	 *	}
-	 * 
-	 *	Using:
-	 *	
-	 *	$this->where('{column_key}', 'Searched value', 'myMatch');
-	 * </pre>
-	 * 
-	 * @param String $column
-	 * @param Mixed $value
-	 * @param Mixed $operator Operators "=|!=|>=|>|<|<=" or callable callback
-	 * @param String $combination AND or OR
-	 */
-	public function where($column, $value = NULL, $operator = '=', $combination = 'AND') {
-		$this->where_arr[$column] = array(
-		    'column' => $column,
-		    'value' => $value,
-		    'operator' => $operator,
-		    'combination' => $combination,
-		);
+	public function where($column, $value = NULL, $condition = NULL, $operator = 'and') {
+		$this->select->where($column, $value, $condition, $operator);
+		$this->export_select->where($column, $value, $condition, $operator);
 	}
 
 	/**
@@ -123,8 +61,8 @@ class ArrayDataSource implements IDataSource {
 	 * @param Integer $offset
 	 */
 	public function applyLimit($limit, $offset = 0) {
-		$this->limit = $limit;
-		$this->offset = $offset;
+		$this->select->limit($limit);
+		$this->select->offset($offset);
 	}
 
 	/**
@@ -133,7 +71,7 @@ class ArrayDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function count() {
-		return count($this->getAppliedSearched());
+		return $this->select->count();
 	}
 
 	/**
@@ -142,11 +80,11 @@ class ArrayDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetchAll() {
-		return array_slice($this->getAppliedSearched(), $this->offset, $this->limit);
+		return $this->select->fetchAll();
 	}
 
 	public function fetchAllForExport() {
-		return $this->getAppliedSearched();
+		return $this->export_select->fetchAll();
 	}
 
 	public function fetchAssoc() {
@@ -157,8 +95,79 @@ class ArrayDataSource implements IDataSource {
 		return $output;
 	}
 
+	private function customFilter($how) {
+		switch($how) {
+			case 'equal_to';
+				return \Mesour\ArrayManage\Searcher\Condition::EQUAL;
+			case 'not_equal_to';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_EQUAL;
+			case 'bigger';
+				return \Mesour\ArrayManage\Searcher\Condition::BIGGER;
+			case 'not_bigger';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_BIGGER;
+			case 'smaller';
+				return \Mesour\ArrayManage\Searcher\Condition::SMALLER;
+			case 'not_smaller';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_SMALLER;
+			case 'start_with';
+				return \Mesour\ArrayManage\Searcher\Condition::STARTS_WITH;
+			case 'not_start_with';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_STARTS_WITH;
+			case 'end_with';
+				return \Mesour\ArrayManage\Searcher\Condition::ENDS_WITH;
+			case 'not_end_with';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_ENDS_WITH;
+			case 'equal';
+				return \Mesour\ArrayManage\Searcher\Condition::CONTAINS;
+			case 'not_equal';
+				return \Mesour\ArrayManage\Searcher\Condition::NOT_CONTAINS;
+			default:
+				throw new Grid_Exception('Unexpected key for custom filtering.');
+		}
+	}
+
+	public function applyCustom($column_name, array $custom, $type) {
+		$values = array();
+
+		if(!empty($custom['how1']) && !empty($custom['val1'])) {
+			$values[] = $this->customFilter($custom['how1']);
+		}
+		if(!empty($custom['how2']) && !empty($custom['val2'])) {
+			$values[] = $this->customFilter($custom['how2']);
+		}
+		if(count($values) === 2) {
+			if($custom['operator'] === 'and') {
+				$operator = 'and';
+			} else {
+				$operator = 'or';
+			}
+		}
+		foreach($values as $key => $val) {
+			$this->where($column_name, $custom['val'.($key+1)], $val, isset($operator) ? $operator : 'and');
+		}
+	}
+
+	public function applyCheckers($column_name, array $value, $type) {
+		foreach($value as $val) {
+			$this->where($column_name, $val, \Mesour\ArrayManage\Searcher\Condition::EQUAL, 'or');
+		}
+	}
+
+	public function fetchFullData($date_format = 'Y-m-d') {
+		$output = array();
+		foreach($this->full_select->fetchAll() as $data) {
+			foreach($data as $key => $val) {
+				if($val instanceof \DateTime) {
+					$data[$key] = $val->format($date_format);
+				}
+			}
+			$output[] = $data;
+		}
+		return $output;
+	}
+
 	public function orderBy($row, $sorting = 'ASC') {
-		$this->ordering[$row] = $sorting;
+		$this->select->orderBy($row, $sorting);
 	}
 	
 	
@@ -168,7 +177,7 @@ class ArrayDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		return $this->getAppliedSearched(TRUE);
+		return $this->select->fetch();
 	}
 
 	public function getPrimaryKey() {
@@ -185,158 +194,6 @@ class ArrayDataSource implements IDataSource {
 
 	public function setParentKey($parent_key) {
 		$this->parent_key = $parent_key;
-	}
-
-	/**
-	 * Apply matches to data
-	 * 
-	 * @param Bool $first_element Set to true if need only first element
-	 * 
-	 * @return Array
-	 */
-	private function getAppliedSearched($first_element = FALSE) {
-		$output = array();
-		foreach($this->getMatches() as $key => $searched) {
-			$all_matched = TRUE;
-			$one_matched = FALSE;
-			$is_or = FALSE;
-			foreach($searched as $where_key => $matched) {
-				$where = $this->where_arr[$where_key];
-				if($where['combination'] === 'OR') {
-					$is_or = TRUE;
-				}
-				if(!$matched) {
-					$all_matched = FALSE;
-				}elseif($matched) {
-					$one_matched = TRUE;
-				}
-			}
-			if($all_matched || ($is_or && $one_matched)) {
-				if($first_element) {
-					return $this->data[$key];
-				} else {
-					$output[] = $this->data[$key];
-				}
-			}
-			
-		}
-		if(!empty($this->ordering)) {
-			$this->applyOrdering($output);
-		}
-		return $output;
-	}
-
-	/**
-	 * Get array with matches
-	 * 
-	 * @return Array
-	 */
-	private function getMatches() {
-		$searched = array();
-		foreach ($this->data as $key => $data_arr) {
-			$searched[$key] = array();
-			foreach ($this->where_arr as $where_key => $where) {
-				if(isset($this->operators[$where['operator']])) {
-					$method_name = 'match' . $this->operators[$where['operator']];
-				} else {
-					$method_name = $where['operator'];
-				}
-				if (method_exists($this, $method_name)) {
-					$matched = $this->{$method_name}($data_arr[$where['column']],  $where['value']);
-				} else {
-					$matched = call_user_func_array($method_name, array(
-					    $data_arr[$where['column']],
-					    $where['value'],
-					    $data_arr
-					));
-				}
-				$searched[$key][$where_key] = $matched;
-			}
-		}
-		return $searched;
-	}
-
-	private function applyOrdering(& $output) {
-		$arguments = array();
-		foreach ($output as $rec) {
-			$x = 0;
-			foreach($this->ordering as $key => $sorting) {
-				$arguments[$x][] = is_numeric($rec[$key]) ? $rec[$key] : strtolower($rec[$key]);
-				$arguments[$x+1] = $sorting === 'ASC' ? SORT_ASC : SORT_DESC;
-				$x = $x+2;
-			}
-		}
-		$x = 0;
-		foreach($this->ordering as $key => $sorting) {
-			array_multisort($arguments[$x], $arguments[$x+1], $output);
-			$x = $x+2;
-		}
-	}
-	
-	/**
-	 * Match equal
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchEqual($value, $searched_value) {
-		return (is_null($searched_value) ? is_null($value) : (strtolower($searched_value) == strtolower($value)));
-	}
-	
-	/**
-	 * Match not equal
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchNotEqual($value, $searched_value) {
-		return (is_null($searched_value) ? !is_null($value) : (strtolower($searched_value) != strtolower($value)));
-	}
-	
-	/**
-	 * Match smaller
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchSmaller($value, $searched_value) {
-		return ($value < $searched_value);
-	}
-	
-	/**
-	 * Match bigger
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchBigger($value, $searched_value) {
-		return ($value > $searched_value);
-	}
-	
-	/**
-	 * Match smaller equal
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchSmallerEqual($value, $searched_value) {
-		return ($value <= $searched_value);
-	}
-	
-	/**
-	 * Match bigger equal
-	 * 
-	 * @param Mixed $value
-	 * @param Mixed $searched_value
-	 * @return Bool
-	 */
-	private function matchBiggerEqual($value, $searched_value) {
-		return ($value >= $searched_value);
 	}
 
 }

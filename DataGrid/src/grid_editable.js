@@ -38,7 +38,6 @@
                 type = column.attr('data-editable-type'),
                 separator = column.attr('data-separator'),
                 date_format = column.attr('data-date-format'),
-                time_format = column.attr('data-time-format'),
                 mouse_in = true,
                 old_value = column.html();
 
@@ -60,15 +59,18 @@
                 'keyup': function(e, fromJs) {
                     if(e.keyCode === 13 || fromJs) {
                         var value = getValidValue();
+                        if(type === 'date') {
+                            input.data('DateTimePicker').destroy();
+                        }
                         if(value !== false) {
-                            $.post(editable_link, {
+                            $.get(mesour.getUrlWithParam(editable_link, 'editable', 'editable_data', {
                                 'data': {
                                     lineId: line_id,
                                     columnName: column_name,
                                     oldValue: old_value,
                                     newValue: input.val()
                                 }
-                            }).complete(function(){
+                            })).complete(function(){
                                 column.html(input.val());
                                 isInEdit = false;
                             }).error(function(){
@@ -107,22 +109,13 @@
                     break;
                 case 'date' :
                     input.val(old_value);
-                    if(!time_format) {
-                        input.datepicker({
-                            dateFormat: date_format,
-                            onClose: function() {
-                                input.focus();
-                            }
-                        });
-                    } else {
-                        input.datetimepicker({
-                            dateFormat: date_format,
-                            timeFormat: time_format,
-                            onClose: function() {
-                                input.focus();
-                            }
-                        });
-                    }
+                    input.bootstrapDatetimepicker({
+                        format: date_format,
+                        useSeconds: true,
+                        hide: function() {
+                            input.focus();
+                        }
+                    });
                     break;
                 default :
                     input.val(old_value);

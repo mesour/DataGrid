@@ -3,10 +3,8 @@
 namespace DataGrid\Column;
 
 /**
- * Description of \DataGrid\Column\IColumn
- *
  * @author mesour <matous.nemec@mesour.com>
- * @package DataGrid
+ * @package Mesour DataGrid
  */
 interface IColumn {
 
