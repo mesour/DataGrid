@@ -30,12 +30,14 @@ class BaseControl extends Control {
 	public function loadState(array $params) {
 		$session = $this->getSession();
 		if(!empty($params) && isset($params['settings'])) {
-			foreach($params as $key => $val) {
-				$session[$key] = $val;
+			$settings = array();
+			foreach($params['settings'] as $key => $val) {
+				$settings[$key] = $val;
 			}
-		} elseif(!empty($session)) {
-			foreach($session as $key => $val) {
-				$params[$key] = $val;
+			$session['settings'] = $settings;
+		} elseif(!empty($session['settings'])) {
+			foreach($session['settings'] as $key => $val) {
+				$params['settings'][$key] = $val;
 			}
 		}
 		parent::loadState($params);
