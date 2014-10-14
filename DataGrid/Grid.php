@@ -83,6 +83,8 @@ class Grid extends Control {
 	 */
 	private $count;
 
+	private $real_column_names = NULL;
+
 	/**
 	 * Event which is triggered when sort data
 	 *
@@ -306,6 +308,18 @@ class Grid extends Control {
 		return $this->data_source->fetchAll();
 	}
 
+	public function getRealColumnNames() {
+		if(is_null($this->real_column_names)) {
+			$this->real_column_names = array_keys($this->data_source->fetch());
+		}
+		return $this->real_column_names;
+	}
+
+	public function hasEmptyData() {
+		$column_names = $this->getRealColumnNames();
+		return empty($column_names) ? TRUE : FALSE;
+	}
+
 	public function render() {
 		$this->template->grid_dir = __DIR__;
 
@@ -366,7 +380,7 @@ class Grid extends Control {
 	 */
 	private function checkEmptyColumns() {
 		if (empty($this->column_arr)) {
-			foreach (array_keys($this->data_source->fetch()) as $key) {
+			foreach ($this->getRealColumnNames() as $key) {
 				$column = new Column\Text(array(
 				    Column\Text::ID => $key,
 				));
