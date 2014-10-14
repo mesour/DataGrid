@@ -139,6 +139,18 @@ class Grid extends Control {
 		return $this->column_arr;
 	}
 
+	public function setDefaultOrder($key, $sorting = 'ASC') {
+		$this['ordering']->setDefaultOrder($key, $sorting);
+	}
+
+	public function disableOrdering($disabled = TRUE) {
+		$this['ordering']->setDisabled($disabled);
+	}
+
+	public function enableMultiOrdering() {
+		$this['ordering']->enableMulti();
+	}
+
 	public function enableFilter(Form $filer_form = NULL, $template = NULL, $date = 'Y-m-d') {
 		new Extensions\Filter($this, 'filter');
 		if(!is_null($filer_form)) {
@@ -321,6 +333,9 @@ class Grid extends Control {
 		}
 		foreach ($this->column_arr as $column) {
 			$column->setGridComponent($this);
+			if($column instanceof Column\BaseOrdering && $this['ordering']->isDisabled()) {
+				$column->setOrdering(FALSE);
+			}
 		}
 		ksort($this->column_arr);
 		$this->checkEmptyColumns();

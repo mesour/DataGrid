@@ -8,13 +8,38 @@ namespace DataGrid\Extensions;
  */
 class Ordering extends BaseControl {
 
+	private $default_order = array();
+
+	private $disabled = FALSE;
+
+	private $multi = FALSE;
+
+	public function setDefaultOrder($key, $sorting = 'ASC') {
+		$this->default_order = array($key, $sorting);
+	}
+
+	public function setDisabled($disabled = TRUE) {
+		$this->disabled = $disabled;
+	}
+
+	public function isDisabled() {
+		return $this->disabled;
+	}
+
+	public function enableMulti() {
+		$this->multi = TRUE;
+	}
+
 	/**
 	 * Get ordering for column by column ID
 	 *
 	 * @param $column_id
-	 * @return null|ASC|DESC
+	 * @return NULL|ASC|DESC
 	 */
 	public function getOrdering($column_id) {
+		if(!empty($this->default_order) && empty($this->settings['ordering']) && $this->default_order[0] === $column_id) {
+			return $this->default_order[1];
+		}
 		if (!isset($this->settings['ordering']) || !isset($this->settings['ordering'][$column_id])) {
 			return NULL;
 		} else {
@@ -34,6 +59,8 @@ class Ordering extends BaseControl {
 			foreach ($this->settings['ordering'] as $key => $how_to_order) {
 				$this->parent->getDataSource()->orderBy($key, $how_to_order);
 			}
+		} elseif(empty($this->settings['ordering']) && !empty($this->default_order)) {
+			$this->parent->getDataSource()->orderBy($this->default_order[0], $this->default_order[1]);
 		}
 	}
 
@@ -47,6 +74,13 @@ class Ordering extends BaseControl {
 			$this->settings['ordering'][$column_id] = 'DESC';
 		} else {
 			unset($this->settings['ordering'][$column_id]);
+		}
+		if(!$this->multi) {
+			$current = isset($this->settings['ordering'][$column_id]) ? $this->settings['ordering'][$column_id] : NULL;
+			if(!is_null($current)) {
+				$this->settings['ordering'] = array();
+				$this->settings['ordering'][$column_id] = $current;
+			}
 		}
 
 		$this->getSession()->settings = $this->settings;
