@@ -49,19 +49,18 @@ class Ordering extends BaseControl {
 
 	public function applyOrder() {
 		if (isset($this->settings['ordering']) && !empty($this->settings['ordering'])) {
-			$data = array_keys($this->parent->getDataSource()->fetch());
-			foreach ($this->settings['ordering'] as $key => $value) {
-				if (!in_array($key, $data)) {
-					unset($this->settings->ordering[$key]);
+			foreach ($this->settings['ordering'] as $key => $how_to_order) {
+				if (!in_array($key, $this->parent->getRealColumnNames())) {
+					unset($this->settings['ordering'][$key]);
+				} else {
+					$this->parent->getDataSource()->orderBy($key, $how_to_order);
 				}
 			}
-
-			foreach ($this->settings['ordering'] as $key => $how_to_order) {
-				$this->parent->getDataSource()->orderBy($key, $how_to_order);
-			}
-		} elseif(empty($this->settings['ordering']) && !empty($this->default_order)) {
+		}
+		if(empty($this->settings['ordering']) && !empty($this->default_order)) {
 			$this->parent->getDataSource()->orderBy($this->default_order[0], $this->default_order[1]);
 		}
+
 	}
 
 	public function handleOrdering($column_id) {
