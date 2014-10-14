@@ -12,20 +12,16 @@
 				Number filters
 			</span>
 			<ul class="dropdown-menu">
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Rovná se</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal_to">Nerovná se</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Equal to</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal_to">Not equal to</a></li>
 				<li role="presentation" class="divider"></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger">Větší než</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="equal_to" data-operator="or">Větší než nebo rovno</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller">Menší než</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller" data-type-second="equal_to" data-operator="or">Menší než nebo rovno</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller">Mezi</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger">Bigger than</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="equal_to" data-operator="or">Bigger than or equal</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller">Smaller than</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="smaller" data-type-second="equal_to" data-operator="or">Smaller than or equal</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="bigger" data-type-second="smaller">Between</a></li>
 				<li role="presentation" class="divider"></li>
-				{*<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Prvních 10</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Nad průměrem</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Pod průměrem</a></li>
-				<li role="presentation" class="divider"></li>*}
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Vlastní filtr</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Custom filter</a></li>
 			</ul>
 		</li>
 		<li role="presentation" class="divider"></li>
@@ -37,12 +33,12 @@
 				<div class="box-inner">
 					<ul>
 						<li class="all-select-li">
-							<input type="checkbox" class="select-all">
-							<label>(Select all)</label>
+							<input type="checkbox" class="select-all" id="select-all-{$column->getId()}">
+							<label for="select-all-{$column->getId()}">(Select all)</label>
 						</li>
 						<li class="all-select-searched-li">
-							<input type="checkbox" class="select-all-searched">
-							<label>(Select all searched)</label>
+							<input type="checkbox" class="select-all-searched" id="selected-{$column->getId()}">
+							<label for="selected-{$column->getId()}">(Select all searched)</label>
 						</li>
 					</ul>
 				</div>
