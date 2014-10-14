@@ -12,16 +12,16 @@
 				Text filters
 			</span>
 			<ul class="dropdown-menu">
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Rovná se</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal_to">Nerovná se</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal_to">Equal to</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal_to">Not equal to</a></li>
 				<li role="presentation" class="divider"></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal">Obsahuje</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal">Neobsahuje</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="equal">Contains</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="not_equal">Not contains</a></li>
 				<li role="presentation" class="divider"></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="start_with">Začíná na</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="end_with">Končí na</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="start_with">Starts with</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal" data-type-first="end_with">Ends with</a></li>
 				<li role="presentation" class="divider"></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Vlastní filtr</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="open-modal">Custom filter</a></li>
 			</ul>
 		</li>
 		<li role="presentation" class="divider"></li>
@@ -33,12 +33,12 @@
 				<div class="box-inner">
 					<ul>
 						<li class="all-select-li">
-							<input type="checkbox" class="select-all">
-							<label>(Select all)</label>
+							<input type="checkbox" class="select-all" id="select-all-{$column->getId()}">
+							<label for="select-all-{$column->getId()}">(Select all)</label>
 						</li>
 						<li class="all-select-searched-li">
-							<input type="checkbox" class="select-all-searched">
-							<label>(Select all searched)</label>
+							<input type="checkbox" class="select-all-searched" id="selected-{$column->getId()}">
+							<label for="selected-{$column->getId()}">(Select all searched)</label>
 						</li>
 					</ul>
 				</div>
