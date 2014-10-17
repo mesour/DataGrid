@@ -863,13 +863,18 @@
             dropdowns[name].update();
         });
     };
-    var init = function() {
+    var inited = false,
+        init = function() {
+            if(inited) return;
             $('.data-grid-filter').each(function () {
                 var $this = $(this),
                     name = $this.closest('.panel').attr('data-grid');
                 filters[name] = new Filter(name, $this);
                 $this.data('grid-filter', filters[name]);
             });
+            if($('.data-grid-filter').is('*')) {
+                inited = true;
+            }
         };
     init();
     $(document).on('ready', function () {

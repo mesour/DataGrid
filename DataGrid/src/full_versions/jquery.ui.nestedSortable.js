@@ -330,7 +330,7 @@
 		},
 
 		_isAllowed: function(parentItem, levels) {
-			var o = this.options
+			var o = this.options;
 			// Are we trying to nest under a no-nest or are we nesting too deep?
 			if (parentItem == null || !(parentItem.hasClass(o.disableNesting))) {
 				if (o.maxLevels < levels && o.maxLevels != 0) {

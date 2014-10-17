@@ -83,8 +83,8 @@ class Ordering extends BaseControl {
 		}
 
 		$this->getSession()->settings = $this->settings;
-
 		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
 }

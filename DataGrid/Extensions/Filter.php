@@ -103,7 +103,9 @@ class Filter extends BaseControl {
 
 	public function handleSubmitForm() {
 		$this->fixSettingsForForm();
+		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
 	private function fixSettingsForForm() {
@@ -119,7 +121,9 @@ class Filter extends BaseControl {
 	}
 
 	public function handleApplyDefaultFilter() {
+		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
 	private function applyAutoFiltering() {

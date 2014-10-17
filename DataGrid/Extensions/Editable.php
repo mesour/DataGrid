@@ -18,7 +18,7 @@ class Editable extends BaseControl {
 	/**
 	 * @throws Grid_Exception
 	 */
-	public function handleEditColumn() {
+	public function handleEditCell() {
 		$data = $this->editable_data['data'];
 		if (!is_array($data)) {
 			throw new Grid_Exception('Empty request from column edit.');
@@ -31,6 +31,8 @@ class Editable extends BaseControl {
 		}
 		if ($has_permission) {
 			$this->parent->onEditCell($data['lineId'], $data['columnName'], $data['newValue'], $data['oldValue']);
+			$this->parent->redrawControl();
+			$this->presenter->redrawControl();
 		} else {
 			throw new Grid_Exception('Column with ID ' . $data['columnName'] . ' is not editable or does not exists in DataGrid columns.');
 		}

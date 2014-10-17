@@ -100,6 +100,13 @@ class Grid extends Control {
 	public $onEditCell = array();
 
 	/**
+	 * Event which is triggered when filtering data
+	 *
+	 * @var array
+	 */
+	public $onFilter = array();
+
+	/**
 	 * Create data source instance
 	 *
 	 * @param \DataGrid\IDataSource $data_source Data source
@@ -283,14 +290,15 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Set line id for example: for sorting
+	 * Set line id. This will create id="name-{key}" on <tr> or <li>
+	 * Required by sortable and editable
 	 *
-	 * @param String $line_id_key
-	 * @param String $line_id_name
+	 * @param String $key
+	 * @param String $name
 	 */
-	public function setLineId($line_id_key, $line_id_name) {
-		$this->line_id_key = $line_id_key;
-		$this->line_id_name = $line_id_name;
+	public function setLineId($key, $name) {
+		$this->line_id_key = $key;
+		$this->line_id_name = $name;
 	}
 
 	public function getLineIdName() {
