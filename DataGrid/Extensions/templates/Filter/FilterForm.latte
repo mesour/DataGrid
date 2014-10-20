@@ -1,5 +1,5 @@
 {snippet filter}
-<script>mesour.filterValues = {=json_encode($settings)|noescape};</script>
+<script>mesour.dataGrid[{$control->parent->getName()}].filterValues = {=json_encode($settings)|noescape};</script>
 {if $filter_form instanceof Nette\Application\UI\IRenderable}
 	{$filter_form->validateControl()}
 {/if}

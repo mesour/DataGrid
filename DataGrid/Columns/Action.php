@@ -9,6 +9,7 @@ use \Nette\Utils\Html,
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
+ * @deprecated
  */
 class Action extends Base {
 

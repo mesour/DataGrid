@@ -17,7 +17,7 @@ class Text extends BaseOrdering {
 	    CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
 
-	public function setCallback(callable $callback) {
+	public function setCallback($callback) {
 		$this->option[self::CALLBACK] = $callback;
 		return $this;
 	}

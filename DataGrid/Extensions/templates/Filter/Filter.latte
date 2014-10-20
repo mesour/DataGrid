@@ -1,12 +1,11 @@
 {snippet filter}
-<div class="panel panel-default" data-grid="{$control->parent->getGridName()}">
+<div class="panel panel-default" data-grid="{$control->parent->getName()}">
 	<div class="panel-heading">Filter</div>
 	<div class="panel-body data-grid-filter">
 		<script>
-			mesour.gridValues = !mesour.gridValues ? {} : mesour.gridValues;
-			mesour.gridValues[{$control->parent->getGridName()}] = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
-			mesour.phpFilterDate = {$php_date};
-			mesour.jsFilterDate = {$js_date};
+			mesour.dataGrid[{$control->parent->getName()}].gridValues = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
+			mesour.dataGrid[{$control->parent->getName()}].phpFilterDate = {$php_date};
+			mesour.dataGrid[{$control->parent->getName()}].jsFilterDate = {$js_date};
 			mesour.gridTranslates = {
 				months: {
 					1: 'January',
@@ -38,9 +37,10 @@
 				$('.apply-filter').on('click', function(e){
 					e.preventDefault();
 					var $this = $(this);
+					var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
 					var filterData = $this.closest('.panel-body').find('[data-filter-values]').val();
 					if(filterData !== '') {
-						$.get(mesour.getUrlWithParam($this.attr("data-href"), 'filter', 'settings', $.parseJSON(filterData)));
+						$.get(mesour.getUrlWithParam(gridName, $this.attr("data-href"), 'filter', 'settings', $.parseJSON(filterData)));
 					}
 				});
 			};

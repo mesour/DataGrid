@@ -26,6 +26,8 @@
             if(isInEdit) return;
             isInEdit = true;
 
+            var gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
+
             var column = $(this);
             column.width(column.width());
             var line = column.closest('tr');
@@ -63,7 +65,7 @@
                             input.data('DateTimePicker').destroy();
                         }
                         if(value !== false) {
-                            $.get(mesour.getUrlWithParam(editable_link, 'editable', 'editable_data', {
+                            $.get(mesour.getUrlWithParam(gridName, editable_link, 'editable', 'editable_data', {
                                 'data': {
                                     lineId: line_id,
                                     columnName: column_name,

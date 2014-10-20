@@ -1,6 +1,15 @@
-var mesour = !mesour ? {} : mesour;
-mesour.createGetUrl = function(component, parameterName, value) {
-    var parameter = mesour.gridName + (component !== null ? ('-' + component) : '') + '-' + parameterName;
+var mesour = !mesour ? {dataGrid: {}} : mesour;
+mesour.dataGrid.jsVersion = '1.4.2';
+$(document).on('ready', function() {
+    $('.tree-grid').find('.grid-header').find('.separator:visible:last').hide();
+    if(mesour.dataGrid.version) {
+        if(mesour.dataGrid.version !== mesour.dataGrid.jsVersion) {
+            alert('Please update Mesour DataGrid "grid.js" and "grid.css" from "vendor/mesour/datagrid/DataGrid/src".')
+        }
+    }
+});
+mesour.createGetUrl = function(name, component, parameterName, value) {
+    var parameter = name + (component !== null ? ('-' + component) : '') + '-' + parameterName;
     var output = '';
     var addToOutput = function(val, key) {
         output += (output === '' ? '' : '&')+parameter+(!key?'':key)+'='+encodeURIComponent(val);
@@ -45,10 +54,10 @@ mesour.createGetUrl = function(component, parameterName, value) {
     }
     return output;
 };
-mesour.getUrlWithParam = function(url, component, parameterName, value) {
+mesour.getUrlWithParam = function(name, url, component, parameterName, value) {
     var character = '&';
     if(url.indexOf('?') === -1) {
         character = '?';
     }
-    return url + character + this.createGetUrl(component, parameterName, value);
+    return url + character + this.createGetUrl(name, component, parameterName, value);
 };

@@ -47,8 +47,13 @@ class Button extends Setting {
 	 * @param Array|NULL $data
 	 * @throws \DataGrid\Grid_Exception
 	 */
-	public function __construct(Presenter $presenter = NULL, array $option = array(), $data = NULL) {
-		parent::__construct($option);
+	public function __construct($option = array(), $presenter = array(), $data = NULL) {
+		if($option instanceof Presenter) {
+			parent::__construct($presenter);
+			$presenter = $option;
+		} else {
+			parent::__construct($option);
+		}
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}

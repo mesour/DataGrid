@@ -16,7 +16,9 @@
 			tolerance: 'pointer',
 			toleranceElement: '> div',
 			stop: function() {
-				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
+                var $this = $(this);
+                var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
+				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', $this.nestedSortable('serialize')), function(data) {
 					
 				});
 			},
@@ -38,7 +40,9 @@
 			tolerance: 'pointer',
 			toleranceElement: '> div',
 			stop: function() {
-				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
+                var $this = $(this);
+                var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
+				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', $this.nestedSortable('serialize')), function(data) {
 					
 				});
 			},

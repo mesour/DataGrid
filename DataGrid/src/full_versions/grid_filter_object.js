@@ -145,7 +145,7 @@
         var fixValue = function(value) {
             if(dropdown.getType() !== 'date') return value;
             var oneDay = 60 * 60 * 24;
-            var phpDateFormat = mesour.phpFilterDate;
+            var phpDateFormat = dropdown.getFilter().getPhpDateFormat();
             switch(value) {
                 case 'yesterday':
                     return [phpDate(phpDateFormat, phpTime() - oneDay)];
@@ -286,6 +286,9 @@
                 });
                 $filter_modal.find('#grid-value-1, #grid-value-2').on('keydown.data-grid', function(e){
                     e.preventDefault();
+                    if(e.keyCode === 46 || e.keyCode === 8) {
+                        $(this).val(null);
+                    }
                 });
             } else {
                 $filter_modal.find('.input-group-addon').hide();
@@ -538,7 +541,7 @@
                         months[years[a]].days[month[b]].sort(function(a, b){return a-b});
                         var days = months[years[a]].days[month[b]];
                         for(var c in days) {
-                            var date_text = phpDate(mesour.phpFilterDate, strtotime(years[a]+'-'+month[b]+'-'+days[c]));
+                            var date_text = phpDate(filter.getPhpDateFormat(), strtotime(years[a]+'-'+month[b]+'-'+days[c]));
                             var day_li = $('<li>');
                             day_li.append('<span class="glyphicon">&nbsp;</span>');
                             day_li.append('<input type="checkbox" class="checker" data-value="'+date_text+'">');
@@ -703,7 +706,11 @@
         };
 
         this.getData = function () {
-            return mesour.gridValues[gridName];
+            return mesour.dataGrid[gridName].gridValues;
+        };
+
+        this.getPhpDateFormat = function () {
+            return mesour.dataGrid[gridName].phpFilterDate;
         };
 
         this.getValues = function (name) {

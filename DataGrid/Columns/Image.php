@@ -41,7 +41,7 @@ class Image extends Base {
 		return $this;
 	}
 
-	public function setCallback(callable $callback) {
+	public function setCallback($callback) {
 		$this->option[self::CALLBACK] = $callback;
 		return $this;
 	}

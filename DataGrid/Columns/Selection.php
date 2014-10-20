@@ -70,8 +70,8 @@ class Selection extends Base {
 			$button->add(Html::el('span', array('class' => 'caret')));
 
 			$ul = Html::el('ul', array('class' => 'dropdown-menu', 'role' => 'menu'));
-			$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'active'))->setText('Select active pages')));
-			$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'unactive'))->setText('Select unactive pages')));
+			//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'active'))->setText('Select active pages')));
+			//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'unactive'))->setText('Select unactive pages')));
 			$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText('Inverse selection')));
 			$div->add($ul);
 		} else {

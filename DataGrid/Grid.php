@@ -107,6 +107,16 @@ class Grid extends Control {
 	public $onFilter = array();
 
 	/**
+	 * @var bool
+	 */
+	static public $js_draw = TRUE;
+
+	/**
+	 * @var bool
+	 */
+	static public $css_draw = TRUE;
+
+	/**
 	 * Create data source instance
 	 *
 	 * @param \DataGrid\IDataSource $data_source Data source
@@ -119,6 +129,14 @@ class Grid extends Control {
 		$this->data_source = $data_source;
 		$this->name = $name;
 		new Extensions\Ordering($this, 'ordering');
+	}
+
+	static public function disableJsDraw() {
+		self::$js_draw = FALSE;
+	}
+
+	static public function disableCssDraw() {
+		self::$css_draw = FALSE;
 	}
 
 	/**

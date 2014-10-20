@@ -16,13 +16,14 @@
 			tolerance: 'pointer',
 			toleranceElement: '> td',
 			stop: function() {
-				//console.log($(this).nestedSortable('serialize'));
-				$.get(mesour.getUrlWithParam($(this).attr("data-sort-href"), 'sortable', 'sortable_data', $(this).nestedSortable('serialize')), function(data) {
-					//console.log(data);
+                var $this = $(this);
+                var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
+				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', $this.nestedSortable('serialize')), function(data) {
+
 				});
 			},
 			start: function(a, b) {
-				var sorted;
+				/*var sorted;
 				if (b.placeholder.is('tr') && sorted == undefined)
 				{
 					var x = 0;
@@ -37,7 +38,7 @@
 					sorted = true;
 				} else if (sorted == true) {
 					sorted = false;
-				}
+				}*/
 			}
 		});
 	});

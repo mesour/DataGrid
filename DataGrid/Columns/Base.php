@@ -14,11 +14,13 @@ abstract class Base extends Setting implements IColumn {
 
 	/**
 	 * Inner defaults
+	 * @deprecated
 	 */
 	public static $action_column_name = 'action';
 
 	/**
 	 * Actions setting
+	 * @deprecated
 	 *
 	 * @var Array
 	 */
