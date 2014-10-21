@@ -11,21 +11,22 @@ use DataGrid\Grid_Exception;
 class Sortable extends BaseControl {
 
 	/**
-	 * @persistent
+	 * @persistent Array
 	 */
-	public $sortable_data;
+	public $sortable_data = array();
 
 	/**
 	 * @throws Grid_Exception
 	 */
 	public function handleSortData() {
 		$params = array();
-		parse_str($this->sortable_data, $params);
-		$data = $params[$this->parent->getLineIdName()];
+		$item_id = $this->sortable_data['item'];
+		parse_str($this->sortable_data['serialized'], $params);
+		$data = $params[$this->parent->getName()];
 		if (!is_array($data)) {
 			throw new Grid_Exception('Empty post data from column sorting.');
 		}
-		$this->parent->onSort($data);
+		$this->parent->onSort($data, $item_id);
 	}
 
 }

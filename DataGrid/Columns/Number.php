@@ -66,14 +66,16 @@ class Number extends BaseOrdering {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
+		$attributes = array();
 		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
-			return array(
+			$attributes = array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',
 			    'data-separator' => $this->option[self::THOUSANDS_SEP],
 			);
 		}
-		return array();
+		$attributes['class'] = 'type-number';
+		return $attributes;
 	}
 
 	public function getBodyContent($data) {

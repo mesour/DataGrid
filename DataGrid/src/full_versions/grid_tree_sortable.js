@@ -15,10 +15,15 @@
 			tabSize: 25,
 			tolerance: 'pointer',
 			toleranceElement: '> div',
-			stop: function() {
+			stop: function(a, b) {
+                var item_id = b.item.attr('id').split('-');
                 var $this = $(this);
+                var data = {
+                    serialized: $this.nestedSortable('serialize'),
+                    item: item_id[item_id.length-1]
+                };
                 var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
-				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', $this.nestedSortable('serialize')), function(data) {
+				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
 					
 				});
 			},
@@ -39,10 +44,15 @@
 			revert: 250,
 			tolerance: 'pointer',
 			toleranceElement: '> div',
-			stop: function() {
+			stop: function(a, b) {
+                var item_id = b.item.attr('id').split('-');
                 var $this = $(this);
+                var data = {
+                    serialized: $this.nestedSortable('serialize'),
+                    item: item_id[item_id.length-1]
+                };
                 var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
-				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', $this.nestedSortable('serialize')), function(data) {
+				$.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
 					
 				});
 			},

@@ -54,14 +54,16 @@ class Date extends BaseOrdering {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
+		$attributes = array();
 		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
-			return array(
+			$attributes = array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'date',
 			    'data-date-format' => $this->formatToMomentJsFormat($this->option[self::FORMAT])
 			);
 		}
-		return array();
+		$attributes['class'] = 'type-date';
+		return $attributes;
 	}
 
 	public function getBodyContent($data) {

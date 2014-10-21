@@ -63,13 +63,6 @@ class Grid extends Control {
 	private $line_id_key;
 
 	/**
-	 * Value for table row id, it is key i result array
-	 *
-	 * @var string
-	 */
-	private $line_id_name;
-
-	/**
 	 * Data source
 	 *
 	 * @var \DataGrid\IDataSource
@@ -166,6 +159,27 @@ class Grid extends Control {
 		return $this->column_arr;
 	}
 
+	/**
+	 * Get data source
+	 *
+	 * @return \DataGrid\IDataSource
+	 */
+	public function getDataSource() {
+		return $this->data_source;
+	}
+
+	/**
+	 * Get count without where and limit
+	 *
+	 * @return Integer
+	 */
+	public function getTotalCount() {
+		if (!$this->total_count === FALSE) {
+			$this->setTotalCount();
+		}
+		return $this->total_count;
+	}
+
 	public function setDefaultOrder($key, $sorting = 'ASC') {
 		$this['ordering']->setDefaultOrder($key, $sorting);
 	}
@@ -203,9 +217,19 @@ class Grid extends Control {
 		    ->setMiddlePageCount($middle_page_count);
 	}
 
-	public function enableExport($cache_dir, array $columns = array()) {
+	/**
+	 * Set page limit
+	 *
+	 * @param integer $limit
+	 */
+	public function setPageLimit($limit) {
+		$this->page_limit = $limit;
+	}
+
+	public function enableExport($cache_dir, $file_name = NULL, array $columns = array()) {
 		new Extensions\Export($this, 'export');
 		$this['export']->setCacheDir($cache_dir);
+		$this['export']->setFileName($file_name);
 		$this['export']->setColumns($columns);
 	}
 
@@ -217,15 +241,15 @@ class Grid extends Control {
 	}
 
 	public function enableSorting() {
-		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid sortable require line ID. Use setLineId.');
+		if (!$this->hasLineId()) {
+			throw new Grid_Exception('DataGrid sortable require primary key. Use setPrimaryKey.');
 		}
 		new Extensions\Sortable($this, 'sortable');
 	}
 
 	public function enableEditableCells() {
-		if (!$this->line_id_key) {
-			throw new Grid_Exception('DataGrid editable require line ID. Use setLineId.');
+		if (!$this->hasLineId()) {
+			throw new Grid_Exception('DataGrid editable require primary key. Use setPrimaryKey.');
 		}
 		new Extensions\Editable($this, 'editable');
 	}
@@ -278,56 +302,23 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Set page limit
+	 * See $this->setPrimaryKey
 	 *
-	 * @param integer $limit
+	 * @param String $key
+	 * @deprecated
 	 */
-	public function setPageLimit($limit) {
-		$this->page_limit = $limit;
+	public function setLineId($key) {
+		$this->setPrimaryKey($key);
 	}
 
 	/**
-	 * Get data source
-	 *
-	 * @return \DataGrid\IDataSource
-	 */
-	public function getDataSource() {
-		return $this->data_source;
-	}
-
-	/**
-	 * Get count without where and limit
-	 *
-	 * @return Integer
-	 */
-	public function getTotalCount() {
-		if (!$this->total_count === FALSE) {
-			$this->setTotalCount();
-		}
-		return $this->total_count;
-	}
-
-	/**
-	 * Set line id. This will create id="name-{key}" on <tr> or <li>
+	 * Set line id. This will create id="gridName-{key}" on <tr> or <li>
 	 * Required by sortable and editable
 	 *
 	 * @param String $key
-	 * @param String $name
 	 */
-	public function setLineId($key, $name) {
+	public function setPrimaryKey($key) {
 		$this->line_id_key = $key;
-		$this->line_id_name = $name;
-	}
-
-	public function getLineIdName() {
-		return $this->line_id_name;
-	}
-
-	public function getLineId($data) {
-		if ($this->hasLineId()) {
-			return $this->line_id_name . '-' . $data[$this->line_id_key];
-		}
-		return FALSE;
 	}
 
 	public function fetchAll() {
@@ -357,8 +348,15 @@ class Grid extends Control {
 		$this->template->render();
 	}
 
+	private function getLineId($data) {
+		if ($this->hasLineId()) {
+			return $this->getName() . '-' . $data[$this->line_id_key];
+		}
+		return FALSE;
+	}
+
 	private function hasLineId() {
-		return empty($this->line_id_key) === FALSE && empty($this->line_id_name) === FALSE;
+		return empty($this->line_id_key) === FALSE;
 	}
 
 	/**

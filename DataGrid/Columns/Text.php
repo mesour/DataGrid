@@ -53,14 +53,16 @@ class Text extends BaseOrdering {
 	}
 
 	public function getBodyAttributes($data) {
+		$attributes = array();
 		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
 			$this->checkColumnId($data);
-			return array(
+			$attributes = array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'text'
 			);
 		}
-		return array();
+		$attributes['class'] = 'type-text';
+		return $attributes;
 	}
 
 	public function getBodyContent($data) {
