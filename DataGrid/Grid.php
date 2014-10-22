@@ -122,6 +122,8 @@ class Grid extends Control {
 		$this->data_source = $data_source;
 		$this->name = $name;
 		new Extensions\Ordering($this, 'ordering');
+		new Extensions\Translator($this, 'translator');
+        $this["translator"]->setLocale("en.php");
 	}
 
 	static public function disableJsDraw() {
@@ -321,6 +323,15 @@ class Grid extends Control {
 		$this->line_id_key = $key;
 	}
 
+    /**
+     * @param $languageFile - Set language file
+     * @param null $customDir - Set custom directory (directory where you have translates from grid)
+     * @throws Grid_Exception
+     */
+    function setLocale($languageFile, $customDir = null) {
+        $this["translator"]->setLocale($languageFile, $customDir);
+    }
+
 	public function fetchAll() {
 		return $this->data_source->fetchAll();
 	}
@@ -384,6 +395,8 @@ class Grid extends Control {
 	 */
 	private function beforeRender() {
 		$this['ordering']->applyOrder();
+        $this->template->setTranslator($this["translator"]);
+
 		if ($this->called_before_render === TRUE) {
 			return FALSE;
 		}
