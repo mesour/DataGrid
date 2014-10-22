@@ -1,6 +1,6 @@
 {snippet filter}
 <div class="panel panel-default" data-grid="{$control->parent->getName()}">
-	<div class="panel-heading">Filter</div>
+	<div class="panel-heading">{_('Filter')}</div>
 	<div class="panel-body data-grid-filter">
 		<script>
 			mesour.dataGrid[{$control->parent->getName()}].gridValues = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
@@ -8,19 +8,20 @@
 			mesour.dataGrid[{$control->parent->getName()}].jsFilterDate = {$js_date};
 			mesour.gridTranslates = {
 				months: {
-					1: 'January',
-					2: 'February',
-					3: 'March',
-					4: 'April',
-					5: 'May',
-					6: 'June',
-					7: 'July',
-					8: 'August',
-					9: 'September',
-					10: 'October',
-					11: 'November',
-					12: 'December'
-				}
+					1: {_('January')},
+					2: {_('February')},
+					3: {_('March')},
+					4: {_('April')},
+					5: {_('May')},
+					6: {_('June')},
+					7: {_('July')},
+					8: {_('August')},
+					9: {_('September')},
+					10: {_('October')},
+					11: {_('November')},
+					12: {_('December')}
+				},
+				closeAll: {_('close all')}
 			};
 		</script>
 		{foreach $control->parent->getColumns() as $column}
@@ -49,38 +50,38 @@
 				initApply();
 			});
 		</script>
-		<button type="button" class="btn btn-success apply-filter" data-href="{link applyDefaultFilter! settings => array()}">Apply filter</button>
+		<button type="button" class="btn btn-success apply-filter" data-href="{link applyDefaultFilter! settings => array()}">{_('Apply filter')}</button>
 		<div class="grid-filter modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Custom filter</h4>
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{_('Close')}</span></button>
+					<h4 class="modal-title">{_('Custom filter')}</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-inline">
-						<p>Show rows where:</p>
+						<p>{_('Show rows where')}:</p>
 						<div class="form-group">
-							<label class="sr-only" for="grid-how-1">Email address</label>
+							<label class="sr-only" for="grid-how-1"></label>
 							<select id="grid-how-1" class="form-control">
 								<option></option>
-								<option value="equal_to">Equal to</option>
-								<option value="not_equal_to">Not equal to</option>
-								<option value="bigger">Is greater than</option>
-								<option value="not_bigger">Is no greater than</option>
-								<option value="smaller">Is smaller than</option>
-								<option value="not_smaller">Is no smaller than</option>
-								<option value="start_with">Starts with</option>
-								<option value="not_start_with">Not starts with</option>
-								<option value="end_with">Ends with</option>
-								<option value="not_end_with">Not ends with</option>
-								<option value="equal">Contains</option>
-								<option value="not_equal">Not contains</option>
+								<option value="equal_to">{_('Equal to')}</option>
+								<option value="not_equal_to">{_('Not equal to')}</option>
+								<option value="bigger">{_('Is greater than')}</option>
+								<option value="not_bigger">{_('Is no greater than')}</option>
+								<option value="smaller">{_('Is smaller than')}</option>
+								<option value="not_smaller">{_('Is no smaller than')}</option>
+								<option value="start_with">{_('Starts with')}</option>
+								<option value="not_start_with">{_('Not starts with')}</option>
+								<option value="end_with">{_('Ends with')}</option>
+								<option value="not_end_with">{_('Not ends with')}</option>
+								<option value="equal">{_('Contains')}</option>
+								<option value="not_equal">{_('Not contains')}</option>
 							</select>
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="grid-value-1">Value</label>
+							<label class="sr-only" for="grid-value-1">{_('Value')}</label>
 							<div class="input-group date" id="grid-datepicker1">
-								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-1" placeholder="Value">
+								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-1" placeholder="{_('Value')}">
 								<span class="input-group-addon">
 									<span class="glyphicon glyphicon-calendar"></span>
 								</span>
@@ -88,32 +89,32 @@
 						</div>
 						<br>
 						<div class="form-group grid-operators">
-							<input type="radio" name="operator" id="grid-operator-and" value="and" checked="checked"> <label for="grid-operator-and">and</label>
-							<input type="radio" name="operator" id="grid-operator-or" value="or"> <label for="grid-operator-or">or</label>
+							<input type="radio" name="operator" id="grid-operator-and" value="and" checked="checked"> <label for="grid-operator-and">{_('and')}</label>
+							<input type="radio" name="operator" id="grid-operator-or" value="or"> <label for="grid-operator-or">{_('or')}</label>
 						</div>
 						<br>
 						<div class="form-group">
-							<label class="sr-only" for="grid-how-2">Email address</label>
+							<label class="sr-only" for="grid-how-2"></label>
 							<select id="grid-how-2" class="form-control">
 								<option></option>
-								<option value="equal_to">Equal to</option>
-								<option value="not_equal_to">Not equal to</option>
-								<option value="bigger">Is greater than</option>
-								<option value="not_bigger">Is no greater than</option>
-								<option value="smaller">Is smaller than</option>
-								<option value="not_smaller">Is no smaller than</option>
-								<option value="start_with">Starts with</option>
-								<option value="not_start_with">Not starts with</option>
-								<option value="end_with">Ends with</option>
-								<option value="not_end_with">Not ends with</option>
-								<option value="equal">Contains</option>
-								<option value="not_equal">Not contains</option>
+								<option value="equal_to">{_('Equal to')}</option>
+								<option value="not_equal_to">{_('Not equal to')}</option>
+								<option value="bigger">{_('Is greater than')}</option>
+								<option value="not_bigger">{_('Is no greater than')}</option>
+								<option value="smaller">{_('Is smaller than')}</option>
+								<option value="not_smaller">{_('Is no smaller than')}</option>
+								<option value="start_with">{_('Starts with')}</option>
+								<option value="not_start_with">{_('Not starts with')}</option>
+								<option value="end_with">{_('Ends with')}</option>
+								<option value="not_end_with">{_('Not ends with')}</option>
+								<option value="equal">{_('Contains')}</option>
+								<option value="not_equal">{_('Not contains')}</option>
 							</select>
 						</div>
 						<div class="form-group">
-							<label class="sr-only" for="grid-value-2">Value</label>
+							<label class="sr-only" for="grid-value-2">{_('Value')}</label>
 							<div class="input-group date" id="grid-datepicker2">
-								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-2" placeholder="Value">
+								<input type="text" class="form-control" data-date-format="{$js_date}" id="grid-value-2" placeholder="{_('Value')}">
 								<span class="input-group-addon">
 									<span class="glyphicon glyphicon-calendar"></span>
 								</span>
@@ -122,8 +123,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary btn-sm save-custom-filter">Ok</button>
-					<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Storno</button>
+					<button type="button" class="btn btn-primary btn-sm save-custom-filter">{_('Ok')}</button>
+					<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">{_('Storno')}</button>
 				</div>
 				<input type="hidden" data-name="">
 			</div><!-- /.modal-content -->

@@ -521,7 +521,7 @@
                     year_li.append('<input type="checkbox" class="checker">');
                     year_li.append('&nbsp;');
                     year_li.append('<label>'+years[a]+'</label>');
-                    year_li.append('<span class="close-all">(<a href="#">close all</a>)</span>');
+                    year_li.append('<span class="close-all">(<a href="#">'+mesour.gridTranslates.closeAll+'</a>)</span>');
                     var month_ul = $('<ul class="toggled-sub-ul">');
                     year_li.append(month_ul);
 

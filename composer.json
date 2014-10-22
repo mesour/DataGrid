@@ -7,6 +7,9 @@
         {
             "name": "Matouš Němec",
             "homepage": "http://mesour.com"
+        },{
+            "name": "Jan Lorenc",
+            "homepage": "http://jazby.net"
         }
     ],
     "require": {

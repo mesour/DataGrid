@@ -78,6 +78,8 @@ class Grid extends Control {
 
 	private $real_column_names = NULL;
 
+	private $main_parent_value = 0;
+
 	/**
 	 * Event which is triggered when sort data
 	 *
@@ -123,7 +125,7 @@ class Grid extends Control {
 		$this->name = $name;
 		new Extensions\Ordering($this, 'ordering');
 		new Extensions\Translator($this, 'translator');
-        $this["translator"]->setLocale("en.php");
+		$this["translator"]->setLocale("en.php");
 	}
 
 	static public function disableJsDraw() {
@@ -196,7 +198,7 @@ class Grid extends Control {
 
 	public function enableFilter(Form $filer_form = NULL, $template = NULL, $date = 'Y-m-d') {
 		new Extensions\Filter($this, 'filter');
-		if(!is_null($filer_form)) {
+		if (!is_null($filer_form)) {
 			$this['filter']->setFilterForm($filer_form, $template);
 		}
 		$this['filter']->setDateFormat($date);
@@ -296,7 +298,7 @@ class Grid extends Control {
 	 * @deprecated
 	 */
 	public function setFilterForm($filter_form, $auto_filtering = TRUE) {
-		if($auto_filtering) {
+		if ($auto_filtering) {
 			$this->enableFilter();
 		} else {
 			$this->enableFilter($this->presenter[$filter_form]);
@@ -323,21 +325,28 @@ class Grid extends Control {
 		$this->line_id_key = $key;
 	}
 
-    /**
-     * @param $languageFile - Set language file
-     * @param null $customDir - Set custom directory (directory where you have translates from grid)
-     * @throws Grid_Exception
-     */
-    function setLocale($languageFile, $customDir = null) {
-        $this["translator"]->setLocale($languageFile, $customDir);
-    }
+	/**
+	 * @param $value
+	 */
+	public function setMainParentValue($value) {
+		$this->main_parent_value = $value;
+	}
+
+	/**
+	 * @param $languageFile - Set language file
+	 * @param null $customDir - Set custom directory (directory where you have translates from grid)
+	 * @throws Grid_Exception
+	 */
+	function setLocale($languageFile, $customDir = null) {
+		$this["translator"]->setLocale($languageFile, $customDir);
+	}
 
 	public function fetchAll() {
 		return $this->data_source->fetchAll();
 	}
 
 	public function getRealColumnNames() {
-		if(is_null($this->real_column_names)) {
+		if (is_null($this->real_column_names)) {
 			$this->real_column_names = array_keys($this->data_source->fetch());
 		}
 		return $this->real_column_names;
@@ -382,7 +391,7 @@ class Grid extends Control {
 		}
 		foreach ($this->column_arr as $column) {
 			$column->setGridComponent($this);
-			if($column instanceof Column\BaseOrdering && $this['ordering']->isDisabled()) {
+			if ($column instanceof Column\BaseOrdering && $this['ordering']->isDisabled()) {
 				$column->setOrdering(FALSE);
 			}
 		}
@@ -395,7 +404,7 @@ class Grid extends Control {
 	 */
 	private function beforeRender() {
 		$this['ordering']->applyOrder();
-        $this->template->setTranslator($this["translator"]);
+		$this->template->setTranslator($this["translator"]);
 
 		if ($this->called_before_render === TRUE) {
 			return FALSE;
@@ -437,7 +446,7 @@ class Grid extends Control {
 	protected function createBody(Render\IRendererFactory $factory) {
 		$this->beforeCreate();
 		$table = $factory->createTable();
-		if($factory instanceof Render\Tree\RendererFactory) {
+		if ($factory instanceof Render\Tree\RendererFactory) {
 			$table_class = 'tree-grid';
 		} else {
 			$table_class = 'table table-striped table-condensed';
@@ -447,36 +456,41 @@ class Grid extends Control {
 		));
 		$header = $factory->createHeader();
 		$header->setAttributes(array('class' => 'grid-header'));
-		foreach($this->getColumns() as $column) {
+		foreach ($this->getColumns() as $column) {
 			$header->addCell($factory->createHeaderCell($column));
 		}
 		$table->setHeader($header);
 
 		$this->beforeRender();
-		if($factory instanceof Render\Tree\RendererFactory) {
+		if ($factory instanceof Render\Tree\RendererFactory) {
 			$data = $this->data_source->fetchAssoc();
 			$body = $factory->createBody();
 			$body_attributes = array(
 			    'class' => 'grid-ul'
 			);
-			if(isset($this['sortable'])) {
+			if (isset($this['sortable'])) {
 				$body_attributes['class'] = 'grid-ul sortable';
 				$body_attributes['data-sort-href'] = $this['sortable']->link('sortData!');
 			}
 			$body->setAttributes($body_attributes);
-			foreach($data[0] as $rowData) {
-				$this->addTreeRow($factory, $body, $rowData, $data);
+			if(!empty($data)) {
+				if(!isset($data[$this->main_parent_value])) {
+					throw new Grid_Exception('Main parent value key does not exist in data.');
+				}
+				foreach ($data[$this->main_parent_value] as $rowData) {
+					$this->addTreeRow($factory, $body, $rowData, $data);
+				}
 			}
 			$table->setBody($body);
 		} else {
 			$body = $factory->createBody();
-			if(isset($this['sortable'])) {
+			if (isset($this['sortable'])) {
 				$body->setAttributes(array(
 				    'class' => 'sortable',
 				    'data-sort-href' => $this['sortable']->link('sortData!')
 				));
 			}
-			foreach($this->data_source->fetchAll() as $rowData) {
+			foreach ($this->data_source->fetchAll() as $rowData) {
 				$this->addRow($factory, $body, $rowData);
 			}
 			$table->setBody($body);
@@ -486,12 +500,12 @@ class Grid extends Control {
 
 	private function addRow(&$factory, &$body, $rowData) {
 		$row = $factory->createRow($rowData, $this->getColumns());
-		if($this->hasLineId()) {
+		if ($this->hasLineId()) {
 			$row->setAttributes(array(
 			    'id' => $this->getLineId($rowData)
 			));
 		}
-		foreach($this->getColumns() as $column) {
+		foreach ($this->getColumns() as $column) {
 			$row->addCell($factory->createCell($rowData, $column));
 		}
 		$body->addRow($row);
@@ -503,7 +517,7 @@ class Grid extends Control {
 		$sub_body->setAttributes(array(
 		    'class' => 'grid-ul'
 		));
-		foreach($groupData[$rowId] as $rowData) {
+		foreach ($groupData[$rowId] as $rowData) {
 			$this->addTreeRow($factory, $sub_body, $rowData, $groupData);
 		}
 		$row->setBody($sub_body);
@@ -512,7 +526,7 @@ class Grid extends Control {
 	private function addTreeRow(&$factory, &$body, $rowData, $groupData) {
 		$row = $this->addRow($factory, $body, $rowData);
 		$sub_id = $rowData[$this->data_source->getPrimaryKey()];
-		if(isset($groupData[$sub_id])) {
+		if (isset($groupData[$sub_id])) {
 			$this->rowsWalkRecursive($factory, $row, $sub_id, $groupData);
 		}
 	}

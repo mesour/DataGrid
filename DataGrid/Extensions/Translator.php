@@ -2,8 +2,8 @@
 
 namespace DataGrid\Extensions;
 
-use DataGrid\Grid_Exception;
-use Nette\Localization\ITranslator;
+use DataGrid\Grid_Exception,
+    Nette\Localization\ITranslator;
 
 /**
  * @author jazby <jan.lorenc@jazby.net>
@@ -11,32 +11,35 @@ use Nette\Localization\ITranslator;
  */
 class Translator extends BaseControl implements ITranslator {
 
-    private $locales = array();
+	private $locales = array();
 
-    /**
-     * Translates the given string.
-     * @param  string $message
-     * @param  int $count
-     * @return string
-     */
-    function translate($message, $count = null)
-    {
-        return isset($this->locales[$message]) ? $this->locales[$message] : $message;
-    }
+	/**
+	 * Translates the given string.
+	 * @param  string $message
+	 * @param  int $count
+	 * @return string
+	 */
+	function translate($message, $count = null) {
+		return isset($this->locales[$message]) ? $this->locales[$message] : $message;
+	}
 
-    /**
-     * @param $languageFile - Set language file
-     * @param null $customDir - Set custom directory (directory where you have translates from grid)
-     * @throws Grid_Exception
-     */
-    function setLocale($languageFile, $customDir = null) {
-        if(is_null($customDir)) {
-            $customDir =  __DIR__ . '/templates/../../locales/';
-        }
-        $this->locales = require_once( $customDir . "/" . $languageFile );
+	/**
+	 * @param $languageFile - Set language file
+	 * @param null $customDir - Set custom directory (directory where you have translates from grid)
+	 * @throws Grid_Exception
+	 */
+	function setLocale($languageFile, $customDir = null) {
+		if (is_null($customDir)) {
+			$customDir = __DIR__ . '/templates/../../locales/';
+		}
+		$file = $customDir . "/" . $languageFile;
+		if (!is_file($file)) {
+			throw new Grid_Exception('Locale file "' . $file . '" does not exist or is not readable.');
+		}
+		$this->locales = require_once($file);
 
-        if(!is_array($this->locales)) {
-            throw new Grid_Exception('DataGrid could not parse locales file.');
-        }
-    }
+		if (!is_array($this->locales)) {
+			throw new Grid_Exception('DataGrid could not parse locales file.');
+		}
+	}
 }
