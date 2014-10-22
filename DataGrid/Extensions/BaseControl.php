@@ -43,4 +43,10 @@ class BaseControl extends Control {
 		parent::loadState($params);
 	}
 
+    protected function createTemplate()
+    {
+        $template = parent::createTemplate();
+        $template->setTranslator( $this->parent["translator"] );
+        return $template;
+    }
 }
