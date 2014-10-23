@@ -77,5 +77,7 @@ return array(
     'Smaller than'          =>  'Smaller than',
     'Smaller than or equal'          =>  'Smaller than or equal',
     'Text filters'          =>  'Text filters',
-    'close all' => 'close all'
+    'close all' => 'close all',
+    'Page' => 'Page',
+    'Go!' => 'Go!'
 );
