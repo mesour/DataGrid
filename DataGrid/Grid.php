@@ -125,7 +125,7 @@ class Grid extends Control {
 		$this->name = $name;
 		new Extensions\Ordering($this, 'ordering');
 		new Extensions\Translator($this, 'translator');
-		$this["translator"]->setLocale("en.php");
+		$this["translator"]->setLocale("en");
 	}
 
 	static public function disableJsDraw() {
@@ -405,6 +405,7 @@ class Grid extends Control {
 	private function beforeRender() {
 		$this['ordering']->applyOrder();
 		$this->template->setTranslator($this["translator"]);
+		$this->template->locale = $this["translator"]->getLocale();
 
 		if ($this->called_before_render === TRUE) {
 			return FALSE;

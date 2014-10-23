@@ -96,6 +96,7 @@ class Pager extends BaseControl {
 
 	protected function createComponentPageForm() {
 		$form = new Form;
+		$form->setTranslator($this->parent["translator"]);
 
 		$form->getElementPrototype()
 			->action($this->link('toPage'));

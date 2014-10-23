@@ -1,5 +1,5 @@
 {snippet dataGrid}
-	<div class="data-grid{if $control instanceof \DataGrid\GridTree} data-grid-tree{/if}" data-mesour-grid="{$control->getName()}">
+	<div class="data-grid{if $control instanceof \DataGrid\GridTree} data-grid-tree{/if} lang-{$locale}" data-mesour-grid="{$control->getName()}">
 		{snippet $control->getGridName()}
 			<script>
 				var mesour = !mesour ? { dataGrid: {} } : mesour;

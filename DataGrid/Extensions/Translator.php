@@ -12,6 +12,7 @@ use DataGrid\Grid_Exception,
 class Translator extends BaseControl implements ITranslator {
 
 	private $locales = array();
+	private $locale;
 
 	/**
 	 * Translates the given string.
@@ -29,17 +30,30 @@ class Translator extends BaseControl implements ITranslator {
 	 * @throws Grid_Exception
 	 */
 	function setLocale($languageFile, $customDir = null) {
+		if(strpos($languageFile, ".php") === FALSE ) {
+			$languageFile .= ".php";
+		}
 		if (is_null($customDir)) {
-			$customDir = __DIR__ . '/templates/../../locales/';
+			$customDir = __DIR__ . '/templates/../../locales';
 		}
 		$file = $customDir . "/" . $languageFile;
 		if (!is_file($file)) {
 			throw new Grid_Exception('Locale file "' . $file . '" does not exist or is not readable.');
 		}
-		$this->locales = require_once($file);
+		$this->locales = require($file);
 
 		if (!is_array($this->locales)) {
 			throw new Grid_Exception('DataGrid could not parse locales file.');
 		}
+
+		$this->locale = pathinfo($languageFile, PATHINFO_FILENAME);
+	}
+
+	/**
+	 * Get current locale
+	 * @return mixed
+	 */
+	function getLocale() {
+		return $this->locale;
 	}
 }

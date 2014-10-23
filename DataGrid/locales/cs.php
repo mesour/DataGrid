@@ -77,5 +77,7 @@ return array(
     'Smaller than'          =>  'Menší než',
     'Smaller than or equal'          =>  'Menší než nebo rovno',
     'Text filters'          =>  'Filtry textu',
-    'close all' => 'zavřít vše'
+    'close all' => 'zavřít vše',
+    'Page' => 'Strana',
+    'Go!' => 'Přejít!'
 );
