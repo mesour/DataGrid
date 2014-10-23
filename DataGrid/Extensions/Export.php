@@ -27,6 +27,7 @@ class Export extends BaseControl {
 
 	private $file_name = NULL;
 	private $delimiter = ",";
+	private $file_path;
 
 	public function setFileName($file_name) {
 		if(!is_string($file_name) && !is_null($file_name)) {
@@ -95,8 +96,8 @@ class Export extends BaseControl {
 		}
 
 
-		$file_name = $this->cache_dir . "/" . $this->parent->getGridName() . time() . ".csv";
-		$file = fopen($file_name, "w");
+		$this->file_path = $this->cache_dir . "/" . $this->parent->getGridName() . time() . ".csv";
+		$file = fopen($this->file_path, "w");
 		foreach($export_columns as $column) {
 			if($column instanceof Column\IColumn) {
 				$header_arr[] = $column->getText();
@@ -133,8 +134,13 @@ class Export extends BaseControl {
 		}
 		fclose($file);
 
-		$this->presenter->sendResponse( new \Nette\Application\Responses\FileResponse( $file_name , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
-		unlink($file_name);
+		$this->presenter->sendResponse( new \Nette\Application\Responses\FileResponse( $this->file_path , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
+	}
+
+	public function __destruct() {
+		if(is_file($this->file_path)) {
+			unlink($this->file_path);
+		}
 	}
 
 }
