@@ -26,12 +26,17 @@ class Export extends BaseControl {
 	private $export_columns = array();
 
 	private $file_name = NULL;
+	private $delimiter = ",";
 
 	public function setFileName($file_name) {
 		if(!is_string($file_name) && !is_null($file_name)) {
 			throw new Grid_Exception('Export file name must be string, ' . gettype($file_name) . ' given.');
 		}
 		$this->file_name = $file_name;
+	}
+
+	public function setDelimiter($delimiter = ",") {
+		$this->delimiter = $delimiter;
 	}
 
 	public function setCacheDir($dir) {
@@ -103,7 +108,7 @@ class Export extends BaseControl {
 				}
 			}
 		}
-		fputcsv($file, $header_arr);
+		fputcsv($file, $header_arr, $this->delimiter);
 
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {
@@ -123,23 +128,13 @@ class Export extends BaseControl {
 					$line_data[] = $data[$column_name];
 				}
 			}
-			fputcsv($file, $line_data);
+			fputcsv($file, $line_data, $this->delimiter);
 			$first = FALSE;
 		}
 		fclose($file);
 
-		echo file_get_contents($file_name);
+		$this->presenter->sendResponse( new \Nette\Application\Responses\FileResponse( $file_name , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
 		unlink($file_name);
-
-		header('Content-Description: File Transfer');
-		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="' . (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv"');
-		header('Content-Transfer-Encoding: binary');
-		header('Connection: Keep-Alive');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		exit;
 	}
 
 }
