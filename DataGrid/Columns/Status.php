@@ -19,8 +19,6 @@ class Status extends BaseOrdering {
 
 	static public $no_active_class = 'no-active-button';
 
-	private $active_count = 0;
-
 	public function setButtons(array $buttons) {
 		$this->option[self::BUTTONS] = $buttons;
 	}
@@ -51,15 +49,23 @@ class Status extends BaseOrdering {
 		if (!isset($data[$this->option[self::ID]])) {
 			throw new Grid_Exception('Column "' . $this->option[self::ID] . '" does not exist in data.');
 		}
-		$class = 'right-buttons ' . self::$no_active_class;
+		$class = 'status-buttons';
+		$exception = 'Option \DataGrid\StatusColumn::BUTTONS must be array contains instances of Components\StatusButton.';
+		if (!is_array($this->option[self::BUTTONS])) {
+			throw new Grid_Exception($exception);
+		}
+		$active_count = 0;
 		foreach($this->option[self::BUTTONS] as $button) {
 			if (!$button instanceof StatusButton) {
-				throw new Grid_Exception('Option \DataGrid\StatusColumn::BUTTONS must be array contains instances of Components\StatusButton.');
+				throw new Grid_Exception($exception);
 			}
 			if($button->isActive($this->option[self::ID], $data)) {
 				$class .= ' is-' . $button->getStatus();
-				$this->active_count++;
+				$active_count++;
 			}
+		}
+		if($active_count === 0) {
+			$class .= ' ' . self::$no_active_class;
 		}
 		return array('class' => $class);
 	}
