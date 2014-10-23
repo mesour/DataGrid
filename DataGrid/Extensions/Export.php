@@ -26,12 +26,17 @@ class Export extends BaseControl {
 	private $export_columns = array();
 
 	private $file_name = NULL;
+	private $delimiter = ",";
 
 	public function setFileName($file_name) {
 		if(!is_string($file_name) && !is_null($file_name)) {
 			throw new Grid_Exception('Export file name must be string, ' . gettype($file_name) . ' given.');
 		}
 		$this->file_name = $file_name;
+	}
+
+	public function setDelimiter($delimiter = ",") {
+		$this->delimiter = $delimiter;
 	}
 
 	public function setCacheDir($dir) {
@@ -103,7 +108,7 @@ class Export extends BaseControl {
 				}
 			}
 		}
-		fputcsv($file, $header_arr);
+		fputcsv($file, $header_arr, $this->delimiter);
 
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {
@@ -123,7 +128,7 @@ class Export extends BaseControl {
 					$line_data[] = $data[$column_name];
 				}
 			}
-			fputcsv($file, $line_data);
+			fputcsv($file, $line_data, $this->delimiter);
 			$first = FALSE;
 		}
 		fclose($file);

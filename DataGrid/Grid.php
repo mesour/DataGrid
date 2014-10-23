@@ -230,11 +230,12 @@ class Grid extends Control {
 		$this->page_limit = $limit;
 	}
 
-	public function enableExport($cache_dir, $file_name = NULL, array $columns = array()) {
+	public function enableExport($cache_dir, $file_name = NULL, array $columns = array(), $delimiter = ",") {
 		new Extensions\Export($this, 'export');
 		$this['export']->setCacheDir($cache_dir);
 		$this['export']->setFileName($file_name);
 		$this['export']->setColumns($columns);
+		$this['export']->setDelimiter($delimiter);
 	}
 
 	public function enableRowSelection($primary_key, array $url_array, $show_main_checkbox = TRUE) {
