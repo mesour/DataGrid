@@ -128,18 +128,8 @@ class Export extends BaseControl {
 		}
 		fclose($file);
 
-		echo file_get_contents($file_name);
+		$this->presenter->sendResponse( new \Nette\Application\Responses\FileResponse( $file_name , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
 		unlink($file_name);
-
-		header('Content-Description: File Transfer');
-		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="' . (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv"');
-		header('Content-Transfer-Encoding: binary');
-		header('Connection: Keep-Alive');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		exit;
 	}
 
 }
