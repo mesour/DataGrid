@@ -6,12 +6,10 @@ $container = require_once __DIR__ . '/../bootstrap.php';
 
 class DibiDataSourceTest extends \Tester\TestCase {
 
-	private $container;
+	private $connection;
 
-	function __construct(Nette\DI\Container $container) {
-		$this->container = $container;
-		print_r($container->getByType('\DibiConnection'));
-		die;
+	function __construct(\DibiConnection $connection) {
+		$this->connection = $connection;
 	}
 
 	function testSomething() {
@@ -20,5 +18,5 @@ class DibiDataSourceTest extends \Tester\TestCase {
 
 }
 
-$test = new DibiDataSourceTest($container);
+$test = new DibiDataSourceTest($container->getByType('\DibiConnection'));
 $test->run();
