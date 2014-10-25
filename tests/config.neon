@@ -4,7 +4,7 @@ parameters:
 	database:
 		sqlite:
 			driver: sqlite3
-			file: %data_dir%user.db
+			file: %data_dir%test_data.db
 			profiler: true
 
 nette:
