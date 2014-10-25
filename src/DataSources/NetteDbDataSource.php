@@ -82,7 +82,7 @@ class NetteDbDataSource implements IDataSource {
 	/**
 	 * Get searched values with applied limit, offset and where
 	 * 
-	 * @return \DibiRow
+	 * @return array
 	 */
 	public function fetchAll() {
 		$output = array();
