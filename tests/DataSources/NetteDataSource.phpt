@@ -6,24 +6,20 @@ $container = require_once __DIR__ . '/../bootstrap.php';
 
 class NetteDataSource extends \Tester\TestCase {
 
-	private $container;
+	private $database;
 
-	function __construct(Nette\DI\Container $container) {
-		$this->container = $container;
+	function __construct(Nette\Database\Context $database) {
+		$this->database = $database;
 	}
 
 	function testTotalCount() {
-		$database = $this->container->getByType('Nette\Database\Context');
-
-		$source = new \DataGrid\NetteDbDataSource($database->table('user'));
+		$source = new \DataGrid\NetteDbDataSource($this->database->table('user'));
 
 		Assert::same(19, $source->getTotalCount());
 	}
 
 	function testLimit() {
-		$database = $this->container->getByType('Nette\Database\Context');
-
-		$source = new \DataGrid\NetteDbDataSource($database->table('user'));
+		$source = new \DataGrid\NetteDbDataSource($this->database->table('user'));
 
 		$source->applyLimit(5);
 
@@ -35,9 +31,7 @@ class NetteDataSource extends \Tester\TestCase {
 	}
 
 	function testOffset() {
-		$database = $this->container->getByType('Nette\Database\Context');
-
-		$source = new \DataGrid\NetteDbDataSource($database->table('user'));
+		$source = new \DataGrid\NetteDbDataSource($this->database->table('user'));
 
 		$source->applyLimit(5, 2);
 
@@ -53,9 +47,7 @@ class NetteDataSource extends \Tester\TestCase {
 	}
 
 	function testWhere() {
-		$database = $this->container->getByType('Nette\Database\Context');
-
-		$source = new \DataGrid\NetteDbDataSource($database->table('user'));
+		$source = new \DataGrid\NetteDbDataSource($this->database->table('user'));
 
 		$source->where('action = ?', 1);
 
@@ -68,5 +60,5 @@ class NetteDataSource extends \Tester\TestCase {
 
 }
 
-$test = new NetteDataSource($container);
+$test = new NetteDataSource($container->getByType('Nette\Database\Context'));
 $test->run();
