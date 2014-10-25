@@ -3,7 +3,9 @@
 namespace DataGrid\Extensions;
 
 use DataGrid\Column,
-	DataGrid\Grid_Exception;
+	DataGrid\Grid_Exception,
+	Nette\Application\Responses\FileResponse,
+	Nette\Utils\Strings;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -96,7 +98,7 @@ class Export extends BaseControl {
 		}
 
 
-		$this->file_path = $this->cache_dir . "/" . $this->parent->getGridName() . time() . ".csv";
+		$this->file_path = $this->cache_dir . "/" . Strings::webalize($this->parent->getGridName()) . time() . ".csv";
 		$file = fopen($this->file_path, "w");
 		foreach($export_columns as $column) {
 			if($column instanceof Column\IColumn) {
@@ -134,7 +136,7 @@ class Export extends BaseControl {
 		}
 		fclose($file);
 
-		$this->presenter->sendResponse( new \Nette\Application\Responses\FileResponse( $this->file_path , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
+		$this->presenter->sendResponse( new FileResponse( $this->file_path , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
 	}
 
 	public function __destruct() {
