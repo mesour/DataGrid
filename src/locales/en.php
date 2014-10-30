@@ -79,5 +79,6 @@ return array(
     'Text filters'          =>  'Text filters',
     'close all' => 'close all',
     'Page' => 'Page',
-    'Go!' => 'Go!'
+    'Go!' => 'Go!',
+    'Inverse selection' => 'Inverse selection'
 );

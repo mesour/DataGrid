@@ -79,5 +79,6 @@ return array(
     'Text filters'          =>  'Filtry textu',
     'close all' => 'zavřít vše',
     'Page' => 'Strana',
-    'Go!' => 'Přejít!'
+    'Go!' => 'Přejít!',
+    'Inverse selection' => 'Obrátit pořadí'
 );

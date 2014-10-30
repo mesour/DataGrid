@@ -72,7 +72,7 @@ class Selection extends Base {
 			$ul = Html::el('ul', array('class' => 'dropdown-menu', 'role' => 'menu'));
 			//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'active'))->setText('Select active pages')));
 			//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'unactive'))->setText('Select unactive pages')));
-			$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText('Inverse selection')));
+			$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText($this->grid['translator']->translate('Inverse selection'))));
 			$div->add($ul);
 		} else {
 			$button->class('btn btn-default btn-xs');
