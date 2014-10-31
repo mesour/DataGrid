@@ -52,7 +52,7 @@ class Button extends Base {
 	}
 
 	public function getHeaderContent() {
-		return $this->option[self::TEXT];
+		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
 	}
 
 	public function getBodyAttributes($data) {
@@ -62,7 +62,9 @@ class Button extends Base {
 	public function getBodyContent($data) {
 		$count = $this->option[self::BUTTONS_OPTION]->getButtonsCount();
 		$container = Html::el('div', array('class' => 'thumbnailx buttons-count-' . $count));
-
+		if($this->getTranslator()) {
+			$this->option[self::BUTTONS_OPTION]->setTranslator($this->getTranslator());
+		}
 		$container->setHtml($this->option[self::BUTTONS_OPTION]->create($data));
 		return $container;
 	}

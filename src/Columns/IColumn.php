@@ -22,4 +22,5 @@ interface IColumn {
 
 	public function getBodyContent($data);
 
-} 
+	public function setTranslator(\Nette\Localization\ITranslator $translator);
+}

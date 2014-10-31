@@ -152,12 +152,12 @@ class Dropdown extends Setting {
 				$separator = Html::el('li', array('role' => 'presentation', 'class' => $link));
 			} elseif(is_array($link) && isset($link[0]) && isset($link[1])) {
 				$header = Html::el('li', array('role' => 'presentation', 'class' => $link[0]));
-				$header->setText($link[1]);
+				$header->setText($this->getTranslator() ? $this->getTranslator()->translate($link[1]) : $link[1]);
 			}
 		}
 		if($has_links) {
 			$button = Html::el('button', array('class' => 'btn ' . $this->option[self::TYPE] . ' dropdown-toggle ' . $this->option[self::SIZE_CLASS] . (' ' . $this->option[self::BUTTON_CLASS_NAME]), 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
-			$button->setHtml($this->option[self::NAME] . ' <span class="caret"></span>');
+			$button->setHtml(($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::NAME]) : $this->option[self::NAME]) . ' <span class="caret"></span>');
 			$container->add($button);
 			$container->add($ul);
 		}

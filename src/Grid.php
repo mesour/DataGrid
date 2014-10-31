@@ -80,6 +80,9 @@ class Grid extends Control {
 
 	private $main_parent_value = 0;
 
+	/** @var \Nette\Localization\ITranslator */
+	protected $translator;
+
 	/**
 	 * Event which is triggered when sort data
 	 *
@@ -340,6 +343,20 @@ class Grid extends Control {
 	 */
 	function setLocale($languageFile, $customDir = null) {
 		$this["translator"]->setLocale($languageFile, $customDir);
+	}
+
+	/**
+	 * Sets translate adapter.
+	 * @return self
+	 */
+	public function setTranslator(\Nette\Localization\ITranslator $translator)
+	{
+		$this->translator = $translator;
+	}
+
+	public function getTranslator()
+	{
+		return $this->translator instanceof \Nette\Localization\ITranslator ? $this->translator : null;
 	}
 
 	public function fetchAll() {

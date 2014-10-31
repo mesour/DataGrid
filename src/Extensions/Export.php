@@ -102,6 +102,9 @@ class Export extends BaseControl {
 		$file = fopen($this->file_path, "w");
 		foreach($export_columns as $column) {
 			if($column instanceof Column\IColumn) {
+				if($this->parent->getTranslator()) {
+					$column->setTranslator($this->parent->getTranslator());
+				}
 				$header_arr[] = $column->getText();
 			} else {
 				if(is_array($column)) {

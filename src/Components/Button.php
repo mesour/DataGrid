@@ -151,17 +151,17 @@ class Button extends Setting {
 
 
 		$button = Html::el('a', array('class' => $class));
-		$button->setText($this->option[self::TEXT]);
+		$button->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT]);
 
 		if (array_key_exists(self::CONFIRM, $this->option)) {
 			$button->addAttributes(array(
-			    'onclick' => "return confirm('" . addslashes($this->option[self::CONFIRM]) . "');"
+			    'onclick' => "return confirm('" . addslashes($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::CONFIRM]) : $this->option[self::CONFIRM]) . "');"
 			));
 		}
 
 		if (array_key_exists(self::TITLE, $this->option)) {
 			$button->addAttributes(array(
-			    'title' => $this->option[self::TITLE]
+			    'title' => $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TITLE]) : $this->option[self::TITLE]
 			));
 		}
 

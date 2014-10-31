@@ -118,6 +118,9 @@ class StatusButton extends Setting {
 			throw new Grid_Exception('Button must be instanceof Components\Button.');
 		}
 		$this->option[self::BUTTON]->setPresenter($this->presenter);
+		if($this->getTranslator()) {
+			$this->option[self::BUTTON]->setTranslator($this->getTranslator());
+		}
 		return $this->option[self::BUTTON]->create($data);
 	}
 

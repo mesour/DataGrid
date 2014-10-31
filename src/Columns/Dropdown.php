@@ -85,7 +85,7 @@ class Dropdown extends Base {
 	}
 
 	public function getHeaderContent() {
-		return $this->option[self::TEXT];
+		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
 	}
 
 	public function getBodyAttributes($data) {
@@ -94,6 +94,9 @@ class Dropdown extends Base {
 
 	public function getBodyContent($data) {
 		$dropdown = new Components\Dropdown($this->grid->presenter, $this->option, $data);
+		if($this->getTranslator()) {
+			$dropdown->setTranslator($this->getTranslator());
+		}
 		return $dropdown->create();
 	}
 

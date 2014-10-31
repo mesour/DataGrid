@@ -76,6 +76,9 @@ class Status extends BaseOrdering {
 		foreach($this->option[self::BUTTONS] as $button) {
 			if($button->isActive($this->option[self::ID], $data)) {
 				$button->setPresenter($this->getGrid()->presenter);
+				if($this->getTranslator()) {
+					$button->setTranslator($this->getTranslator());
+				}
 				$buttons .= $button->create($data) . ' ';
 				$active_count++;
 			}

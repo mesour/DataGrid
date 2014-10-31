@@ -8,6 +8,9 @@ namespace DataGrid;
  */
 abstract class Setting {
 
+	/** @var \Nette\Localization\ITranslator */
+	protected $translator;
+
 	/**
 	 * Option for this column
 	 *
@@ -32,6 +35,26 @@ abstract class Setting {
 
 	protected function setDefaults() {
 		return array();
+	}
+
+	/**
+	 * Sets translate adapter.
+	 * @return self
+	 */
+	public function setTranslator(\Nette\Localization\ITranslator $translator)
+	{
+		$this->translator = $translator;
+	}
+
+	protected function getTranslator()
+	{
+		if($this->translator instanceof \Nette\Localization\ITranslator) {
+			return $this->translator;
+		} elseif( isset($this->grid) && $this->grid->getTranslator() instanceof \Nette\Localization\ITranslator) {
+			return $this->grid->getTranslator();
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -37,7 +37,20 @@ class Selection extends BaseControl {
 	}
 
 	public function render() {
-		$this->template->selections = $this->url_array;
+		if($this->parent->getTranslator()) {
+			$items = array();
+			foreach($this->url_array as $key=>$value) {
+				if(is_array($value)) {
+					foreach($value as $k=>&$item) {
+						if(in_array($k, array('data-confirm', 'data-title', 'title'))) {
+							$item = $this->parent->getTranslator()->translate($item);
+						}
+					}
+				}
+				$items[$this->parent->getTranslator()->translate($key)] = $value;
+			}
+		}
+		$this->template->selections = isset($items) ? $items : $this->url_array;
 		$this->template->grid_dir = __DIR__;
 
 		$this->template->setFile(dirname(__FILE__) . '/templates/Selection.latte');

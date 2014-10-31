@@ -39,13 +39,13 @@ abstract class BaseOrdering extends Base {
 		if (isset($this->option[self::ORDERING]) && $this->option[self::ORDERING]) {
 			$ordering = $this->grid['ordering']->getOrdering($this->option[self::ID]);
 			$link = Html::el('a', array('href' => $this->grid['ordering']->link('ordering!', $this->option[self::ID]), 'class' => 'ajax ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : '')));
-			$link->setText($this->option[self::TEXT]);
+			$link->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT] );
 			$link->add(Html::el('span', array('class' => 'glyphicon no-sort'))->setHtml('&nbsp;'));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet')));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet-alt')));
 			return $link;
 		} else {
-			return $this->option[self::TEXT];
+			return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
 		}
 	}
 

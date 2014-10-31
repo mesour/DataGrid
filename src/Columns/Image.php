@@ -62,7 +62,7 @@ class Image extends Base {
 	}
 
 	public function getHeaderContent() {
-		return $this->option[self::TEXT];
+		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
 	}
 
 	public function getBodyAttributes($data) {

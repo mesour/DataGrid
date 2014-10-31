@@ -4,7 +4,8 @@ namespace DataGrid\Column;
 
 use \Nette\ComponentModel\IComponent,
     DataGrid\Grid_Exception,
-    DataGrid\Setting;
+    DataGrid\Setting,
+    \Nette\Localization\ITranslator;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -51,7 +52,13 @@ abstract class Base extends Setting implements IColumn {
 	}
 
 	public function getText() {
-		return isset($this->option['text']) ? $this->option['text'] : NULL;
+		if(isset($this->option['text']) && $this->getTranslator()) {
+			return $this->getTranslator()->translate($this->option['text']);
+		} elseif(isset($this->option['text'])) {
+			return $this->option['text'];
+		} else {
+			return NULL;
+		}
 	}
 
 	public function isEditable() {

@@ -87,6 +87,9 @@ class ButtonsContainer extends Setting {
 				throw new Grid_Exception('Button must be instanceof Components\Button.');
 			}
 			$button->setPresenter($this->presenter);
+			if($this->getTranslator()) {
+				$button->setTranslator($this->getTranslator());
+			}
 			$buttons .= $button->create($data) . ' ';
 		}
 		return $buttons;
