@@ -18,14 +18,19 @@ class NetteDbDataSource implements IDataSource {
 	private $nette_table;
 
 	/**
-	 * @var \Nette\Database\Table\Selection
+	 * @var array
 	 */
-	private $nette_original_table;
+	private $where_arr = array();
 
 	/**
-	 * @var \Nette\Database\Table\Selection
+	 * @var integer
 	 */
-	private $nette_full_table;
+	private $limit;
+
+	/**
+	 * @var integer
+	 */
+	private $offset;
 
 	private $total_count = 0;
 
@@ -35,10 +40,8 @@ class NetteDbDataSource implements IDataSource {
 	 * @param \Nette\Database\Table\Selection $nette_table
 	 */
 	public function __construct(\Nette\Database\Table\Selection $nette_table) {
-		$this->nette_original_table = $nette_table;
-		$this->nette_full_table = clone $nette_table;
-		$this->nette_table = clone $nette_table;
-		$this->total_count = $this->nette_original_table->count();
+		$this->nette_table = $nette_table;
+		$this->total_count = $nette_table->count('*');
 	}
 
 	/**
@@ -56,8 +59,7 @@ class NetteDbDataSource implements IDataSource {
 	 * @param Mixed $args NetteDatabase args
 	 */
 	public function where($args) {
-		call_user_func_array(array($this->nette_table, 'where'), func_get_args());
-		call_user_func_array(array($this->nette_original_table, 'where'), func_get_args());
+		$this->where_arr[] = func_get_args();
 	}
 
 	/**
@@ -67,7 +69,8 @@ class NetteDbDataSource implements IDataSource {
 	 * @param Integer $offset
 	 */
 	public function applyLimit($limit, $offset = 0) {
-		$this->nette_table->limit($limit, $offset);
+		$this->limit = $limit;
+		$this->offset = $offset;
 	}
 
 	/**
@@ -76,7 +79,20 @@ class NetteDbDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function count() {
-		return $this->nette_original_table->count();
+		return $this->getSelection()->count('*');
+	}
+
+	private function getSelection($limit = TRUE, $where = TRUE) {
+		$selection = clone $this->nette_table;
+		if($where) {
+			foreach($this->where_arr as $conditions) {
+				call_user_func_array(array($selection, 'where'), $conditions);
+			}
+		}
+		if($limit) {
+			$selection->limit($this->limit, $this->offset);
+		}
+		return $selection;
 	}
 
 	/**
@@ -86,7 +102,8 @@ class NetteDbDataSource implements IDataSource {
 	 */
 	public function fetchAll() {
 		$output = array();
-		foreach($this->nette_table->fetchAll() as $data) {
+		$selection = $this->getSelection();
+		foreach ($selection as $data) {
 			$output[] = $data->toArray();
 		}
 		return $output;
@@ -94,7 +111,8 @@ class NetteDbDataSource implements IDataSource {
 
 	public function fetchAllForExport() {
 		$output = array();
-		foreach($this->nette_original_table->fetchAll() as $data) {
+		$selection = $this->getSelection(FALSE);
+		foreach($selection as $data) {
 			$output[] = $data->toArray();
 		}
 		return $output;
@@ -185,7 +203,8 @@ class NetteDbDataSource implements IDataSource {
 
 	public function fetchFullData($date_format = 'Y-m-d') {
 		$output = array();
-		foreach($this->nette_full_table->fetchAll() as $data) {
+		$selection = $this->getSelection(FALSE, FALSE);
+		foreach($selection as $data) {
 			$current_data = $data->toArray();
 			foreach($current_data as $key => $val) {
 				if($val instanceof \Nette\Utils\DateTime) {
