@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid\Render\Tree;
+namespace Mesour\DataGrid\Render\Tree;
 
-use \DataGrid\Column,
-    DataGrid\Render;
+use Mesour\DataGrid\Column,
+    Mesour\DataGrid\Render;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

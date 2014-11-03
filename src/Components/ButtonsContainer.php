@@ -1,10 +1,10 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
 use \Nette\Application\UI\Presenter,
-	DataGrid\Setting,
-	DataGrid\Grid_Exception;
+    Mesour\DataGrid\Setting,
+    Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

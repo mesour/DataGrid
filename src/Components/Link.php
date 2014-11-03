@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
-use DataGrid\Setting;
+use Mesour\DataGrid\Setting;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

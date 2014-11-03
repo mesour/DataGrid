@@ -1,12 +1,12 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
-	DataGrid\Column,
-	DataGrid\Setting,
-	DataGrid\Grid_Exception;
+    Mesour\DataGrid\Column,
+    Mesour\DataGrid\Setting,
+    Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -45,15 +45,10 @@ class Button extends Setting {
 	 * @param array $option
 	 * @param \Nette\Application\UI\Presenter $presenter
 	 * @param Array|NULL $data
-	 * @throws \DataGrid\Grid_Exception
+	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
-	public function __construct($option = array(), $presenter = array(), $data = NULL) {
-		if($option instanceof Presenter) {
-			parent::__construct($presenter);
-			$presenter = $option;
-		} else {
-			parent::__construct($option);
-		}
+	public function __construct(array $option = array(), Presenter $presenter = NULL, $data = NULL) {
+		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}

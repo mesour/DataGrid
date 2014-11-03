@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html;
 
@@ -14,7 +14,7 @@ abstract class BaseOrdering extends Base {
 	 * Possible option key
 	 */
 	const ID = 'id',
-	    TEXT = 'text',
+	    HEADER = 'header',
 	    ORDERING = 'ordering';
 
 	public function setId($id) {
@@ -22,8 +22,8 @@ abstract class BaseOrdering extends Base {
 		return $this;
 	}
 
-	public function setText($text) {
-		$this->option[self::TEXT] = $text;
+	public function setHeader($header) {
+		$this->option[self::HEADER] = $header;
 		return $this;
 	}
 
@@ -39,13 +39,13 @@ abstract class BaseOrdering extends Base {
 		if (isset($this->option[self::ORDERING]) && $this->option[self::ORDERING]) {
 			$ordering = $this->grid['ordering']->getOrdering($this->option[self::ID]);
 			$link = Html::el('a', array('href' => $this->grid['ordering']->link('ordering!', $this->option[self::ID]), 'class' => 'ajax ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : '')));
-			$link->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT] );
+			$link->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER] );
 			$link->add(Html::el('span', array('class' => 'glyphicon no-sort'))->setHtml('&nbsp;'));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet')));
 			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet-alt')));
 			return $link;
 		} else {
-			return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
+			return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];
 		}
 	}
 

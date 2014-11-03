@@ -1,11 +1,11 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
-	DataGrid\Column,
-    DataGrid\Setting;
+    Mesour\DataGrid\Column,
+    Mesour\DataGrid\Setting;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -39,13 +39,17 @@ class Dropdown extends Setting {
 	 * @param array $option
 	 * @param \Nette\Application\UI\Presenter $presenter
 	 * @param Array|NULL $data
-	 * @throws \DataGrid\Grid_Exception
+	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
-	public function __construct(Presenter $presenter, array $option = array(), $data = NULL) {
+	public function __construct(array $option = array(), Presenter $presenter = NULL, $data = NULL) {
 		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
+		$this->presenter = $presenter;
+	}
+
+	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
 	}
 
@@ -109,14 +113,14 @@ class Dropdown extends Setting {
 	 *
 	 * @param Array $data
 	 * @return Html
-	 * @throws \DataGrid\Grid_Exception
+	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
 	public function create($data = NULL) {
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
 
-		$container = Html::el('div', array('class' => 'dropdown'));
+		$container = Html::el('span', array('class' => 'dropdown'));
 
 		$has_links = FALSE;
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));

@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception;
+    Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -15,7 +15,7 @@ class Image extends Base {
 	 * Possible option key
 	 */
 	const ID = 'id',
-	    TEXT = 'text',
+	    HEADER = 'header',
 	    MAX_WIDTH = 'max_width',
 	    MAX_HEIGHT = 'max_height',
 	    CALLBACK = 'function',
@@ -26,8 +26,8 @@ class Image extends Base {
 		return $this;
 	}
 
-	public function setText($text) {
-		$this->option[self::TEXT] = $text;
+	public function setHeader($header) {
+		$this->option[self::HEADER] = $header;
 		return $this;
 	}
 
@@ -53,8 +53,8 @@ class Image extends Base {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\ImageColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Image::HEADER is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]
@@ -62,7 +62,7 @@ class Image extends Base {
 	}
 
 	public function getHeaderContent() {
-		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
+		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];
 	}
 
 	public function getBodyAttributes($data) {

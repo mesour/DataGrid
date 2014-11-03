@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
-use \DataGrid\Grid_Exception;
+use Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -49,8 +49,8 @@ class Number extends BaseOrdering {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\NumberColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Number::HEADER is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]

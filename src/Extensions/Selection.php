@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
-use DataGrid\Column;
+use Mesour\DataGrid\Column;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

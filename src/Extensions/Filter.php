@@ -1,12 +1,12 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
 use \Nette\Application\UI\Form,
     \Nette\Forms\Controls\SubmitButton,
     \Nette\Forms\Rendering\DefaultFormRenderer,
-    \DataGrid\FilterFormRenderer,
-	\DataGrid\Column\Date;
+    \Mesour\DataGrid\FilterFormRenderer,
+	\Mesour\DataGrid\Column\Date;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

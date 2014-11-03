@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html;
 

@@ -8,7 +8,7 @@
  * @copyright (c) 2013 - 2014 Matous Nemec <matous.nemec@mesour.com>
  */
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 use Nette\Application\UI\Form,
     \Nette\ComponentModel\IContainer,
@@ -65,7 +65,7 @@ class Grid extends Control {
 	/**
 	 * Data source
 	 *
-	 * @var \DataGrid\IDataSource
+	 * @var \Mesour\DataGrid\IDataSource
 	 */
 	private $data_source;
 
@@ -117,7 +117,7 @@ class Grid extends Control {
 	/**
 	 * Create data source instance
 	 *
-	 * @param \DataGrid\IDataSource $data_source Data source
+	 * @param \Mesour\DataGrid\IDataSource $data_source Data source
 	 * @param \Nette\ComponentModel\IContainer $parent
 	 * @param string $name Name of data source
 	 */
@@ -148,13 +148,50 @@ class Grid extends Control {
 		return $this->presenter->getName() . $this->name;
 	}
 
-	/**
-	 * Add column to data grid
-	 *
-	 * @param Column\IColumn $column
-	 */
-	public function column(Column\IColumn $column) {
-		$this->column_arr[] = $column;
+	public function addText($column_name, array $setting = array()) {
+		$column = new Column\Text($setting);
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addDate($column_name, array $setting = array()) {
+		$column = new Column\Date($setting);
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addNumber($column_name, array $setting = array()) {
+		$column = new Column\Number($setting);
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addImage($column_name, array $setting = array()) {
+		$column = new Column\Image($setting);
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addStatus($column_name, array $setting = array()) {
+		$column = new Column\Status($setting);
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addButton(array $setting = array()) {
+		$column = new Column\Button($setting);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addDropdown(array $setting = array()) {
+		$column = new Column\Dropdown($setting);
+		return $this->column_arr[] = $column;
+	}
+
+	public function addContainer($column_name) {
+		$column = new Column\Container();
+		$column->setId($column_name);
+		return $this->column_arr[] = $column;
 	}
 
 	/**
@@ -169,7 +206,7 @@ class Grid extends Control {
 	/**
 	 * Get data source
 	 *
-	 * @return \DataGrid\IDataSource
+	 * @return \Mesour\DataGrid\IDataSource
 	 */
 	public function getDataSource() {
 		return $this->data_source;
@@ -260,63 +297,6 @@ class Grid extends Control {
 			throw new Grid_Exception('DataGrid editable require primary key. Use setPrimaryKey.');
 		}
 		new Extensions\Editable($this, 'editable');
-	}
-
-	/**
-	 * @param $selection_key
-	 * @param array $url_array
-	 * @param bool $checkbox_main
-	 * @deprecated
-	 */
-	public function setCheckboxSelection($selection_key, array $url_array, $checkbox_main = TRUE) {
-		$this->enableRowSelection($selection_key, $url_array, $checkbox_main);
-	}
-
-	/**
-	 * Set sortable on data grid table
-	 *
-	 * @param callable $callback
-	 * @throws Grid_Exception
-	 * @deprecated
-	 */
-	public function sortable($callback) {
-		$this->enableSorting();
-		$this->onSort[] = $callback;
-	}
-
-	/**
-	 * Enable editable columns
-	 *
-	 * @param callable $callback
-	 * @throws Grid_Exception
-	 * @deprecated
-	 */
-	public function editable($callback) {
-		$this->enableEditableCells();
-		$this->onEditCell[] = $callback;
-	}
-
-	/**
-	 * @param $filter_form
-	 * @param bool $auto_filtering
-	 * @deprecated
-	 */
-	public function setFilterForm($filter_form, $auto_filtering = TRUE) {
-		if ($auto_filtering) {
-			$this->enableFilter();
-		} else {
-			$this->enableFilter($this->presenter[$filter_form]);
-		}
-	}
-
-	/**
-	 * See $this->setPrimaryKey
-	 *
-	 * @param String $key
-	 * @deprecated
-	 */
-	public function setLineId($key) {
-		$this->setPrimaryKey($key);
 	}
 
 	/**

@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Components\Link;
+    Mesour\DataGrid\Components\Link;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

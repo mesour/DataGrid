@@ -1,10 +1,10 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html,
-    \DataGrid\Grid_Exception,
-    \DataGrid\Components\StatusButton;
+    Mesour\DataGrid\Grid_Exception,
+    Mesour\DataGrid\Components\StatusButton;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -21,10 +21,12 @@ class Status extends BaseOrdering {
 
 	public function setButtons(array $buttons) {
 		$this->option[self::BUTTONS] = $buttons;
+		return $this;
 	}
 
 	public function addButton(StatusButton $button) {
 		$this->option[self::BUTTONS][] = $button;
+		return $this;
 	}
 
 	protected function setDefaults() {
@@ -35,8 +37,8 @@ class Status extends BaseOrdering {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\TextColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Status::HEADER is required.');
 		}
 		return array('class' => 'act buttons-count-1');
 	}

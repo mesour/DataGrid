@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
-use DataGrid\Column,
-	DataGrid\Grid_Exception,
+use Mesour\DataGrid\Column,
+	Mesour\DataGrid\Grid_Exception,
 	Nette\Application\Responses\FileResponse,
 	Nette\Utils\Strings;
 

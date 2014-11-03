@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 use \Mesour\ArrayManage\Searcher\Select;
 

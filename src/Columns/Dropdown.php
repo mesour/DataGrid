@@ -1,9 +1,9 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
-use \DataGrid\Grid_Exception,
-    \DataGrid\Components;
+use Mesour\DataGrid\Grid_Exception,
+    Mesour\DataGrid\Components;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -14,15 +14,15 @@ class Dropdown extends Base {
 	/**
 	 * Possible option key
 	 */
-	const TEXT = 'text',
+	const HEADER = 'header',
 	    NAME = 'name',
 	    LINKS = 'links',
 	    TYPE = 'type',
 	    BUTTON_CLASS_NAME = 'class_name',
 	    SIZE_CLASS = 'size_class';
 
-	public function setText($text) {
-		$this->option[self::TEXT] = $text;
+	public function setHeader($header) {
+		$this->option[self::HEADER] = $header;
 		return $this;
 	}
 
@@ -70,6 +70,7 @@ class Dropdown extends Base {
 		return array(
 		    self::TYPE => 'btn-default',
 		    self::LINKS => array(),
+		    self::HEADER => 'Actions',
 		    self::NAME => 'Actions',
 		    self::BUTTON_CLASS_NAME => '',
 		    self::SIZE_CLASS => 'btn-xs'
@@ -78,14 +79,14 @@ class Dropdown extends Base {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DropdownColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Dropdown::HEADER is required.');
 		}
 		return array('class' => 'dropdown-column');
 	}
 
 	public function getHeaderContent() {
-		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
+		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];
 	}
 
 	public function getBodyAttributes($data) {
@@ -93,7 +94,7 @@ class Dropdown extends Base {
 	}
 
 	public function getBodyContent($data) {
-		$dropdown = new Components\Dropdown($this->grid->presenter, $this->option, $data);
+		$dropdown = new Components\Dropdown($this->option, $this->grid->presenter, $data);
 		if($this->getTranslator()) {
 			$dropdown->setTranslator($this->getTranslator());
 		}

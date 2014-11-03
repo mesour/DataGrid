@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
-use DataGrid\Grid_Exception,
+use Mesour\DataGrid\Grid_Exception,
     Nette\Localization\ITranslator;
 
 /**

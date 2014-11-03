@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
 use \Nette\Application\UI\Control;
 

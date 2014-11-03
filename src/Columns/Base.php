@@ -1,10 +1,10 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\ComponentModel\IComponent,
-    DataGrid\Grid_Exception,
-    DataGrid\Setting,
+    Mesour\DataGrid\Grid_Exception,
+    Mesour\DataGrid\Setting,
     \Nette\Localization\ITranslator;
 
 /**
@@ -32,7 +32,7 @@ abstract class Base extends Setting implements IColumn {
 
 	/**
 	 *
-	 * @var \DataGrid\Grid
+	 * @var \Mesour\DataGrid\Grid
 	 */
 	protected $grid;
 
@@ -84,8 +84,8 @@ abstract class Base extends Setting implements IColumn {
 		if ($isnt_special && array_key_exists('id', $this->option) === FALSE) {
 			throw new Grid_Exception('Column ID can not be empty.');
 		}
-		if ($isnt_special && array_key_exists('text', $this->option) === FALSE) {
-			$this->option['text'] = $this->option['id'];
+		if ($isnt_special && array_key_exists('header', $this->option) === FALSE) {
+			$this->option['header'] = $this->option['id'];
 		}
 	}
 
