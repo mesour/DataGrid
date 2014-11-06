@@ -4,12 +4,13 @@ use Tester\Assert;
 
 $container = require_once __DIR__ . '/../bootstrap.php';
 
-class DibiDataSourceTest extends \Tester\TestCase {
+class DibiDataSourceTest extends \Test\BaseTestCase {
 
 	private $connection;
 
-	function __construct(\DibiConnection $connection) {
-		$this->connection = $connection;
+	function __construct(Nette\DI\Container $container) {
+		parent::__construct($container);
+		$this->connection = $this->getByType('\DibiConnection');
 	}
 
 	function testSomething() {
@@ -18,5 +19,5 @@ class DibiDataSourceTest extends \Tester\TestCase {
 
 }
 
-$test = new DibiDataSourceTest($container->getByType('\DibiConnection'));
+$test = new DibiDataSourceTest($container);
 $test->run();
