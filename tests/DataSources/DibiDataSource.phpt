@@ -6,11 +6,11 @@ $container = require_once __DIR__ . '/../bootstrap.php';
 
 class DibiDataSourceTest extends \Test\BaseTestCase {
 
-	private $connection;
+	private $db;
 
 	function __construct(Nette\DI\Container $container) {
 		parent::__construct($container);
-		$this->connection = $this->getByType('\DibiConnection');
+		$this->db = $this->getByType('\DibiConnection');
 	}
 
 	function testSomething() {
