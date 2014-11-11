@@ -46,11 +46,12 @@ class Dropdown extends Base {
 		return $this;
 	}
 
-	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE, $component = NULL) {
 		$this->option[self::LINKS][] = new Components\Link(array(
 		    Components\Link::HREF => $href,
 		    Components\Link::PARAMS => $parameters,
 		    Components\Link::NAME => $name,
+		    Components\Link::COMPONENT => $component,
 		    Components\Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;

@@ -4,8 +4,9 @@ namespace DataGrid\Components;
 
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
-	DataGrid\Column,
-    DataGrid\Setting;
+    DataGrid\Column,
+    DataGrid\Setting,
+    DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -74,11 +75,12 @@ class Dropdown extends Setting {
 		return $this;
 	}
 
-	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE, $component = NULL) {
 		$this->option[self::LINKS][] = new Link(array(
 		    Link::HREF => $href,
 		    Link::PARAMS => $parameters,
 		    Link::NAME => $name,
+		    Link::COMPONENT => $component,
 		    Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;
@@ -135,8 +137,24 @@ class Dropdown extends Setting {
 					unset($header);
 				}
 				list($to_href, $params, $name) = $href;
+
 				if($link->hasUseNetteLink()) {
-					$href_param = $this->presenter->link($to_href, $params);
+					$used_component = $link->getUsedComponent();
+					if(!is_null($used_component)) {
+						if(is_string($used_component)) {
+							$href_param = $this->presenter[$used_component]->link($to_href, $params);
+						} elseif(is_array($used_component)) {
+							$component = $this->presenter;
+							foreach($used_component as $component_name) {
+								$component = $component[$component_name];
+							}
+							$href_param = $component->link($to_href, $params);
+						} else {
+							throw new Grid_Exception('Link::COMPONENT must be string or array, ' . gettype($used_component) . ' given.');
+						}
+					} else {
+						$href_param = $this->presenter->link($to_href, $params);
+					}
 				} else {
 					$href_param = $to_href;
 				}

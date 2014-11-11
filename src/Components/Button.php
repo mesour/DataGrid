@@ -206,9 +206,28 @@ class Button extends Setting {
 				return FALSE;
 			}
 			list($to_href, $params) = $href;
-			$button->addAttributes(array(
-			    $attr_name => $this->presenter->link($to_href, $params)
-			));
+			$used_component = $link->getUsedComponent();
+			if(!is_null($used_component)) {
+				if(is_string($used_component)) {
+					$href_attribute = $this->presenter[$used_component]->link($to_href, $params);
+				} elseif(is_array($used_component)) {
+					$component = $this->presenter;
+					foreach($used_component as $component_name) {
+						$component = $component[$component_name];
+					}
+					$href_attribute = $component->link($to_href, $params);
+				} else {
+					throw new Grid_Exception('Link::COMPONENT must be string or array, ' . gettype($used_component) . ' given.');
+				}
+				$button->addAttributes(array(
+				    $attr_name => $href_attribute
+				));
+			} else {
+				$button->addAttributes(array(
+				    $attr_name => $this->presenter->link($to_href, $params)
+				));
+			}
+
 		}
 		return TRUE;
 	}
