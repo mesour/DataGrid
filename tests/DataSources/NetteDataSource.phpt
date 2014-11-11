@@ -5,24 +5,25 @@ use Tester\Assert,
 
 $container = require_once __DIR__ . '/../bootstrap.php';
 
-class NetteDataSource extends \Tester\TestCase {
+class NetteDataSource extends \Test\BaseTestCase {
 
 	CONST FULL_USER_COUNT = 20;
 
-	private $database;
+	private $db;
 
-	public function __construct(Nette\Database\Context $database) {
-		$this->database = $database;
+	public function __construct(Nette\DI\Container $container) {
+		parent::__construct($container);
+		$this->db = $this->getByType('Nette\Database\Context');
 	}
 
 	public function testTotalCount() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
 		Assert::same(self::FULL_USER_COUNT, $source->getTotalCount());
 	}
 
 	public function testLimit() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
 		$source->applyLimit(5);
 
@@ -34,7 +35,7 @@ class NetteDataSource extends \Tester\TestCase {
 	}
 
 	public function testOffset() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
 		$source->applyLimit(5, 2);
 
@@ -50,7 +51,7 @@ class NetteDataSource extends \Tester\TestCase {
 	}
 
 	public function testWhere() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
 		$source->where('action = ?', 1);
 
@@ -62,7 +63,7 @@ class NetteDataSource extends \Tester\TestCase {
 	}
 
 	public function testWhereAssoc() {
-		$source = new NetteDbDataSource($this->database->table('page'));
+		$source = new NetteDbDataSource($this->db->table('page'));
 
 		$source->where('action = ?', 1);
 
@@ -71,5 +72,5 @@ class NetteDataSource extends \Tester\TestCase {
 
 }
 
-$test = new NetteDataSource($container->getByType('Nette\Database\Context'));
+$test = new NetteDataSource($container);
 $test->run();
