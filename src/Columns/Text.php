@@ -15,7 +15,8 @@ class Text extends BaseOrdering {
 	 */
 	const EDITABLE = 'editable',
 	    CALLBACK = 'function',
-	    CALLBACK_ARGS = 'func_args';
+	    CALLBACK_ARGS = 'func_args',
+	    FILTERING = 'filtering';
 
 	public function setCallback($callback) {
 		$this->option[self::CALLBACK] = $callback;
@@ -27,6 +28,11 @@ class Text extends BaseOrdering {
 		return $this;
 	}
 
+	public function setFiltering($filtering) {
+		$this->option[self::FILTERING] = (bool) $filtering;
+		return $this;
+	}
+
 	public function setEditable($editable) {
 		$this->option[self::EDITABLE] = (bool)$editable;
 		return $this;
@@ -34,7 +40,8 @@ class Text extends BaseOrdering {
 
 	protected function setDefaults() {
 		return array(
-		    self::EDITABLE => TRUE
+		    self::EDITABLE => TRUE,
+		    self::FILTERING => TRUE
 		);
 	}
 

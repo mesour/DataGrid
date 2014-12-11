@@ -65,6 +65,10 @@ abstract class Base extends Setting implements IColumn {
 		return isset($this->option['editable']) ? $this->option['editable'] : FALSE;
 	}
 
+	public function hasFiltering() {
+		return isset($this->option['filtering']) ? $this->option['filtering'] : FALSE;
+	}
+
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		return array();

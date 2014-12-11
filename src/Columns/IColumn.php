@@ -14,6 +14,8 @@ interface IColumn {
 
 	public function isEditable();
 
+	public function hasFiltering();
+
 	public function getHeaderAttributes();
 
 	public function getHeaderContent();

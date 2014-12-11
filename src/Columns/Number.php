@@ -16,7 +16,8 @@ class Number extends BaseOrdering {
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
 	    THOUSANDS_SEP = 'thousands_sep',
-	    EDITABLE = 'editable';
+	    EDITABLE = 'editable',
+	    FILTERING = 'filtering';
 
 	public function setDecimals($decimals) {
 		$this->option[self::DECIMALS] = $decimals;
@@ -33,6 +34,11 @@ class Number extends BaseOrdering {
 		return $this;
 	}
 
+	public function setFiltering($filtering) {
+		$this->option[self::FILTERING] = (bool) $filtering;
+		return $this;
+	}
+
 	public function setEditable($editable) {
 		$this->option[self::EDITABLE] = (bool)$editable;
 		return $this;
@@ -43,7 +49,8 @@ class Number extends BaseOrdering {
 		    self::DECIMALS => 0,
 		    self::DEC_POINT => '.',
 		    self::THOUSANDS_SEP => ',',
-		    self::EDITABLE => TRUE
+		    self::EDITABLE => TRUE,
+		    self::FILTERING => TRUE
 		);
 	}
 

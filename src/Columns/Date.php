@@ -14,10 +14,16 @@ class Date extends BaseOrdering {
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
-	    EDITABLE = 'editable';
+	    EDITABLE = 'editable',
+	    FILTERING = 'filtering';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
+		return $this;
+	}
+
+	public function setFiltering($filtering) {
+		$this->option[self::FILTERING] = (bool) $filtering;
 		return $this;
 	}
 
@@ -28,7 +34,8 @@ class Date extends BaseOrdering {
 
 	protected function setDefaults() {
 		return array(
-		    self::EDITABLE => TRUE
+		    self::EDITABLE => TRUE,
+		    self::FILTERING => TRUE
 		);
 	}
 

@@ -141,7 +141,32 @@ class DibiDataSource implements IDataSource {
 	}
 
 	public function applyCheckers($column_name, array $value, $type) {
-		$this->where($type === 'date' ? 'DATE([' . $column_name . '])' : ('[' . $column_name . ']') . ' IN %in', $value);
+		if($type === 'date') {
+			$is_timestamp = TRUE;
+			foreach($value as $val) {
+				if(!is_numeric($val)) {
+					$is_timestamp = FALSE;
+					break;
+				}
+			}
+			if($is_timestamp) {
+				$where = '(';
+				$i = 1;
+				foreach($value as $val) {
+					$where .= '(' . $column_name . ' >= ' . (int) $val . ' AND ' . $column_name . ' <= ' . (((int) $val) + 86398) . ')';
+					if($i < count($value)) {
+						$where .= ' OR ';
+					}
+					$i++;
+				}
+				$where .= ')';
+				$this->where($where);
+			} else {
+				$this->where('DATE([' . $column_name . ']) IN %in', $value);
+			}
+		} else {
+			$this->where('[' . $column_name . '] IN %in', $value);
+		}
 	}
 
 	public function fetchFullData($date_format = 'Y-m-d') {

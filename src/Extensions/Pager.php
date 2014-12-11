@@ -62,6 +62,10 @@ class Pager extends BaseControl {
 		$this->paginator->setPage(isset($this->settings['page']) ? $this->settings['page'] : 1);
 	}
 
+	public function reset() {
+		$this->settings['page'] = 0;
+	}
+
 	/**
 	 * Create pager
 	 */

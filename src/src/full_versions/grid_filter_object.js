@@ -479,6 +479,8 @@
             if(!type) {
                 var ul = element.find('.box-inner').find('ul');
                 for(var y in values) {
+                    if(!values[y].val) continue;
+
                     var li = $('<li>'),
                         id = name+(typeof values[y].val.replace === 'function' ? values[y].val.replace(' ', '') : values[y].val);
                     li.append('<input type="checkbox" class="checker" data-value="'+values[y].val+'" id="'+id+'">');
@@ -490,7 +492,11 @@
                 var years = [],
                     months = {};
                 for(var y in values) {
-                    var timestamp = strtotime(values[y].val);
+                    if(!values[y].val) continue;
+
+                    var isTimestamp = isNaN(values[y].val);
+
+                    var timestamp = isTimestamp ? strtotime(values[y].val) : values[y].val;
                     var year = phpDate('Y', timestamp);
                     var month = phpDate('n', timestamp);
                     var day = phpDate('j', timestamp);
@@ -541,7 +547,8 @@
                         months[years[a]].days[month[b]].sort(function(a, b){return a-b});
                         var days = months[years[a]].days[month[b]];
                         for(var c in days) {
-                            var date_text = phpDate(filter.getPhpDateFormat(), strtotime(years[a]+'-'+month[b]+'-'+days[c]));
+                            var this_time = strtotime(years[a]+'-'+month[b]+'-'+days[c]);
+                            var date_text = isTimestamp ? phpDate(filter.getPhpDateFormat(), this_time) : this_time;
                             var day_li = $('<li>');
                             day_li.append('<span class="glyphicon">&nbsp;</span>');
                             day_li.append('<input type="checkbox" class="checker" data-value="'+date_text+'">');

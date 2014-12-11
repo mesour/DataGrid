@@ -85,6 +85,11 @@ class Filter extends BaseControl {
 	 */
 	public function render() {
 		$this->template->grid_dir = __DIR__;
+		foreach($this->settings as $key => $val) {
+			if(!in_array($key, $this->parent->getRealColumnNames())) {
+				unset($this->settings[$key]);
+			}
+		}
 		$this->template->settings = $this->settings;
 
 		if (!$this->filter_form) {
@@ -103,6 +108,9 @@ class Filter extends BaseControl {
 
 	public function handleSubmitForm() {
 		$this->fixSettingsForForm();
+		if(isset($this->parent['pager'])) {
+			$this->parent['pager']->reset(0);
+		}
 		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
@@ -121,6 +129,9 @@ class Filter extends BaseControl {
 	}
 
 	public function handleApplyDefaultFilter() {
+		if(isset($this->parent['pager'])) {
+			$this->parent['pager']->reset(0);
+		}
 		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
