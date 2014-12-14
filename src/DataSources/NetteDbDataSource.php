@@ -45,6 +45,13 @@ class NetteDbDataSource implements IDataSource {
 	}
 
 	/**
+	 * @return \Nette\Database\Table\Selection
+	 */
+	public function getTableSelection() {
+		return $this->nette_table;
+	}
+
+	/**
 	 * Get total count of source data
 	 * 
 	 * @return Integer

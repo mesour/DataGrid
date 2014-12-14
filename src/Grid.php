@@ -116,13 +116,6 @@ class Grid extends Control {
 	 */
 	static public $css_draw = TRUE;
 
-	/**
-	 * Create data source instance
-	 *
-	 * @param \DataGrid\IDataSource $data_source Data source
-	 * @param \Nette\ComponentModel\IContainer $parent
-	 * @param string $name Name of data source
-	 */
 	public function __construct(IDataSource $data_source, IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 
@@ -142,8 +135,6 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Get presenter name with data grid name
-	 *
 	 * @return String
 	 */
 	public function getGridName() {
@@ -160,8 +151,6 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Get column array
-	 *
 	 * @return Array
 	 */
 	public function getColumns() {
@@ -169,8 +158,6 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Get data source
-	 *
 	 * @return \DataGrid\IDataSource
 	 */
 	public function getDataSource() {
@@ -376,6 +363,25 @@ class Grid extends Control {
 	public function hasEmptyData() {
 		$column_names = $this->getRealColumnNames();
 		return empty($column_names) ? TRUE : FALSE;
+	}
+
+	/**
+	 * @return \Nette\Utils\Paginator|NULL
+	 */
+	public function getPaginator() {
+		if(isset($this['pager'])) {
+			$this->beforeRender();
+			return $this['pager']->getPaginator();
+		}
+		return NULL;
+	}
+
+	/**
+	 * @return IDataSource
+	 */
+	public function getCurrentDataSource() {
+		$this->beforeRender();
+		return $this->getDataSource();
 	}
 
 	public function render() {

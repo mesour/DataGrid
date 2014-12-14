@@ -33,6 +33,13 @@ class DibiDataSource implements IDataSource {
 	}
 
 	/**
+	 * @return \DibiDataSource
+	 */
+	public function getDibiDataSource() {
+		return $this->dibi_data_source;
+	}
+
+	/**
 	 * Get array data count
 	 *
 	 * @return Integer
