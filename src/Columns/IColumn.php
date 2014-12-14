@@ -10,7 +10,7 @@ interface IColumn {
 
 	public function getId();
 
-	public function getText();
+	public function getHeader();
 
 	public function isEditable();
 

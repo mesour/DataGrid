@@ -51,11 +51,11 @@ abstract class Base extends Setting implements IColumn {
 		return isset($this->option['id']) ? $this->option['id'] : NULL;
 	}
 
-	public function getText() {
-		if(isset($this->option['text']) && $this->getTranslator()) {
-			return $this->getTranslator()->translate($this->option['text']);
-		} elseif(isset($this->option['text'])) {
-			return $this->option['text'];
+	public function getHeader() {
+		if(isset($this->option['header']) && $this->getTranslator()) {
+			return $this->getTranslator()->translate($this->option['header']);
+		} elseif(isset($this->option['header'])) {
+			return $this->option['header'];
 		} else {
 			return NULL;
 		}

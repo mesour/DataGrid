@@ -278,9 +278,12 @@ class Grid extends Control {
 		$this['export']->setDelimiter($delimiter);
 	}
 
-	public function enableRowSelection($primary_key, array $url_array, $show_main_checkbox = TRUE) {
+	public function enableRowSelection(array $url_array, $show_main_checkbox = TRUE) {
+		if (!$this->hasLineId()) {
+			throw new Grid_Exception('DataGrid row selection require primary key. Use setPrimaryKey.');
+		}
 		new Extensions\Selection($this, 'selection');
-		$this['selection']->setPrimaryKey($primary_key);
+		$this['selection']->setPrimaryKey($this->line_id_key);
 		$this['selection']->setUrlArray($url_array);
 		$this['selection']->setMainCheckboxShowing($show_main_checkbox);
 	}
@@ -329,13 +332,11 @@ class Grid extends Control {
 	 * Sets translate adapter.
 	 * @return self
 	 */
-	public function setTranslator(\Nette\Localization\ITranslator $translator)
-	{
+	public function setTranslator(\Nette\Localization\ITranslator $translator) {
 		$this->translator = $translator;
 	}
 
-	public function getTranslator()
-	{
+	public function getTranslator() {
 		return $this->translator instanceof \Nette\Localization\ITranslator ? $this->translator : null;
 	}
 
@@ -472,8 +473,8 @@ class Grid extends Control {
 				$body_attributes['data-sort-href'] = $this['sortable']->link('sortData!');
 			}
 			$body->setAttributes($body_attributes);
-			if(!empty($data)) {
-				if(!isset($data[$this->main_parent_value])) {
+			if (!empty($data)) {
+				if (!isset($data[$this->main_parent_value])) {
 					throw new Grid_Exception('Main parent value key does not exist in data.');
 				}
 				foreach ($data[$this->main_parent_value] as $rowData) {
