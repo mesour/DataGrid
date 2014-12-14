@@ -35,6 +35,10 @@ abstract class Row{
 		$this->attributes = $attributes;
 	}
 
+	public function addAttribute($key, $value) {
+		$this->attributes[$key] = $value;
+	}
+
 	public function addCell(Cell $cell) {
 		$this->cells[] = $cell;
 	}

@@ -54,7 +54,6 @@ return array(
     'November'      =>  'November',
     'December'      =>  'December',
     'Filter'        =>  'Filter',
-    'Apply filter'  =>  'Apply filter',
     'Close'         =>  'Close',
     'Show rows where'      =>  'Show rows where',
     'Not equal to'  =>  'Not equal to',

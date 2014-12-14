@@ -1,10 +1,10 @@
 var mesour = !mesour ? {dataGrid: {}} : mesour;
-mesour.dataGrid.jsVersion = '1.4.2';
+mesour.dataGrid.jsVersion = '1.4.5';
 $(document).on('ready', function() {
     $('.tree-grid').find('.grid-header').find('.separator:visible:last').hide();
     if(mesour.dataGrid.version) {
         if(mesour.dataGrid.version !== mesour.dataGrid.jsVersion) {
-            alert('Please update Mesour DataGrid "grid.js" and "grid.css" from "vendor/mesour/datagrid/DataGrid/src".')
+            alert('Please update Mesour DataGrid "grid.js" and "grid.css" from "vendor/mesour/datagrid/DataGrid/src". Require version '+mesour.dataGrid.version+'.')
         }
     }
 });
@@ -61,3 +61,7 @@ mesour.getUrlWithParam = function(name, url, component, parameterName, value) {
     }
     return url + character + this.createGetUrl(name, component, parameterName, value);
 };
+$(document).on('click', '.mesour-ajax:not(form)', function(e) {
+    e.preventDefault();
+    $.get($(this).attr('href'));
+});

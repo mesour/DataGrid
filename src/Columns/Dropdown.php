@@ -90,7 +90,7 @@ class Dropdown extends Base {
 	}
 
 	public function getBodyAttributes($data) {
-		return array('class' => 'right-buttons');
+		return parent::mergeAttributes($data, array('class' => 'right-buttons'));
 	}
 
 	public function getBodyContent($data) {

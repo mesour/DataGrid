@@ -83,6 +83,8 @@ class Grid extends Control {
 	/** @var \Nette\Localization\ITranslator */
 	protected $translator;
 
+	private $empty_text = NULL;
+
 	/**
 	 * Event which is triggered when sort data
 	 *
@@ -329,11 +331,12 @@ class Grid extends Control {
 		$this->line_id_key = $key;
 	}
 
-	/**
-	 * @param $value
-	 */
 	public function setMainParentValue($value) {
 		$this->main_parent_value = $value;
+	}
+
+	public function setEmptyText($empty_text) {
+		$this->empty_text = $this->getTranslator()->translate($empty_text);
 	}
 
 	/**
@@ -509,24 +512,39 @@ class Grid extends Control {
 				    'data-sort-href' => $this['sortable']->link('sortData!')
 				));
 			}
-			foreach ($this->data_source->fetchAll() as $rowData) {
-				$this->addRow($factory, $body, $rowData);
+			if($this->hasEmptyData()) {
+				$this->addRow($factory, $body, count($this->getColumns()), TRUE);
+			} else {
+				foreach ($this->data_source->fetchAll() as $rowData) {
+					$this->addRow($factory, $body, $rowData);
+				}
 			}
 			$table->setBody($body);
 		}
 		return $table;
 	}
 
-	private function addRow(&$factory, &$body, $rowData) {
-		$row = $factory->createRow($rowData, $this->getColumns());
+	private function addRow(&$factory, &$body, $rowData, $empty = FALSE) {
+		$row = $factory->createRow($rowData);
 		if ($this->hasLineId()) {
 			$row->setAttributes(array(
 			    'id' => $this->getLineId($rowData)
 			));
 		}
-		foreach ($this->getColumns() as $column) {
-			$row->addCell($factory->createCell($rowData, $column));
+
+		if($empty) {
+			$empty_column = new Column\EmptyData(array(
+				Column\EmptyData::TEXT => $this->empty_text ? $this->empty_text : 'Nothing to display.'
+			));
+			$cell = $factory->createCell($rowData, $empty_column);
+			$row->addAttribute('class', count($this->getColumns()));
+			$row->addCell($cell);
+		} else {
+			foreach ($this->getColumns() as $column) {
+				$row->addCell($factory->createCell($rowData, $column));
+			}
 		}
+
 		$body->addRow($row);
 		return $row;
 	}

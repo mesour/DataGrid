@@ -2,6 +2,7 @@
 
 namespace DataGrid\Column;
 
+use DataGrid\Components\Link;
 use \Nette\ComponentModel\IComponent,
     DataGrid\Grid_Exception,
     DataGrid\Setting,
@@ -12,6 +13,18 @@ use \Nette\ComponentModel\IComponent,
  * @package Mesour DataGrid
  */
 abstract class Base extends Setting implements IColumn {
+
+	const ATTRIBUTES = 'attributes';
+
+	public function setAttributes(array $attributes) {
+		$this->option[self::ATTRIBUTES] = $attributes;
+		return $this;
+	}
+
+	public function addAttribute($key, $value) {
+		$this->option[self::ATTRIBUTES][$key] = $value;
+		return $this;
+	}
 
 	/**
 	 * Inner defaults
@@ -75,7 +88,21 @@ abstract class Base extends Setting implements IColumn {
 	}
 
 	public function getBodyAttributes($data) {
+		if(!empty($this->option[self::ATTRIBUTES]) && is_array($this->option[self::ATTRIBUTES])) {
+			foreach($this->option[self::ATTRIBUTES] as $key => $value) {
+				$this->option[self::ATTRIBUTES][$key] = Link::parseValue($value, $data);
+			}
+			return $this->option[self::ATTRIBUTES];
+		}
 		return array();
+	}
+
+	protected function mergeAttributes($data, array $current) {
+		$base = self::getBodyAttributes($data);
+		if(isset($base['class']) && isset($current['class'])) {
+			$base['class'] = $base['class'] . ' ' . $current['class'];
+		}
+		return array_merge($current, $base);
 	}
 
 	/**

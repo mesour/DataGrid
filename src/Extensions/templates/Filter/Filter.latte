@@ -34,24 +34,7 @@
 				{include DateDropdown.latte column => $column}
 			{/if}
 		{/foreach}
-		<script>
-			var initApply = function(){
-				$('.apply-filter').on('click', function(e){
-					e.preventDefault();
-					var $this = $(this);
-					var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
-					var filterData = $this.closest('.panel-body').find('[data-filter-values]').val();
-					if(filterData !== '') {
-						$.get(mesour.getUrlWithParam(gridName, $this.attr("data-href"), 'filter', 'settings', $.parseJSON(filterData)));
-					}
-				});
-			};
-			initApply();
-			$(document).on('ready', function(){
-				initApply();
-			});
-		</script>
-		<button type="button" class="btn btn-success apply-filter" data-href="{link applyDefaultFilter! settings => array()}">{_('Apply filter')}</button>
+		<input type="hidden" class="apply-filter" data-href="{link applyDefaultFilter! settings => array()}">
 		<div class="grid-filter modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">

@@ -85,7 +85,7 @@ class Selection extends Base {
 		if (!$this->checkPermissions()) {
 			return FALSE;
 		}
-		return array('class' => 'with-checkbox');
+		return parent::mergeAttributes($data, array('class' => 'with-checkbox'));
 	}
 
 	public function getBodyContent($data) {

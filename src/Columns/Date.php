@@ -70,7 +70,7 @@ class Date extends BaseOrdering {
 			);
 		}
 		$attributes['class'] = 'type-date';
-		return $attributes;
+		return parent::mergeAttributes($data, $attributes);
 	}
 
 	public function getBodyContent($data) {

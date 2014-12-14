@@ -320,11 +320,15 @@
                         .closest('li').removeClass('li-checked');
                 }
             },
-            checkAllChecked = function () {
+            checkAllChecked = function (triggered) {
                 if (allSearchedCheckedCheckbox.is(':visible')) {
                     checkChecked(checkers.filter(':visible'), allSearchedCheckedCheckbox);
                 }
                 checkChecked(checkers, allCheckedCheckbox);
+                if(!triggered) {
+                    dropdown.save();
+                    dropdown.getFilter().apply();
+                }
             },
             allCheckboxCallback = function (e) {
                 var $this = $(this);
@@ -332,12 +336,14 @@
                 if ($this.is(':checked')) {
                     $this.closest('li').addClass('li-checked')
                         .closest('ul').find('.checker' + visible).prop('checked', true)
-                        .trigger('change');
+                        .trigger('change', true);
                 } else {
                     $this.closest('li').removeClass('li-checked')
                         .closest('ul').find('.checker' + visible).prop('checked', false)
-                        .trigger('change');
+                        .trigger('change', true);
                 }
+                dropdown.save();
+                dropdown.getFilter().apply();
             },
             checkAllSubChecked = function ($checker) {
                 var sub_ul = $checker.closest('.toggled-sub-ul');
@@ -348,9 +354,12 @@
                 checkChecked(sub_sub_ul.children('ul').children('li').children('.checker'), sub_sub_ul.children('.checker'));
             };
 
-        allCheckedCheckbox.on('change', allCheckboxCallback);
-        allSearchedCheckedCheckbox.on('change', allCheckboxCallback);
-        checkers.on('change', function () {
+        allCheckedCheckbox.off('change.data-grid');
+        allCheckedCheckbox.on('change.data-grid', allCheckboxCallback);
+
+        allSearchedCheckedCheckbox.off('change.data-grid');
+        allSearchedCheckedCheckbox.on('change.data-grid', allCheckboxCallback);
+        checkers.on('change', function (e, triggered) {
             var $this = $(this),
                 li = $this.closest('li'),
                 sub_ul = li.find('.toggled-sub-ul');
@@ -369,7 +378,7 @@
                 }
             }
             checkAllSubChecked($this);
-            checkAllChecked();
+            checkAllChecked(triggered);
         });
         checkers.next('label').each(function () {
             var $this = $(this);
@@ -419,7 +428,7 @@
             if (one_hide) {
                 allSearchedCheckedCheckbox.closest('li').show();
             }
-            checkAllChecked();
+            checkAllChecked(true);
         });
 
         this.getChecked = function() {
@@ -435,7 +444,7 @@
 
         this.check = function(val) {
             checkers.filter('[data-value="'+val+'"]').prop('checked', true)
-                .trigger('change');
+                .trigger('change', true);
         };
     };
     var Dropdown = function (element, name, filter) {
@@ -649,6 +658,8 @@
             click: function() {
                 _this.unsetValues('custom');
                 _this.update();
+                _this.save();
+                filter.apply();
             },
             mouseenter: function() {
                 $(this).removeClass('btn-success').addClass('btn-danger');
@@ -664,8 +675,7 @@
             element.removeClass('open');
         });
 
-        element.find('.save-filter').on('click', function(e) {
-            e.preventDefault();
+        this.save = function() {
             var checked = checkers.getChecked();
             if(checked.length > 0) {
                 _this.setValues(_this.getFilter().generateNextPriority(), 'priority');
@@ -675,11 +685,16 @@
                 _this.unsetValues('priority');
                 _this.unsetValues('checkers');
             }
-            _this.getFilter().filterCheckers();
+            //_this.getFilter().filterCheckers();
             element.removeClass('open');
-        });
+        };
 
         this.update();
+    };
+    var applyFilter = function(gridName, href, filterData) {
+        if(filterData !== '') {
+            $.get(mesour.getUrlWithParam(gridName, href, 'filter', 'settings', $.parseJSON(filterData)));
+        }
     };
     var Filter = function (gridName, element) {
         var _this = this;
@@ -688,6 +703,11 @@
         var dropdowns = {};
         var valuesInput = element.find('[data-filter-values]');
         var modal = element.find('.grid-filter');
+        var applyButton = element.find('.apply-filter');
+
+        this.apply = function() {
+            applyFilter(gridName, applyButton.attr("data-href"), valuesInput.val());
+        };
 
         this.getDropdowns = function() {
             return dropdowns;
@@ -875,6 +895,8 @@
             dropdowns[name].setValues(dropdowns[name].getType() !== 'date' ? 'text' : 'date', 'type');
             $(this).closest('.modal-dialog').fadeOut();
             dropdowns[name].update();
+            dropdowns[name].save();
+            dropdowns[name].getFilter().apply();
         });
     };
     var inited = false,

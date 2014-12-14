@@ -72,9 +72,9 @@ class Action extends Base {
 			throw new Grid_Exception('Column "' . self::$action_column_name . '" does not exist in data. Can use \DataGrid\Column\Base::$action_column_name = "your_column_name" for change this column name.');
 		}
 		if ($data[self::$action_column_name] == self::$actions['active']) {
-			return array('class' => 'is-unactive');
+			return parent::mergeAttributes($data, array('class' => 'is-unactive'));
 		} else {
-			return array('class' => 'is-active');
+			return parent::mergeAttributes($data, array('class' => 'is-active'));
 		}
 	}
 
@@ -95,7 +95,7 @@ class Action extends Base {
 		if ($data[self::$action_column_name] == self::$actions['active']) {
 			$params['status'] = self::$actions['unactive'];
 			$link = Html::el('a', array(
-			    'class' => 'ajax btn btn-sm btn-success' . $added_class,
+			    'class' => 'mesour-ajax btn btn-sm btn-success' . $added_class,
 			    'href' => $this->grid->presenter->link($this->option[self::LINK], $params),
 			    'title' => 'Set as unactive (active)'
 			));
@@ -103,7 +103,7 @@ class Action extends Base {
 		} else {
 			$params['status'] = self::$actions['active'];
 			$link = Html::el('a', array(
-			    'class' => 'ajax btn btn-sm btn-danger' . $added_class,
+			    'class' => 'mesour-ajax btn btn-sm btn-danger' . $added_class,
 			    'href' => $this->grid->presenter->link($this->option[self::LINK], $params),
 			    'title' => 'Set as active (unactive)'
 			));

@@ -69,7 +69,7 @@ class Text extends BaseOrdering {
 			);
 		}
 		$attributes['class'] = 'type-text';
-		return $attributes;
+		return parent::mergeAttributes($data, $attributes);
 	}
 
 	public function getBodyContent($data) {

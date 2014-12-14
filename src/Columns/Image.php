@@ -65,10 +65,6 @@ class Image extends Base {
 		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
 	}
 
-	public function getBodyAttributes($data) {
-		return array();
-	}
-
 	public function getBodyContent($data) {
 		if (array_key_exists(self::CALLBACK, $this->option) === FALSE) {
 			if (isset($data[$this->option[self::ID]]) === FALSE && is_null($data[$this->option[self::ID]]) === FALSE) {

@@ -67,7 +67,7 @@ class Status extends BaseOrdering {
 		if($active_count === 0) {
 			$class .= ' ' . self::$no_active_class;
 		}
-		return array('class' => $class);
+		return parent::mergeAttributes($data, array('class' => $class));
 	}
 
 	public function getBodyContent($data) {

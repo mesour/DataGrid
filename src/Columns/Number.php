@@ -82,7 +82,7 @@ class Number extends BaseOrdering {
 			);
 		}
 		$attributes['class'] = 'type-number';
-		return $attributes;
+		return parent::mergeAttributes($data, $attributes);
 	}
 
 	public function getBodyContent($data) {

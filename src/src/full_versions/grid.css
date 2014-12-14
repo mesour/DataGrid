@@ -43,9 +43,10 @@ table.table th.act.act-select > .btn-group .caret{
 	float: left;
 	cursor: not-allowed;
 	margin-left: 16px;
+    z-index:50;
 }
 .main-checkbox{
-	
+    width: 24px;
 }
 table.table td.with-checkbox{
 	padding-left: 21px;
@@ -213,4 +214,9 @@ table.table td.with-checkbox{
 }
 .show-export{
     float: right;
+}
+.empty-data{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
