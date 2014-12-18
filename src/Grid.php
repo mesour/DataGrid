@@ -83,6 +83,8 @@ class Grid extends Control {
 	/** @var \Nette\Localization\ITranslator */
 	protected $translator;
 
+	private $empty_text = NULL;
+
 	/**
 	 * Event which is triggered when sort data
 	 *
@@ -114,13 +116,6 @@ class Grid extends Control {
 	 */
 	static public $css_draw = TRUE;
 
-	/**
-	 * Create data source instance
-	 *
-	 * @param \Mesour\DataGrid\IDataSource $data_source Data source
-	 * @param \Nette\ComponentModel\IContainer $parent
-	 * @param string $name Name of data source
-	 */
 	public function __construct(IDataSource $data_source, IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 
@@ -140,63 +135,29 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Get presenter name with data grid name
-	 *
 	 * @return String
 	 */
 	public function getGridName() {
 		return $this->presenter->getName() . $this->name;
 	}
 
-	public function addText($column_name, array $setting = array()) {
-		$column = new Column\Text($setting);
+	/**
+	 * Add column to data grid
+	 *
+	 * @param Column\IColumn $column
+	 */
+	public function column(Column\IColumn $column) {
+		$this->column_arr[] = $column;
+	}
+
+	public function addStatus($column_name) {
+		$column = new Column\Status();
 		$column->setId($column_name);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addDate($column_name, array $setting = array()) {
-		$column = new Column\Date($setting);
-		$column->setId($column_name);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addNumber($column_name, array $setting = array()) {
-		$column = new Column\Number($setting);
-		$column->setId($column_name);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addImage($column_name, array $setting = array()) {
-		$column = new Column\Image($setting);
-		$column->setId($column_name);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addStatus($column_name, array $setting = array()) {
-		$column = new Column\Status($setting);
-		$column->setId($column_name);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addButton(array $setting = array()) {
-		$column = new Column\Button($setting);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addDropdown(array $setting = array()) {
-		$column = new Column\Dropdown($setting);
-		return $this->column_arr[] = $column;
-	}
-
-	public function addContainer($column_name) {
-		$column = new Column\Container();
-		$column->setId($column_name);
-		return $this->column_arr[] = $column;
+		$this->column_arr[] = $column;
+		return $column;
 	}
 
 	/**
-	 * Get column array
-	 *
 	 * @return Array
 	 */
 	public function getColumns() {
@@ -204,8 +165,6 @@ class Grid extends Control {
 	}
 
 	/**
-	 * Get data source
-	 *
 	 * @return \Mesour\DataGrid\IDataSource
 	 */
 	public function getDataSource() {
@@ -312,11 +271,12 @@ class Grid extends Control {
 		$this->line_id_key = $key;
 	}
 
-	/**
-	 * @param $value
-	 */
 	public function setMainParentValue($value) {
 		$this->main_parent_value = $value;
+	}
+
+	public function setEmptyText($empty_text) {
+		$this->empty_text = $this->getTranslator()->translate($empty_text);
 	}
 
 	/**
@@ -332,11 +292,13 @@ class Grid extends Control {
 	 * Sets translate adapter.
 	 * @return self
 	 */
-	public function setTranslator(\Nette\Localization\ITranslator $translator) {
+	public function setTranslator(\Nette\Localization\ITranslator $translator)
+	{
 		$this->translator = $translator;
 	}
 
-	public function getTranslator() {
+	public function getTranslator()
+	{
 		return $this->translator instanceof \Nette\Localization\ITranslator ? $this->translator : null;
 	}
 
@@ -354,6 +316,25 @@ class Grid extends Control {
 	public function hasEmptyData() {
 		$column_names = $this->getRealColumnNames();
 		return empty($column_names) ? TRUE : FALSE;
+	}
+
+	/**
+	 * @return \Nette\Utils\Paginator|NULL
+	 */
+	public function getPaginator() {
+		if(isset($this['pager'])) {
+			$this->beforeRender();
+			return $this['pager']->getPaginator();
+		}
+		return NULL;
+	}
+
+	/**
+	 * @return IDataSource
+	 */
+	public function getCurrentDataSource() {
+		$this->beforeRender();
+		return $this->getDataSource();
 	}
 
 	public function render() {
@@ -473,8 +454,8 @@ class Grid extends Control {
 				$body_attributes['data-sort-href'] = $this['sortable']->link('sortData!');
 			}
 			$body->setAttributes($body_attributes);
-			if (!empty($data)) {
-				if (!isset($data[$this->main_parent_value])) {
+			if(!empty($data)) {
+				if(!isset($data[$this->main_parent_value])) {
 					throw new Grid_Exception('Main parent value key does not exist in data.');
 				}
 				foreach ($data[$this->main_parent_value] as $rowData) {
@@ -490,24 +471,39 @@ class Grid extends Control {
 				    'data-sort-href' => $this['sortable']->link('sortData!')
 				));
 			}
-			foreach ($this->data_source->fetchAll() as $rowData) {
-				$this->addRow($factory, $body, $rowData);
+			if($this->hasEmptyData()) {
+				$this->addRow($factory, $body, count($this->getColumns()), TRUE);
+			} else {
+				foreach ($this->data_source->fetchAll() as $rowData) {
+					$this->addRow($factory, $body, $rowData);
+				}
 			}
 			$table->setBody($body);
 		}
 		return $table;
 	}
 
-	private function addRow(&$factory, &$body, $rowData) {
-		$row = $factory->createRow($rowData, $this->getColumns());
+	private function addRow(&$factory, &$body, $rowData, $empty = FALSE) {
+		$row = $factory->createRow($rowData);
 		if ($this->hasLineId()) {
 			$row->setAttributes(array(
 			    'id' => $this->getLineId($rowData)
 			));
 		}
-		foreach ($this->getColumns() as $column) {
-			$row->addCell($factory->createCell($rowData, $column));
+
+		if($empty) {
+			$empty_column = new Column\EmptyData(array(
+				Column\EmptyData::TEXT => $this->empty_text ? $this->empty_text : 'Nothing to display.'
+			));
+			$cell = $factory->createCell($rowData, $empty_column);
+			$row->addAttribute('class', count($this->getColumns()));
+			$row->addCell($cell);
+		} else {
+			foreach ($this->getColumns() as $column) {
+				$row->addCell($factory->createCell($rowData, $column));
+			}
 		}
+
 		$body->addRow($row);
 		return $row;
 	}

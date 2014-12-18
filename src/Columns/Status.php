@@ -21,12 +21,10 @@ class Status extends BaseOrdering {
 
 	public function setButtons(array $buttons) {
 		$this->option[self::BUTTONS] = $buttons;
-		return $this;
 	}
 
 	public function addButton(StatusButton $button) {
 		$this->option[self::BUTTONS][] = $button;
-		return $this;
 	}
 
 	protected function setDefaults() {
@@ -38,7 +36,7 @@ class Status extends BaseOrdering {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Status::HEADER is required.');
+			throw new Grid_Exception('Option \DataGrid\Column\Status::HEADER is required.');
 		}
 		return array('class' => 'act buttons-count-1');
 	}
@@ -57,28 +55,28 @@ class Status extends BaseOrdering {
 			throw new Grid_Exception($exception);
 		}
 		$active_count = 0;
-		foreach($this->option[self::BUTTONS] as $button) {
+		foreach ($this->option[self::BUTTONS] as $button) {
 			if (!$button instanceof StatusButton) {
 				throw new Grid_Exception($exception);
 			}
-			if($button->isActive($this->option[self::ID], $data)) {
+			if ($button->isActive($this->option[self::ID], $data)) {
 				$class .= ' is-' . $button->getStatus();
 				$active_count++;
 			}
 		}
-		if($active_count === 0) {
+		if ($active_count === 0) {
 			$class .= ' ' . self::$no_active_class;
 		}
-		return array('class' => $class);
+		return parent::mergeAttributes($data, array('class' => $class));
 	}
 
 	public function getBodyContent($data) {
 		$buttons = '';
 		$active_count = 0;
-		foreach($this->option[self::BUTTONS] as $button) {
-			if($button->isActive($this->option[self::ID], $data)) {
+		foreach ($this->option[self::BUTTONS] as $button) {
+			if ($button->isActive($this->option[self::ID], $data)) {
 				$button->setPresenter($this->getGrid()->presenter);
-				if($this->getTranslator()) {
+				if ($this->getTranslator()) {
 					$button->setTranslator($this->getTranslator());
 				}
 				$buttons .= $button->create($data) . ' ';

@@ -78,16 +78,16 @@ class ButtonsContainer extends Setting {
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
-		if(is_null($this->presenter)) {
+		if (is_null($this->presenter)) {
 			throw new Grid_Exception('Presenter is not set for Button.');
 		}
 		$buttons = '';
-		foreach($this->option[self::BUTTONS] as $button) {
-			if(!$button instanceof Button) {
+		foreach ($this->option[self::BUTTONS] as $button) {
+			if (!$button instanceof Button) {
 				throw new Grid_Exception('Button must be instanceof Components\Button.');
 			}
 			$button->setPresenter($this->presenter);
-			if($this->getTranslator()) {
+			if ($this->getTranslator()) {
 				$button->setTranslator($this->getTranslator());
 			}
 			$buttons .= $button->create($data) . ' ';

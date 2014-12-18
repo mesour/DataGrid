@@ -47,8 +47,13 @@ class Button extends Setting {
 	 * @param Array|NULL $data
 	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
-	public function __construct(array $option = array(), Presenter $presenter = NULL, $data = NULL) {
-		parent::__construct($option);
+	public function __construct($option = array(), $presenter = array(), $data = NULL) {
+		if ($option instanceof Presenter) {
+			parent::__construct($presenter);
+			$presenter = $option;
+		} else {
+			parent::__construct($option);
+		}
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
@@ -126,18 +131,18 @@ class Button extends Setting {
 	 *
 	 * @param Array $data
 	 * @return Html
-	 * @throws \DataGrid\Grid_Exception
+	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
 	public function create($data = NULL) {
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
 
-		if(is_null($this->presenter)) {
+		if (is_null($this->presenter)) {
 			throw new Grid_Exception('Presenter is not set for Button.');
 		}
 
-		if(isset($this->option[self::BUTTON_CLASSES])) {
+		if (isset($this->option[self::BUTTON_CLASSES])) {
 			$class = $this->option[self::BUTTON_CLASSES];
 		} else {
 			$class = 'btn btn-sm ' . (array_key_exists(self::CLASS_NAME, $this->option) ? ($this->option[self::CLASS_NAME] . ' ') : '');
@@ -161,10 +166,10 @@ class Button extends Setting {
 		}
 
 		if (array_key_exists(self::ATTRIBUTES, $this->option) && is_array($this->option[self::ATTRIBUTES])) {
-			foreach($this->option[self::ATTRIBUTES] as $name => $value) {
-				if($value instanceof Link) {
+			foreach ($this->option[self::ATTRIBUTES] as $name => $value) {
+				if ($value instanceof Link) {
 					$output = $this->addLinkAttr($button, $name, $value);
-					if($output === FALSE) {
+					if ($output === FALSE) {
 						return Html::el('span');
 					}
 				} else {
@@ -176,12 +181,12 @@ class Button extends Setting {
 
 		}
 
-		if((array_key_exists(self::ICON, $this->option) && is_string($this->option[self::ICON])) || array_key_exists(self::ICON_CLASSES, $this->option)) {
-			if(isset($this->option[self::ICON_CLASSES])) {
+		if ((array_key_exists(self::ICON, $this->option) && is_string($this->option[self::ICON])) || array_key_exists(self::ICON_CLASSES, $this->option)) {
+			if (isset($this->option[self::ICON_CLASSES])) {
 				$attributes = array('class' => $this->option[self::ICON_CLASSES]);
 			} else {
 				$attributes = array('class' => 'glyphicon ' . $this->option[self::ICON]);
-				if(isset($this->option[self::ICON_COLOR])) {
+				if (isset($this->option[self::ICON_COLOR])) {
 					$attributes['style'] = 'color:' . $this->option[self::ICON_COLOR];
 				}
 			}
@@ -201,9 +206,28 @@ class Button extends Setting {
 				return FALSE;
 			}
 			list($to_href, $params) = $href;
-			$button->addAttributes(array(
-			    $attr_name => $this->presenter->link($to_href, $params)
-			));
+			$used_component = $link->getUsedComponent();
+			if (!is_null($used_component)) {
+				if (is_string($used_component)) {
+					$href_attribute = $this->presenter[$used_component]->link($to_href, $params);
+				} elseif (is_array($used_component)) {
+					$component = $this->presenter;
+					foreach ($used_component as $component_name) {
+						$component = $component[$component_name];
+					}
+					$href_attribute = $component->link($to_href, $params);
+				} else {
+					throw new Grid_Exception('Link::COMPONENT must be string or array, ' . gettype($used_component) . ' given.');
+				}
+				$button->addAttributes(array(
+				    $attr_name => $href_attribute
+				));
+			} else {
+				$button->addAttributes(array(
+				    $attr_name => $this->presenter->link($to_href, $params)
+				));
+			}
+
 		}
 		return TRUE;
 	}

@@ -9,7 +9,7 @@ use Mesour\DataGrid\Column,
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class RendererFactory implements Render\IRendererFactory{
+class RendererFactory implements Render\IRendererFactory {
 
 	public function createHeaderCell(Column\IColumn $column) {
 		return new HeaderCell($column);

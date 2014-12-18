@@ -3,9 +3,9 @@
 namespace Mesour\DataGrid\Extensions;
 
 use Mesour\DataGrid\Column,
-	Mesour\DataGrid\Grid_Exception,
-	Nette\Application\Responses\FileResponse,
-	Nette\Utils\Strings;
+    Mesour\DataGrid\Grid_Exception,
+    Nette\Application\Responses\FileResponse,
+    Nette\Utils\Strings;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -32,7 +32,7 @@ class Export extends BaseControl {
 	private $file_path;
 
 	public function setFileName($file_name) {
-		if(!is_string($file_name) && !is_null($file_name)) {
+		if (!is_string($file_name) && !is_null($file_name)) {
 			throw new Grid_Exception('Export file name must be string, ' . gettype($file_name) . ' given.');
 		}
 		$this->file_name = $file_name;
@@ -69,29 +69,29 @@ class Export extends BaseControl {
 			$this->parent['filter']->applyFilter();
 		}
 
-		if(empty($this->export_columns)) {
+		if (empty($this->export_columns)) {
 			foreach ($this->parent->getColumns() as $column) {
 				if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
 					$export_columns[] = $column;
 				}
 			}
 		} else {
-			foreach($this->export_columns as $column_val) {
+			foreach ($this->export_columns as $column_val) {
 				$used_in_columns = FALSE;
 				foreach ($this->parent->getColumns() as $column) {
 					if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
-						if(is_array($column_val)) {
+						if (is_array($column_val)) {
 							$column_name = key($column_val);
 						} else {
 							$column_name = $column_val;
 						}
-						if($column_name === $column->getId()) {
+						if ($column_name === $column->getId()) {
 							$export_columns[] = $column;
 							$used_in_columns = TRUE;
 						}
 					}
 				}
-				if($used_in_columns === FALSE) {
+				if ($used_in_columns === FALSE) {
 					$export_columns[] = $column_val;
 				}
 			}
@@ -100,14 +100,14 @@ class Export extends BaseControl {
 
 		$this->file_path = $this->cache_dir . "/" . Strings::webalize($this->parent->getGridName()) . time() . ".csv";
 		$file = fopen($this->file_path, "w");
-		foreach($export_columns as $column) {
-			if($column instanceof Column\IColumn) {
-				if($this->parent->getTranslator()) {
+		foreach ($export_columns as $column) {
+			if ($column instanceof Column\IColumn) {
+				if ($this->parent->getTranslator()) {
 					$column->setTranslator($this->parent->getTranslator());
 				}
 				$header_arr[] = $column->getText();
 			} else {
-				if(is_array($column)) {
+				if (is_array($column)) {
 					$header_arr[] = reset($column);
 				} else {
 					$header_arr[] = $column;
@@ -119,16 +119,16 @@ class Export extends BaseControl {
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {
 			$line_data = array();
-			foreach($export_columns as $column) {
-				if($column instanceof Column\IColumn) {
+			foreach ($export_columns as $column) {
+				if ($column instanceof Column\IColumn) {
 					$line_data[] = $column->getBodyContent($data);
 				} else {
-					if(is_array($column)) {
+					if (is_array($column)) {
 						$column_name = key($column);
 					} else {
 						$column_name = $column;
 					}
-					if($first && !isset($data[$column_name])) {
+					if ($first && !isset($data[$column_name])) {
 						throw new Grid_Exception('Column "' . $column_name . '" does not exist in data.');
 					}
 					$line_data[] = $data[$column_name];
@@ -139,11 +139,11 @@ class Export extends BaseControl {
 		}
 		fclose($file);
 
-		$this->presenter->sendResponse( new FileResponse( $this->file_path , (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv' ) );
+		$this->presenter->sendResponse(new FileResponse($this->file_path, (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv'));
 	}
 
 	public function __destruct() {
-		if(is_file($this->file_path)) {
+		if (is_file($this->file_path)) {
 			unlink($this->file_path);
 		}
 	}

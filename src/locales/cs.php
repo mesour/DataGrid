@@ -54,7 +54,6 @@ return array(
     'November'      =>  'Listopad',
     'December'      =>  'Prosinec',
     'Filter'        =>  'Filtr',
-    'Apply filter'  =>  'Aplikovat filtr',
     'Close'         =>  'Zavřít',
     'Show rows where'      =>  'Zobrazit řádky kde',
     'Not equal to'  =>  'Nerovná se',

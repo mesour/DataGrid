@@ -1,7 +1,7 @@
 <div class="dropdown" data-filter="{$column->getId()}">
 	<button class="btn btn-default dropdown-toggle" type="button">
 		<span class="glyphicon glyphicon-ok"></span>
-		{$column->getHeader()}
+		{$column->getText()}
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu" role="menu">
@@ -47,8 +47,7 @@
 		<li role="presentation" class="divider"></li>
 		<li role="presentation" class="with-buttons">
 			<div class="buttons">
-				<button type="button" class="btn btn-primary btn-sm save-filter">{_('Ok')}</button>
-				<button type="button" class="btn btn-danger btn-sm close-filter">{_('Storno')}</button>
+				<button type="button" class="btn btn-danger btn-sm close-filter">{_('Close')}</button>
 			</div>
 		</li>
 	</ul>

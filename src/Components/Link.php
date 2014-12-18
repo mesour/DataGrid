@@ -14,9 +14,10 @@ class Link extends Setting {
 	 * Possible option key
 	 */
 	const HREF = 'href',
-	    	PARAMS = 'parameters',
-	    	NAME = 'name',
-	        USE_NETTE_LINK = 'use_nette';
+	    PARAMS = 'parameters',
+	    NAME = 'name',
+	    USE_NETTE_LINK = 'use_nette',
+	    COMPONENT = 'component';
 
 	/**
 	 * Valid permission callback
@@ -32,6 +33,11 @@ class Link extends Setting {
 
 	public function setHref($href) {
 		$this->option[self::HREF] = $href;
+		return $this;
+	}
+
+	public function setComponent($component) {
+		$this->option[self::COMPONENT] = $component;
 		return $this;
 	}
 
@@ -109,12 +115,17 @@ class Link extends Setting {
 	protected function setDefaults() {
 		return array(
 		    self::USE_NETTE_LINK => TRUE,
-		    self::PARAMS => array()
+		    self::PARAMS => array(),
+		    self::COMPONENT => NULL
 		);
 	}
 
 	public function hasUseNetteLink() {
 		return $this->option[self::USE_NETTE_LINK];
+	}
+
+	public function getUsedComponent() {
+		return $this->option[self::COMPONENT];
 	}
 
 	/**
@@ -128,9 +139,9 @@ class Link extends Setting {
 		if (array_key_exists(self::HREF, $this->option) === FALSE) {
 			throw new Grid_Exception('Option \DataGrid\DropdownColumn::HREF is required.');
 		}
-		if($this->hasUseNetteLink()) {
+		if ($this->hasUseNetteLink()) {
 			$link = self::getLink($this->option[self::HREF], $this->option[self::PARAMS], $data);
-			if(!$link) {
+			if (!$link) {
 				return FALSE;
 			}
 		} else {

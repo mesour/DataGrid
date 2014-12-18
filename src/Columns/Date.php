@@ -14,10 +14,16 @@ class Date extends BaseOrdering {
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
-	    EDITABLE = 'editable';
+	    EDITABLE = 'editable',
+	    FILTERING = 'filtering';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
+		return $this;
+	}
+
+	public function setFiltering($filtering) {
+		$this->option[self::FILTERING] = (bool) $filtering;
 		return $this;
 	}
 
@@ -28,17 +34,18 @@ class Date extends BaseOrdering {
 
 	protected function setDefaults() {
 		return array(
-		    self::EDITABLE => TRUE
+		    self::EDITABLE => TRUE,
+		    self::FILTERING => TRUE
 		);
 	}
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Date::HEADER is required.');
+			throw new Grid_Exception('Option \DataGrid\DateColumn::HEADER is required.');
 		}
 		if (array_key_exists(self::FORMAT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Date::FORMAT is required.');
+			throw new Grid_Exception('Option \DataGrid\DateColumn::FORMAT is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]
@@ -63,7 +70,7 @@ class Date extends BaseOrdering {
 			);
 		}
 		$attributes['class'] = 'type-date';
-		return $attributes;
+		return parent::mergeAttributes($data, $attributes);
 	}
 
 	public function getBodyContent($data) {

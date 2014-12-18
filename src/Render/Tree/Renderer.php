@@ -10,7 +10,7 @@ use Mesour\DataGrid\Column,
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Renderer extends Render\Renderer{
+class Renderer extends Render\Renderer {
 
 	public function create() {
 		$tree = Html::el('div', $this->attributes);

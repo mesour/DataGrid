@@ -5,7 +5,8 @@ namespace Mesour\DataGrid\Components;
 use \Nette\Utils\Html,
     \Nette\Application\UI\Presenter,
     Mesour\DataGrid\Column,
-    Mesour\DataGrid\Setting;
+    Mesour\DataGrid\Setting,
+    Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -41,15 +42,11 @@ class Dropdown extends Setting {
 	 * @param Array|NULL $data
 	 * @throws \Mesour\DataGrid\Grid_Exception
 	 */
-	public function __construct(array $option = array(), Presenter $presenter = NULL, $data = NULL) {
+	public function __construct(Presenter $presenter, array $option = array(), $data = NULL) {
 		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
-		$this->presenter = $presenter;
-	}
-
-	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
 	}
 
@@ -78,11 +75,12 @@ class Dropdown extends Setting {
 		return $this;
 	}
 
-	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE, $component = NULL) {
 		$this->option[self::LINKS][] = new Link(array(
 		    Link::HREF => $href,
 		    Link::PARAMS => $parameters,
 		    Link::NAME => $name,
+		    Link::COMPONENT => $component,
 		    Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;
@@ -120,27 +118,43 @@ class Dropdown extends Setting {
 			$this->data = $data;
 		}
 
-		$container = Html::el('span', array('class' => 'dropdown'));
+		$container = Html::el('div', array('class' => 'dropdown'));
 
 		$has_links = FALSE;
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
 		foreach ($this->option[self::LINKS] as $link) {
-			if($link instanceof Link) {
+			if ($link instanceof Link) {
 				$href = $link->create($this->data);
-				if(!$href) {
+				if (!$href) {
 					continue;
 				}
-				if(isset($separator)) {
+				if (isset($separator)) {
 					$ul->add($separator);
 					unset($separator);
 				}
-				if(isset($header)) {
+				if (isset($header)) {
 					$ul->add($header);
 					unset($header);
 				}
 				list($to_href, $params, $name) = $href;
-				if($link->hasUseNetteLink()) {
-					$href_param = $this->presenter->link($to_href, $params);
+
+				if ($link->hasUseNetteLink()) {
+					$used_component = $link->getUsedComponent();
+					if (!is_null($used_component)) {
+						if (is_string($used_component)) {
+							$href_param = $this->presenter[$used_component]->link($to_href, $params);
+						} elseif (is_array($used_component)) {
+							$component = $this->presenter;
+							foreach ($used_component as $component_name) {
+								$component = $component[$component_name];
+							}
+							$href_param = $component->link($to_href, $params);
+						} else {
+							throw new Grid_Exception('Link::COMPONENT must be string or array, ' . gettype($used_component) . ' given.');
+						}
+					} else {
+						$href_param = $this->presenter->link($to_href, $params);
+					}
 				} else {
 					$href_param = $to_href;
 				}
@@ -152,14 +166,14 @@ class Dropdown extends Setting {
 				$li->add($a);
 				$ul->add($li);
 				$has_links = TRUE;
-			} elseif(is_string($link)) {
+			} elseif (is_string($link)) {
 				$separator = Html::el('li', array('role' => 'presentation', 'class' => $link));
-			} elseif(is_array($link) && isset($link[0]) && isset($link[1])) {
+			} elseif (is_array($link) && isset($link[0]) && isset($link[1])) {
 				$header = Html::el('li', array('role' => 'presentation', 'class' => $link[0]));
 				$header->setText($this->getTranslator() ? $this->getTranslator()->translate($link[1]) : $link[1]);
 			}
 		}
-		if($has_links) {
+		if ($has_links) {
 			$button = Html::el('button', array('class' => 'btn ' . $this->option[self::TYPE] . ' dropdown-toggle ' . $this->option[self::SIZE_CLASS] . (' ' . $this->option[self::BUTTON_CLASS_NAME]), 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
 			$button->setHtml(($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::NAME]) : $this->option[self::NAME]) . ' <span class="caret"></span>');
 			$container->add($button);

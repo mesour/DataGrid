@@ -8,7 +8,7 @@ use Mesour\DataGrid\Column;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Body{
+abstract class Body {
 
 	/**
 	 * @var array

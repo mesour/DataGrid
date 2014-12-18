@@ -54,7 +54,7 @@ class Image extends Base {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Image::HEADER is required.');
+			throw new Grid_Exception('Option \DataGrid\ImageColumn::HEADER is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]
@@ -63,10 +63,6 @@ class Image extends Base {
 
 	public function getHeaderContent() {
 		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];
-	}
-
-	public function getBodyAttributes($data) {
-		return array();
 	}
 
 	public function getBodyContent($data) {

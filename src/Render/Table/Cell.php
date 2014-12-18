@@ -10,11 +10,11 @@ use Mesour\DataGrid\Column,
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Cell extends Render\Cell{
+class Cell extends Render\Cell {
 
 	public function create() {
 		$attributes = $this->column->getBodyAttributes($this->rowData);
-		if($attributes === FALSE) {
+		if ($attributes === FALSE) {
 			return '';
 		}
 		$td = Html::el('td', $attributes);

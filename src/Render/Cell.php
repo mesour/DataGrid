@@ -8,12 +8,12 @@ use Mesour\DataGrid\Column;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Cell{
+abstract class Cell {
 
 	protected $rowData;
 
 	/**
-	 * @var \DataGrid\Column\IColumn
+	 * @var \Mesour\DataGrid\Column\IColumn
 	 */
 	protected $column;
 

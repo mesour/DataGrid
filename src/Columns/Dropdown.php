@@ -46,11 +46,12 @@ class Dropdown extends Base {
 		return $this;
 	}
 
-	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE) {
+	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE, $component = NULL) {
 		$this->option[self::LINKS][] = new Components\Link(array(
 		    Components\Link::HREF => $href,
 		    Components\Link::PARAMS => $parameters,
 		    Components\Link::NAME => $name,
+		    Components\Link::COMPONENT => $component,
 		    Components\Link::USE_NETTE_LINK => $is_nette_link
 		));
 		return $this;
@@ -70,7 +71,6 @@ class Dropdown extends Base {
 		return array(
 		    self::TYPE => 'btn-default',
 		    self::LINKS => array(),
-		    self::HEADER => 'Actions',
 		    self::NAME => 'Actions',
 		    self::BUTTON_CLASS_NAME => '',
 		    self::SIZE_CLASS => 'btn-xs'
@@ -80,7 +80,7 @@ class Dropdown extends Base {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Dropdown::HEADER is required.');
+			throw new Grid_Exception('Option \DataGrid\DropdownColumn::HEADER is required.');
 		}
 		return array('class' => 'dropdown-column');
 	}
@@ -90,12 +90,12 @@ class Dropdown extends Base {
 	}
 
 	public function getBodyAttributes($data) {
-		return array('class' => 'right-buttons');
+		return parent::mergeAttributes($data, array('class' => 'right-buttons'));
 	}
 
 	public function getBodyContent($data) {
-		$dropdown = new Components\Dropdown($this->option, $this->grid->presenter, $data);
-		if($this->getTranslator()) {
+		$dropdown = new Components\Dropdown($this->grid->presenter, $this->option, $data);
+		if ($this->getTranslator()) {
 			$dropdown->setTranslator($this->getTranslator());
 		}
 		return $dropdown->create();

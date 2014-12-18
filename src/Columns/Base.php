@@ -2,10 +2,10 @@
 
 namespace Mesour\DataGrid\Column;
 
-use \Nette\ComponentModel\IComponent,
+use Mesour\DataGrid\Components\Link,
+    \Nette\ComponentModel\IComponent,
     Mesour\DataGrid\Grid_Exception,
-    Mesour\DataGrid\Setting,
-    \Nette\Localization\ITranslator;
+    Mesour\DataGrid\Setting;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -13,22 +13,17 @@ use \Nette\ComponentModel\IComponent,
  */
 abstract class Base extends Setting implements IColumn {
 
-	/**
-	 * Inner defaults
-	 * @deprecated
-	 */
-	public static $action_column_name = 'action';
+	const ATTRIBUTES = 'attributes';
 
-	/**
-	 * Actions setting
-	 * @deprecated
-	 *
-	 * @var Array
-	 */
-	static public $actions = array(
-	    'active' => 1,
-	    'unactive' => 0
-	);
+	public function setAttributes(array $attributes) {
+		$this->option[self::ATTRIBUTES] = $attributes;
+		return $this;
+	}
+
+	public function addAttribute($key, $value) {
+		$this->option[self::ATTRIBUTES][$key] = $value;
+		return $this;
+	}
 
 	/**
 	 *
@@ -52,9 +47,9 @@ abstract class Base extends Setting implements IColumn {
 	}
 
 	public function getHeader() {
-		if(isset($this->option['header']) && $this->getTranslator()) {
+		if (isset($this->option['header']) && $this->getTranslator()) {
 			return $this->getTranslator()->translate($this->option['header']);
-		} elseif(isset($this->option['header'])) {
+		} elseif (isset($this->option['header'])) {
 			return $this->option['header'];
 		} else {
 			return NULL;
@@ -65,13 +60,31 @@ abstract class Base extends Setting implements IColumn {
 		return isset($this->option['editable']) ? $this->option['editable'] : FALSE;
 	}
 
+	public function hasFiltering() {
+		return isset($this->option['filtering']) ? $this->option['filtering'] : FALSE;
+	}
+
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		return array();
 	}
 
 	public function getBodyAttributes($data) {
+		if (!empty($this->option[self::ATTRIBUTES]) && is_array($this->option[self::ATTRIBUTES])) {
+			foreach ($this->option[self::ATTRIBUTES] as $key => $value) {
+				$this->option[self::ATTRIBUTES][$key] = Link::parseValue($value, $data);
+			}
+			return $this->option[self::ATTRIBUTES];
+		}
 		return array();
+	}
+
+	protected function mergeAttributes($data, array $current) {
+		$base = self::getBodyAttributes($data);
+		if (isset($base['class']) && isset($current['class'])) {
+			$base['class'] = $base['class'] . ' ' . $current['class'];
+		}
+		return array_merge($current, $base);
 	}
 
 	/**

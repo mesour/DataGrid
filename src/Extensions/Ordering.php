@@ -37,7 +37,7 @@ class Ordering extends BaseControl {
 	 * @return NULL|ASC|DESC
 	 */
 	public function getOrdering($column_id) {
-		if(!empty($this->default_order) && empty($this->settings['ordering']) && $this->default_order[0] === $column_id) {
+		if (!empty($this->default_order) && empty($this->settings['ordering']) && $this->default_order[0] === $column_id) {
 			return $this->default_order[1];
 		}
 		if (!isset($this->settings['ordering']) || !isset($this->settings['ordering'][$column_id])) {
@@ -57,13 +57,16 @@ class Ordering extends BaseControl {
 				}
 			}
 		}
-		if(empty($this->settings['ordering']) && !empty($this->default_order)) {
+		if (empty($this->settings['ordering']) && !empty($this->default_order)) {
 			$this->parent->getDataSource()->orderBy($this->default_order[0], $this->default_order[1]);
 		}
 
 	}
 
 	public function handleOrdering($column_id) {
+		if (isset($this->parent['pager'])) {
+			$this->parent['pager']->reset(0);
+		}
 		if (!isset($this->settings['ordering'])) {
 			$this->settings['ordering'] = array();
 		}
@@ -74,9 +77,9 @@ class Ordering extends BaseControl {
 		} else {
 			unset($this->settings['ordering'][$column_id]);
 		}
-		if(!$this->multi) {
+		if (!$this->multi) {
 			$current = isset($this->settings['ordering'][$column_id]) ? $this->settings['ordering'][$column_id] : NULL;
-			if(!is_null($current)) {
+			if (!is_null($current)) {
 				$this->settings['ordering'] = array();
 				$this->settings['ordering'][$column_id] = $current;
 			}

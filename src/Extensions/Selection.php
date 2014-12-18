@@ -37,12 +37,12 @@ class Selection extends BaseControl {
 	}
 
 	public function render() {
-		if($this->parent->getTranslator()) {
+		if ($this->parent->getTranslator()) {
 			$items = array();
-			foreach($this->url_array as $key=>$value) {
-				if(is_array($value)) {
-					foreach($value as $k=>&$item) {
-						if(in_array($k, array('data-confirm', 'data-title', 'title'))) {
+			foreach ($this->url_array as $key => $value) {
+				if (is_array($value)) {
+					foreach ($value as $k => &$item) {
+						if (in_array($k, array('data-confirm', 'data-title', 'title'))) {
 							$item = $this->parent->getTranslator()->translate($item);
 						}
 					}

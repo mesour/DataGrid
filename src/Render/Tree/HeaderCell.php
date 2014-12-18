@@ -10,11 +10,11 @@ use Mesour\DataGrid\Column,
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class HeaderCell extends Render\HeaderCell{
+class HeaderCell extends Render\HeaderCell {
 
 	public function create() {
 		$attributes = $this->column->getHeaderAttributes();
-		if($attributes === FALSE) {
+		if ($attributes === FALSE) {
 			return '';
 		}
 		$td = Html::el('span', $attributes);

@@ -29,15 +29,11 @@ class Button extends Base {
 	}
 
 	public function addButton(Components\Button $button) {
+		if (!isset($this->option[self::BUTTONS_OPTION])) {
+			$this->option[self::BUTTONS_OPTION] = new Components\ButtonsContainer();
+		}
 		$this->option[self::BUTTONS_OPTION]->addButton($button);
 		return $this;
-	}
-
-	protected function setDefaults() {
-		return array(
-		    self::HEADER => 'Actions',
-		    self::BUTTONS_OPTION => new Components\ButtonsContainer()
-		);
 	}
 
 	public function getHeaderAttributes() {
@@ -49,7 +45,7 @@ class Button extends Base {
 			throw new Grid_Exception('Option \DataGrid\ButtonColumn::BUTTONS_OPTION must be instance of Components\ButtonsContainer.');
 		}
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \Mesour\DataGrid\Column\Button::HEADER is required.');
+			throw new Grid_Exception('Option \DataGrid\ButtonColumn::HEADER is required.');
 		}
 		$this->option[self::BUTTONS_OPTION]->setPresenter($this->grid->presenter);
 		return array('class' => 'act buttons-count-' . count($this->option[self::BUTTONS_OPTION]));
@@ -60,13 +56,13 @@ class Button extends Base {
 	}
 
 	public function getBodyAttributes($data) {
-		return array('class' => 'right-buttons');
+		return parent::mergeAttributes($data, array('class' => 'right-buttons'));
 	}
 
 	public function getBodyContent($data) {
 		$count = $this->option[self::BUTTONS_OPTION]->getButtonsCount();
-		$container = Html::el('span', array('class' => 'buttons-count-' . $count));
-		if($this->getTranslator()) {
+		$container = Html::el('div', array('class' => 'thumbnailx buttons-count-' . $count));
+		if ($this->getTranslator()) {
 			$this->option[self::BUTTONS_OPTION]->setTranslator($this->getTranslator());
 		}
 		$container->setHtml($this->option[self::BUTTONS_OPTION]->create($data));
