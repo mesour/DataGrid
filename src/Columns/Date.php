@@ -8,22 +8,16 @@ use Mesour\DataGrid\Grid_Exception;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Date extends BaseOrdering {
+class Date extends Filter {
 
 	/**
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
-	    EDITABLE = 'editable',
-	    FILTERING = 'filtering';
+	    EDITABLE = 'editable';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
-		return $this;
-	}
-
-	public function setFiltering($filtering) {
-		$this->option[self::FILTERING] = (bool) $filtering;
 		return $this;
 	}
 
@@ -33,10 +27,9 @@ class Date extends BaseOrdering {
 	}
 
 	protected function setDefaults() {
-		return array(
-		    self::EDITABLE => TRUE,
-		    self::FILTERING => TRUE
-		);
+		return array_merge(parent::setDefaults(), array(
+		    self::EDITABLE => TRUE
+		));
 	}
 
 	public function getHeaderAttributes() {

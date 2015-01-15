@@ -8,7 +8,7 @@ use Mesour\DataGrid\Grid_Exception;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Number extends BaseOrdering {
+class Number extends Filter {
 
 	/**
 	 * Possible option key
@@ -16,8 +16,7 @@ class Number extends BaseOrdering {
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
 	    THOUSANDS_SEP = 'thousands_sep',
-	    EDITABLE = 'editable',
-	    FILTERING = 'filtering';
+	    EDITABLE = 'editable';
 
 	public function setDecimals($decimals) {
 		$this->option[self::DECIMALS] = $decimals;
@@ -34,24 +33,18 @@ class Number extends BaseOrdering {
 		return $this;
 	}
 
-	public function setFiltering($filtering) {
-		$this->option[self::FILTERING] = (bool)$filtering;
-		return $this;
-	}
-
 	public function setEditable($editable) {
 		$this->option[self::EDITABLE] = (bool)$editable;
 		return $this;
 	}
 
 	protected function setDefaults() {
-		return array(
+		return array_merge(parent::setDefaults(), array(
 		    self::DECIMALS => 0,
 		    self::DEC_POINT => '.',
 		    self::THOUSANDS_SEP => ',',
-		    self::EDITABLE => TRUE,
-		    self::FILTERING => TRUE
-		);
+		    self::EDITABLE => TRUE
+		));
 	}
 
 	public function getHeaderAttributes() {
