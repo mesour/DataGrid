@@ -137,7 +137,7 @@ class Link extends Setting {
 	 */
 	public function create($data = NULL) {
 		if (array_key_exists(self::HREF, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DropdownColumn::HREF is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HREF is required.');
 		}
 		if ($this->hasUseNetteLink()) {
 			$link = self::getLink($this->option[self::HREF], $this->option[self::PARAMS], $data);

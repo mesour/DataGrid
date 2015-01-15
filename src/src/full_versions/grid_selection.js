@@ -116,20 +116,32 @@
 		});
 		$(options.checkboxButtonIdent + ' ul li a').on('click.grid', function(e) {
 			e.preventDefault();
-			var data = [];
+			var data = [],
+				gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
 			$tbody.find('.' + options.selectCheckboxClass + '.checked').each(function() {
 				data.push($(this).attr('data-value'));
 			});
 			if (data.length > 0) {
-				var isConfirm = $(this).attr('data-confirm');
+				var isConfirm = $(this).attr('data-confirm'),
+					isAjax = $(this).hasClass('is-ajax');
+				var href = mesour.getUrlWithParam(gridName, $(this).attr('href'), 'selection', 'selected', {items: data});
 				if(native_confirm && isConfirm) {
 					if(gridConfirm(isConfirm)) {
-						$.post($(this).attr('href'), {selected: data});
+						if(isAjax) {
+							$.get(href);
+						} else {
+							location.href = href;
+						}
+
 					}
 				} else if(isConfirm) {
-					gridCustomSend($(this).attr('href'), {selected: data});
+					gridCustomSend(href, {selected: data});
 				} else {
-					$.post($(this).attr('href'), {selected: data});
+					if(isAjax) {
+						$.get(href);
+					} else {
+						location.href = href;
+					}
 				}
 			}
 

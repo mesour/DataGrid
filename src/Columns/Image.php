@@ -54,7 +54,7 @@ class Image extends Base {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\ImageColumn::HEADER is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HEADER is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]

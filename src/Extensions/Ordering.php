@@ -87,6 +87,9 @@ class Ordering extends BaseControl {
 
 		$this->getSession()->settings = $this->settings;
 		$this->parent->redrawControl();
+		if($this->parent->isSubGrid()) {
+			$this->parent->parent->redrawControl();
+		}
 		$this->presenter->redrawControl();
 	}
 

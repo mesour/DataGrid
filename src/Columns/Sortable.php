@@ -12,7 +12,7 @@ class Sortable extends Base {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		return array('class' => 'act buttons-count-1');
+		return array('class' => 'sortable-column');
 	}
 
 	public function getHeaderContent() {

@@ -42,10 +42,10 @@ class Date extends BaseOrdering {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DateColumn::HEADER is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HEADER is required.');
 		}
 		if (array_key_exists(self::FORMAT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DateColumn::FORMAT is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::FORMAT is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]

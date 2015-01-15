@@ -3,26 +3,6 @@ table.table th.act{
 	padding-left: 15px;
 	width: 132px;
 }
-.thumbnailx.buttons-count-5,
-table.table th.act.buttons-count-5{
-	width: 220px;
-}
-.thumbnailx.buttons-count-4,
-table.table th.act.buttons-count-4{
-	width: 176px;
-}
-.thumbnailx.buttons-count-3,
-table.table th.act.buttons-count-3{
-	width: 132px;
-}
-.thumbnailx.buttons-count-2,
-table.table th.act.buttons-count-2{
-	width: 88px;
-}
-.thumbnailx.buttons-count-1,
-table.table th.act.buttons-count-1{
-	width: 44px;
-}
 table.table th.act.act-select{
 	width: 60px;
 }
@@ -68,15 +48,21 @@ table.table td.with-checkbox{
 .datagrid-bottom{
 	position: relative;
 	z-index: 10;
-} 
-.thumbnailx{
-	max-height: 31px;
 }
+.button-component > div > a,
+.button-component .dropdown{
+	float: left;
+	margin-right: 5px;
+}
+.button-component .dropdown{
+	margin-top: 4px;
+}
+td.button-component{float:none}
 .table-striped>tbody>tr.placeholder td{
 	background: #f8efc0;
 }
 /* for nested */
-.placeholder {
+.placeholder, tr.placeholder > td {
 	border: 0;
 	background: #747474 !important;
 	border-radius: 0px;
@@ -220,3 +206,8 @@ table.table td.with-checkbox{
     padding-top: 20px;
     padding-bottom: 20px;
 }
+.dropdown-component{float:left;margin-right:5px;margin-top:4px}
+.button-component{float:left;text-align:left}
+.data-grid table.table td,.data-grid table.table th{vertical-align:middle}
+.sortable-column{width:44px;text-align:center}
+.with-actions{text-align: center}

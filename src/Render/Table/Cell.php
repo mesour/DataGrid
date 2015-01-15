@@ -18,7 +18,11 @@ class Cell extends Render\Cell {
 			return '';
 		}
 		$td = Html::el('td', $attributes);
-		$td->setHtml($this->column->getBodyContent($this->rowData));
+		$content = $this->column->getBodyContent($this->rowData);
+
+		if(!is_null($content)) {
+			$td->setHtml($content);
+		}
 		return $td;
 	}
 

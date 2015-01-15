@@ -19,12 +19,10 @@ class Status extends BaseOrdering {
 
 	static public $no_active_class = 'no-active-button';
 
-	public function setButtons(array $buttons) {
-		$this->option[self::BUTTONS] = $buttons;
-	}
-
-	public function addButton(StatusButton $button) {
+	public function addButton() {
+		$button = new StatusButton();
 		$this->option[self::BUTTONS][] = $button;
+		return $button;
 	}
 
 	protected function setDefaults() {
@@ -36,7 +34,7 @@ class Status extends BaseOrdering {
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\Column\Status::HEADER is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HEADER is required.');
 		}
 		return array('class' => 'act buttons-count-1');
 	}
@@ -49,7 +47,7 @@ class Status extends BaseOrdering {
 		if (!isset($data[$this->option[self::ID]])) {
 			throw new Grid_Exception('Column "' . $this->option[self::ID] . '" does not exist in data.');
 		}
-		$class = 'status-buttons';
+		$class = 'button-component';
 		$exception = 'Option \DataGrid\StatusColumn::BUTTONS must be array contains instances of Components\StatusButton.';
 		if (!is_array($this->option[self::BUTTONS])) {
 			throw new Grid_Exception($exception);
@@ -83,7 +81,7 @@ class Status extends BaseOrdering {
 				$active_count++;
 			}
 		}
-		$container = Html::el('div', array('class' => 'thumbnailx buttons-count-' . $active_count));
+		$container = Html::el('div', array('class' => 'buttons-count-' . $active_count));
 		$container->setHtml($buttons);
 		return $container;
 	}

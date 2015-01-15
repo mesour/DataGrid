@@ -12,7 +12,7 @@ use \Nette\Utils\Html,
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Dropdown extends Setting {
+class DropDown extends Setting {
 
 	/**
 	 * Possible option key
@@ -38,15 +38,19 @@ class Dropdown extends Setting {
 
 	/**
 	 * @param array $option
-	 * @param \Nette\Application\UI\Presenter $presenter
-	 * @param Array|NULL $data
-	 * @throws \Mesour\DataGrid\Grid_Exception
+	 * @param Presenter|NULL $presenter
+	 * @param array $data
+	 * @throws Grid_Exception
 	 */
-	public function __construct(Presenter $presenter, array $option = array(), $data = NULL) {
+	public function __construct($option = array(), Presenter $presenter = NULL, $data = array()) {
 		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}
+		$this->presenter = $presenter;
+	}
+
+	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
 	}
 
@@ -70,7 +74,7 @@ class Dropdown extends Setting {
 		return $this;
 	}
 
-	public function addHeader($name) {
+	public function addGroup($name) {
 		$this->option[self::LINKS][] = array('dropdown-header', $name);
 		return $this;
 	}
@@ -116,6 +120,10 @@ class Dropdown extends Setting {
 	public function create($data = NULL) {
 		if (empty($data) === FALSE) {
 			$this->data = $data;
+		}
+
+		if (is_null($this->presenter)) {
+			throw new Grid_Exception('Presenter is not set for DropDown.');
 		}
 
 		$container = Html::el('div', array('class' => 'dropdown'));

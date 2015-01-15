@@ -43,17 +43,12 @@ class Button extends Setting {
 
 	/**
 	 * @param array $option
-	 * @param \Nette\Application\UI\Presenter $presenter
-	 * @param Array|NULL $data
-	 * @throws \Mesour\DataGrid\Grid_Exception
+	 * @param Presenter|NULL $presenter
+	 * @param array $data
+	 * @throws Grid_Exception
 	 */
-	public function __construct($option = array(), $presenter = array(), $data = NULL) {
-		if ($option instanceof Presenter) {
-			parent::__construct($presenter);
-			$presenter = $option;
-		} else {
-			parent::__construct($option);
-		}
+	public function __construct($option = array(), Presenter $presenter = NULL, $data = array()) {
+		parent::__construct($option);
 		if (empty($data) === FALSE) {
 			$this->data = $data;
 		}

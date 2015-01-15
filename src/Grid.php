@@ -12,7 +12,8 @@ namespace Mesour\DataGrid;
 
 use Nette\Application\UI\Form,
     \Nette\ComponentModel\IContainer,
-    \Nette\Application\UI\Control;
+    \Nette\Application\UI\Control,
+    \Nette\Localization\ITranslator;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -46,7 +47,7 @@ class Grid extends Control {
 	 *
 	 * @var int
 	 */
-	private $page_limit = 20;
+	private $page_limit;
 
 	/**
 	 * Contains TRUE if before render called
@@ -54,13 +55,6 @@ class Grid extends Control {
 	 * @var bool
 	 */
 	private $called_before_render = FALSE;
-
-	/**
-	 * Key for table row id
-	 *
-	 * @var string
-	 */
-	private $line_id_key;
 
 	/**
 	 * Data source
@@ -80,27 +74,37 @@ class Grid extends Control {
 
 	private $main_parent_value = 0;
 
-	/** @var \Nette\Localization\ITranslator */
+	/**
+	 * @var ITranslator
+	 */
 	protected $translator;
 
+	/**
+	 * @var NULL|string
+	 */
 	private $empty_text = NULL;
 
 	/**
-	 * Event which is triggered when sort data
+	 * @var callback|NULL
+	 */
+	private $sub_grid;
+
+	/**
+	 * Event which is triggered after sort rows
 	 *
 	 * @var array
 	 */
 	public $onSort = array();
 
 	/**
-	 * Event which is triggered when edit column
+	 * Event which is triggered when column was edit
 	 *
 	 * @var array
 	 */
 	public $onEditCell = array();
 
 	/**
-	 * Event which is triggered when filtering data
+	 * Event which is triggered when filter data
 	 *
 	 * @var array
 	 */
@@ -116,10 +120,9 @@ class Grid extends Control {
 	 */
 	static public $css_draw = TRUE;
 
-	public function __construct(IDataSource $data_source, IContainer $parent = NULL, $name = NULL) {
+	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 
-		$this->data_source = $data_source;
 		$this->name = $name;
 		new Extensions\Ordering($this, 'ordering');
 		new Extensions\Translator($this, 'translator');
@@ -141,18 +144,57 @@ class Grid extends Control {
 		return $this->presenter->getName() . $this->name;
 	}
 
-	/**
-	 * Add column to data grid
-	 *
-	 * @param Column\IColumn $column
-	 */
-	public function column(Column\IColumn $column) {
+	public function addStatus($column_name, $header = NULL) {
+		$column = new Column\Status();
+		$column->setId($column_name)
+			->setHeader($header);
 		$this->column_arr[] = $column;
+		return $column;
 	}
 
-	public function addStatus($column_name) {
-		$column = new Column\Status();
-		$column->setId($column_name);
+	public function addDate($column_name, $header = NULL) {
+		$column = new Column\Date();
+		$column->setId($column_name)
+		    ->setHeader($header);
+		$this->column_arr[] = $column;
+		return $column;
+	}
+
+	public function addNumber($column_name, $header = NULL) {
+		$column = new Column\Number();
+		$column->setId($column_name)
+		    ->setHeader($header);
+		$this->column_arr[] = $column;
+		return $column;
+	}
+
+	public function addText($column_name, $header = NULL) {
+		$column = new Column\Text();
+		$column->setId($column_name)
+			->setHeader($header);
+		$this->column_arr[] = $column;
+		return $column;
+	}
+
+	public function addImage($column_name, $header = NULL) {
+		$column = new Column\Image();
+		$column->setId($column_name)
+			->setHeader($header);
+		$this->column_arr[] = $column;
+		return $column;
+	}
+
+	public function addContainer($column_name, $header = NULL) {
+		$column = new Column\Container();
+		$column->setId($column_name)
+			->setHeader($header);
+		$this->column_arr[] = $column;
+		return $column;
+	}
+
+	public function addActions($header = NULL) {
+		$column = new Column\Actions();
+		$column->setHeader($header);
 		$this->column_arr[] = $column;
 		return $column;
 	}
@@ -165,9 +207,13 @@ class Grid extends Control {
 	}
 
 	/**
-	 * @return \Mesour\DataGrid\IDataSource
+	 * @return IDataSource
+	 * @throws Grid_Exception
 	 */
 	public function getDataSource() {
+		if(!$this->data_source) {
+			throw new Grid_Exception('Data source is not set. Use setDataSource.');
+		}
 		return $this->data_source;
 	}
 
@@ -213,20 +259,12 @@ class Grid extends Control {
 		return $this['filter']->getFilterValues();
 	}
 
-	public function enablePager($max_for_normal = 15, $edge_page_count = 3, $middle_page_count = 2) {
+	public function enablePager($page_limit = 20, $max_for_normal = 15, $edge_page_count = 3, $middle_page_count = 2) {
 		new Extensions\Pager($this, 'pager');
+		$this->page_limit = $page_limit;
 		$this['pager']->setMaxForNormal($max_for_normal)
 		    ->setEdgePageCount($edge_page_count)
 		    ->setMiddlePageCount($middle_page_count);
-	}
-
-	/**
-	 * Set page limit
-	 *
-	 * @param integer $limit
-	 */
-	public function setPageLimit($limit) {
-		$this->page_limit = $limit;
 	}
 
 	public function enableExport($cache_dir, $file_name = NULL, array $columns = array(), $delimiter = ",") {
@@ -237,38 +275,34 @@ class Grid extends Control {
 		$this['export']->setDelimiter($delimiter);
 	}
 
-	public function enableRowSelection(array $url_array, $show_main_checkbox = TRUE) {
-		if (!$this->hasLineId()) {
-			throw new Grid_Exception('DataGrid row selection require primary key. Use setPrimaryKey.');
-		}
+	/**
+	 * @return Extensions\SelectionLinks
+	 */
+	public function enableRowSelection() {
 		new Extensions\Selection($this, 'selection');
-		$this['selection']->setPrimaryKey($this->line_id_key);
-		$this['selection']->setUrlArray($url_array);
-		$this['selection']->setMainCheckboxShowing($show_main_checkbox);
+		$this['selection']->setPrimaryKey($this->data_source->getPrimaryKey());
+		return $this['selection']->getLinks();
 	}
 
 	public function enableSorting() {
-		if (!$this->hasLineId()) {
-			throw new Grid_Exception('DataGrid sortable require primary key. Use setPrimaryKey.');
-		}
 		new Extensions\Sortable($this, 'sortable');
 	}
 
 	public function enableEditableCells() {
-		if (!$this->hasLineId()) {
-			throw new Grid_Exception('DataGrid editable require primary key. Use setPrimaryKey.');
-		}
 		new Extensions\Editable($this, 'editable');
 	}
 
 	/**
-	 * Set line id. This will create id="gridName-{key}" on <tr> or <li>
-	 * Required by sortable and editable
+	 * Pager have to be initialized before call this method
 	 *
-	 * @param String $key
+	 * @param $callback
+	 * @experimental
 	 */
-	public function setPrimaryKey($key) {
-		$this->line_id_key = $key;
+	public function enableSubGrid($callback) {
+		$this->sub_grid = $callback;
+		for($x = 0; $x < ($this->page_limit ? $this->page_limit : $this->getTotalCount()); $x++) {
+			new self($this, $this->getName() . $x);
+		}
 	}
 
 	public function setMainParentValue($value) {
@@ -284,7 +318,7 @@ class Grid extends Control {
 	 * @param null $customDir - Set custom directory (directory where you have translates from grid)
 	 * @throws Grid_Exception
 	 */
-	function setLocale($languageFile, $customDir = null) {
+	public function setLocale($languageFile, $customDir = null) {
 		$this["translator"]->setLocale($languageFile, $customDir);
 	}
 
@@ -292,23 +326,23 @@ class Grid extends Control {
 	 * Sets translate adapter.
 	 * @return self
 	 */
-	public function setTranslator(\Nette\Localization\ITranslator $translator)
+	public function setTranslator(ITranslator $translator)
 	{
 		$this->translator = $translator;
 	}
 
 	public function getTranslator()
 	{
-		return $this->translator instanceof \Nette\Localization\ITranslator ? $this->translator : null;
+		return $this->translator instanceof ITranslator ? $this->translator : null;
 	}
 
 	public function fetchAll() {
-		return $this->data_source->fetchAll();
+		return $this->getDataSource()->fetchAll();
 	}
 
 	public function getRealColumnNames() {
 		if (is_null($this->real_column_names)) {
-			$this->real_column_names = array_keys($this->data_source->fetch());
+			$this->real_column_names = array_keys($this->getDataSource()->fetch());
 		}
 		return $this->real_column_names;
 	}
@@ -329,6 +363,14 @@ class Grid extends Control {
 		return NULL;
 	}
 
+	public function setDataSource(IDataSource & $data_source) {
+		$this->data_source = $data_source;
+	}
+
+	public function isSubGrid() {
+		return $this->parent instanceof self;
+	}
+
 	/**
 	 * @return IDataSource
 	 */
@@ -343,20 +385,17 @@ class Grid extends Control {
 		$factory = new Render\Table\RendererFactory($this);
 		$table = $this->createBody($factory);
 		$this->template->content = $table;
+		$this->template->locale = $this['translator']->getLocale();
 
 		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
 		$this->template->render();
 	}
 
 	private function getLineId($data) {
-		if ($this->hasLineId()) {
-			return $this->getName() . '-' . $data[$this->line_id_key];
+		if(!isset($data[$this->data_source->getPrimaryKey()])) {
+			throw new Grid_Exception('Primary key "' . $this->data_source->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.');
 		}
-		return FALSE;
-	}
-
-	private function hasLineId() {
-		return empty($this->line_id_key) === FALSE;
+		return $this->getName() . '-' . $data[$this->data_source->getPrimaryKey()];
 	}
 
 	/**
@@ -393,11 +432,11 @@ class Grid extends Control {
 		if (isset($this['filter'])) {
 			$this['filter']->applyFilter();
 		}
-		$this->count = $this->data_source->count();
+		$this->count = $this->getDataSource()->count();
 
 		if (isset($this['pager'])) {
 			$this['pager']->setCounts($this->count, $this->page_limit);
-			$this->data_source->applyLimit($this->page_limit, ($this['pager']->getCurrentPageIndex()) * $this->page_limit);
+			$this->getDataSource()->applyLimit($this->page_limit, ($this['pager']->getCurrentPageIndex()) * $this->page_limit);
 		}
 		$this->called_before_render = TRUE;
 	}
@@ -421,10 +460,10 @@ class Grid extends Control {
 	 * Set total count of data grid
 	 */
 	private function setTotalCount() {
-		$this->total_count = $this->data_source->getTotalCount();
+		$this->total_count = $this->getDataSource()->getTotalCount();
 	}
 
-	protected function createBody(Render\IRendererFactory $factory) {
+	public function createBody(Render\IRendererFactory $factory) {
 		$this->beforeCreate();
 		$table = $factory->createTable();
 		if ($factory instanceof Render\Tree\RendererFactory) {
@@ -435,6 +474,23 @@ class Grid extends Control {
 		$table->setAttributes(array(
 		    'class' => $table_class
 		));
+
+		$this->beforeRender();
+
+		$sub_grids = array();
+		$full_data = $this->getDataSource()->fetchAll();
+
+
+		foreach ($full_data as $key => $rowData) {
+			if(is_callable($this->sub_grid)) {
+				$sub_grid = call_user_func($this->sub_grid, $this[$this->getName() . $key], $rowData);
+				if(!$sub_grid instanceof self) {
+					throw new Grid_Exception('Sub grid have to be instance of ' . __CLASS__ . '.');
+				}
+				$sub_grids[$key] = $sub_grid;
+			}
+		}
+
 		$header = $factory->createHeader();
 		$header->setAttributes(array('class' => 'grid-header'));
 		foreach ($this->getColumns() as $column) {
@@ -442,9 +498,8 @@ class Grid extends Control {
 		}
 		$table->setHeader($header);
 
-		$this->beforeRender();
 		if ($factory instanceof Render\Tree\RendererFactory) {
-			$data = $this->data_source->fetchAssoc();
+			$data = $this->getDataSource()->fetchAssoc();
 			$body = $factory->createBody();
 			$body_attributes = array(
 			    'class' => 'grid-ul'
@@ -474,8 +529,11 @@ class Grid extends Control {
 			if($this->hasEmptyData()) {
 				$this->addRow($factory, $body, count($this->getColumns()), TRUE);
 			} else {
-				foreach ($this->data_source->fetchAll() as $rowData) {
+				foreach ($full_data as $key => $rowData) {
 					$this->addRow($factory, $body, $rowData);
+					if(is_callable($this->sub_grid)) {
+						$this->addRow($factory, $body, count($this->getColumns()), $sub_grids[$key]);
+					}
 				}
 			}
 			$table->setBody($body);
@@ -485,18 +543,25 @@ class Grid extends Control {
 
 	private function addRow(&$factory, &$body, $rowData, $empty = FALSE) {
 		$row = $factory->createRow($rowData);
-		if ($this->hasLineId()) {
-			$row->setAttributes(array(
-			    'id' => $this->getLineId($rowData)
-			));
-		}
+		$row->setAttributes(array(
+		    'id' => $this->getLineId($rowData)
+		));
 
 		if($empty) {
-			$empty_column = new Column\EmptyData(array(
-				Column\EmptyData::TEXT => $this->empty_text ? $this->empty_text : 'Nothing to display.'
-			));
+			if($empty instanceof self) {
+				$factory = new Render\Table\RendererFactory($empty);
+				$table = $empty->createBody($factory);
+				$empty_column = new Column\SubGrid(array(
+				    Column\EmptyData::TEXT => $table->create()
+				));
+			} else {
+				$empty_column = new Column\EmptyData(array(
+				    Column\EmptyData::TEXT => $this->empty_text ? $this->empty_text : 'Nothing to display.'
+				));
+			}
+
 			$cell = $factory->createCell($rowData, $empty_column);
-			$row->addAttribute('class', count($this->getColumns()));
+			$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
 			$row->addCell($cell);
 		} else {
 			foreach ($this->getColumns() as $column) {
@@ -521,7 +586,7 @@ class Grid extends Control {
 
 	private function addTreeRow(&$factory, &$body, $rowData, $groupData) {
 		$row = $this->addRow($factory, $body, $rowData);
-		$sub_id = $rowData[$this->data_source->getPrimaryKey()];
+		$sub_id = $rowData[$this->getDataSource()->getPrimaryKey()];
 		if (isset($groupData[$sub_id])) {
 			$this->rowsWalkRecursive($factory, $row, $sub_id, $groupData);
 		}

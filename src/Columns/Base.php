@@ -15,21 +15,26 @@ abstract class Base extends Setting implements IColumn {
 
 	const ATTRIBUTES = 'attributes';
 
-	public function setAttributes(array $attributes) {
-		$this->option[self::ATTRIBUTES] = $attributes;
-		return $this;
-	}
-
-	public function addAttribute($key, $value) {
-		$this->option[self::ATTRIBUTES][$key] = $value;
-		return $this;
-	}
-
 	/**
 	 *
 	 * @var \Mesour\DataGrid\Grid
 	 */
 	protected $grid;
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 * @param bool $append
+	 * @return $this
+	 */
+	public function addAttribute($key, $value, $append = FALSE) {
+		if($append && isset($this->option[self::ATTRIBUTES][$key])) {
+			$this->option[self::ATTRIBUTES][$key] = $this->option[self::ATTRIBUTES][$key] . ' ' . $value;
+		} else {
+			$this->option[self::ATTRIBUTES][$key] = $value;
+		}
+		return $this;
+	}
 
 	/**
 	 * @param \Nette\ComponentModel\IComponent $grid
@@ -93,11 +98,12 @@ abstract class Base extends Setting implements IColumn {
 	 * @throws Grid_Exception
 	 */
 	protected function fixOption() {
-		$isnt_special = (!$this instanceof Button && !$this instanceof Sortable && !$this instanceof Dropdown);
+		$isnt_special = (!$this instanceof Actions && !$this instanceof Sortable);
 		if ($isnt_special && array_key_exists('id', $this->option) === FALSE) {
 			throw new Grid_Exception('Column ID can not be empty.');
 		}
-		if ($isnt_special && array_key_exists('header', $this->option) === FALSE) {
+		if ($isnt_special && (array_key_exists('header', $this->option) === FALSE
+		    	|| array_key_exists('header', $this->option) && is_null($this->option['header']))) {
 			$this->option['header'] = $this->option['id'];
 		}
 	}

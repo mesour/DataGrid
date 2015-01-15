@@ -26,11 +26,11 @@
 		</script>
 		{foreach $control->parent->getColumns() as $column}
 			{continueIf $column->hasFiltering() === FALSE}
-			{if $column instanceof \DataGrid\Column\Text}
+			{if $column instanceof \Mesour\DataGrid\Column\Text}
 				{include TextDropdown.latte column => $column}
-			{elseif $column instanceof \DataGrid\Column\Number}
+			{elseif $column instanceof \Mesour\DataGrid\Column\Number}
 				{include NumberDropdown.latte column => $column}
-			{elseif $column instanceof \DataGrid\Column\Date && !$control->parent->getDataSource() instanceof \DataGrid\ArrayDataSource}
+			{elseif $column instanceof \Mesour\DataGrid\Column\Date && !$control->parent->getDataSource() instanceof \Mesour\DataGrid\ArrayDataSource}
 				{include DateDropdown.latte column => $column}
 			{/if}
 		{/foreach}
