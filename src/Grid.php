@@ -310,7 +310,7 @@ class Grid extends Control {
 	}
 
 	public function setEmptyText($empty_text) {
-		$this->empty_text = $this->getTranslator()->translate($empty_text);
+		$this->empty_text = $this->getTranslator() ? $this->getTranslator()->translate($empty_text) : $empty_text;
 	}
 
 	/**
@@ -543,9 +543,11 @@ class Grid extends Control {
 
 	private function addRow(&$factory, &$body, $rowData, $empty = FALSE) {
 		$row = $factory->createRow($rowData);
-		$row->setAttributes(array(
-		    'id' => $this->getLineId($rowData)
-		));
+		if(!$this->hasEmptyData()) {
+			$row->setAttributes(array(
+			    'id' => $this->getLineId($rowData)
+			));
+		}
 
 		if($empty) {
 			if($empty instanceof self) {
