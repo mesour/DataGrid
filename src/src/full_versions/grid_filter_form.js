@@ -88,7 +88,6 @@
                     }
                 }
                 delete sendValues.do;
-                console.log(sendValues);
                 $.get(mesour.getUrlWithParam(gridName, form.attr("action"), 'filter', 'settings', sendValues));
             });
         });

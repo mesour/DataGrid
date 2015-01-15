@@ -19,6 +19,8 @@ class Filter extends BaseControl {
 	 */
 	private $filter_form;
 
+	private $filter_values = NULL;
+
 	private $form_template;
 
 	private $date_format = 'Y-m-d';
@@ -71,6 +73,7 @@ class Filter extends BaseControl {
 				$output[$key] = $val;
 			}
 		}
+		$this->filter_values = $output;
 		return $output;
 	}
 
@@ -78,6 +81,7 @@ class Filter extends BaseControl {
 		if (!$this->filter_form) {
 			$this->applyAutoFiltering();
 		}
+		$this->getFilterValues();
 	}
 
 	/**
@@ -90,16 +94,18 @@ class Filter extends BaseControl {
 				unset($this->settings[$key]);
 			}
 		}
-		$this->template->settings = $this->settings;
 
 		if (!$this->filter_form) {
 			$this->template->php_date = $this->date_format;
 			$this->template->js_date = $this->js_date_format;
+			$this->template->settings = $this->settings;
 
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/Filter.latte');
 		} else {
 			$this->template->filter_form = $this->filter_form;
 			$this->template->form_template = $this->form_template;
+
+			$this->template->settings = is_null($this->filter_values) ? $this->getFilterValues() : $this->filter_values;
 
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/FilterForm.latte');
 		}
