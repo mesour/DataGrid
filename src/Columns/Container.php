@@ -62,13 +62,6 @@ class Container extends BaseOrdering {
 		return $column;
 	}
 
-	public function addDropDown($header = NULL) {
-		$column = new Dropdown();
-		$column->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
-	}
-
 	public function addActions($header = NULL) {
 		$column = new Actions();
 		$column->setHeader($header);
