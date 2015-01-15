@@ -18,13 +18,13 @@ class SelectionLinks extends Control {
 	 * @return SelectionLink
 	 */
 	public function addLink($name) {
-		$fixed_name = \Nette\Utils\Strings::webalize($name);
-		$this->links[$fixed_name] = new SelectionLink();
+		$link = new SelectionLink();
 		if ($this->parent->getTranslator()) {
-			$this->links[$fixed_name]->setTranslator($this->parent->getTranslator());
+			$link->setTranslator($this->parent->getTranslator());
 		}
-		$this->links[$fixed_name]->setName($name);
-		return $this->links[$fixed_name];
+		$link->setName($name);
+		$this->links[$link->getFixedName()] = $link;
+		return $link;
 	}
 
 	/**
