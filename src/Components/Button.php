@@ -57,6 +57,7 @@ class Button extends Setting {
 
 	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
+		return $this;
 	}
 
 	public function setType($type) {

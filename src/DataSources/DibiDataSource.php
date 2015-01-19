@@ -200,7 +200,7 @@ class DibiDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		if ($row = $this->dibi_data_source->fetch()) {
+		if ($row = $this->dibi_data_source_full->fetch()) {
 			return $row->toArray();
 		} else {
 			return array();

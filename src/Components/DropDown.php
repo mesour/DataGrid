@@ -52,6 +52,7 @@ class DropDown extends Setting {
 
 	public function setPresenter(Presenter $presenter) {
 		$this->presenter = $presenter;
+		return $this;
 	}
 
 	public function setName($name) {
