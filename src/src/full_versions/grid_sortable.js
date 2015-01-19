@@ -7,7 +7,7 @@
             handle: 'a.handler',
             listType: 'tbody',
             helper: 'clone',
-            items: 'tr',
+            items: '> tr:not(.no-sort)',
             maxLevels: $('a#sort_href').attr("title"),
             opacity: .6,
             placeholder: 'placeholder',
@@ -29,6 +29,7 @@
             },
             start: function(a, b) {
                 var sorted;
+                $(this).find('.no-sort').remove();
                 if (b.placeholder.is('tr') && sorted == undefined)
                 {
                     var x = 0;
@@ -38,7 +39,7 @@
                     });
 
                     b.placeholder.append($('<td colspan="' + $('tr:first-child td', $(a.currentTarget)).length + '">&nbsp;</td>'));
-                    $(b.placeholder).find('td').css('height', $(a.currentTarget).find('tr .thumbnailx').outerHeight() - 9);
+                    $(b.placeholder).find('td').css('height', $(a.currentTarget).find('tr > td:first').outerHeight() - 9);
 
                     sorted = true;
                 } else if (sorted == true) {

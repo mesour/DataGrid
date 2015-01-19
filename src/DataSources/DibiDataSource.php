@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -148,20 +148,20 @@ class DibiDataSource implements IDataSource {
 	}
 
 	public function applyCheckers($column_name, array $value, $type) {
-		if($type === 'date') {
+		if ($type === 'date') {
 			$is_timestamp = TRUE;
-			foreach($value as $val) {
-				if(!is_numeric($val)) {
+			foreach ($value as $val) {
+				if (!is_numeric($val)) {
 					$is_timestamp = FALSE;
 					break;
 				}
 			}
-			if($is_timestamp) {
+			if ($is_timestamp) {
 				$where = '(';
 				$i = 1;
-				foreach($value as $val) {
-					$where .= '(' . $column_name . ' >= ' . (int) $val . ' AND ' . $column_name . ' <= ' . (((int) $val) + 86398) . ')';
-					if($i < count($value)) {
+				foreach ($value as $val) {
+					$where .= '(' . $column_name . ' >= ' . (int)$val . ' AND ' . $column_name . ' <= ' . (((int)$val) + 86398) . ')';
+					if ($i < count($value)) {
 						$where .= ' OR ';
 					}
 					$i++;
@@ -200,7 +200,7 @@ class DibiDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		if ($row = $this->dibi_data_source->fetch()) {
+		if ($row = $this->dibi_data_source_full->fetch()) {
 			return $row->toArray();
 		} else {
 			return array();

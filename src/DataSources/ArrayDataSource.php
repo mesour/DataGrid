@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 use \Mesour\ArrayManage\Searcher\Select;
 
@@ -31,7 +31,7 @@ class ArrayDataSource implements IDataSource {
 
 	/**
 	 * Create instance
-	 * 
+	 *
 	 * @param Array $data
 	 */
 	public function __construct(array $data) {
@@ -42,7 +42,7 @@ class ArrayDataSource implements IDataSource {
 
 	/**
 	 * Get array data count
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function getTotalCount() {
@@ -56,7 +56,7 @@ class ArrayDataSource implements IDataSource {
 
 	/**
 	 * Apply limit and offset
-	 * 
+	 *
 	 * @param Integer $limit
 	 * @param Integer $offset
 	 */
@@ -67,7 +67,7 @@ class ArrayDataSource implements IDataSource {
 
 	/**
 	 * Get count after applied where
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function count() {
@@ -76,7 +76,7 @@ class ArrayDataSource implements IDataSource {
 
 	/**
 	 * Get searched values witp applied limit, offset and where
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function fetchAll() {
@@ -89,14 +89,14 @@ class ArrayDataSource implements IDataSource {
 
 	public function fetchAssoc() {
 		$output = array();
-		foreach($this->fetchAll() as $value) {
+		foreach ($this->fetchAll() as $value) {
 			$output[$value[$this->parent_key]][] = $value;
 		}
 		return $output;
 	}
 
 	private function customFilter($how) {
-		switch($how) {
+		switch ($how) {
 			case 'equal_to';
 				return \Mesour\ArrayManage\Searcher\Condition::EQUAL;
 			case 'not_equal_to';
@@ -129,35 +129,35 @@ class ArrayDataSource implements IDataSource {
 	public function applyCustom($column_name, array $custom, $type) {
 		$values = array();
 
-		if(!empty($custom['how1']) && !empty($custom['val1'])) {
+		if (!empty($custom['how1']) && !empty($custom['val1'])) {
 			$values[] = $this->customFilter($custom['how1']);
 		}
-		if(!empty($custom['how2']) && !empty($custom['val2'])) {
+		if (!empty($custom['how2']) && !empty($custom['val2'])) {
 			$values[] = $this->customFilter($custom['how2']);
 		}
-		if(count($values) === 2) {
-			if($custom['operator'] === 'and') {
+		if (count($values) === 2) {
+			if ($custom['operator'] === 'and') {
 				$operator = 'and';
 			} else {
 				$operator = 'or';
 			}
 		}
-		foreach($values as $key => $val) {
-			$this->where($column_name, $custom['val'.($key+1)], $val, isset($operator) ? $operator : 'and');
+		foreach ($values as $key => $val) {
+			$this->where($column_name, $custom['val' . ($key + 1)], $val, isset($operator) ? $operator : 'and');
 		}
 	}
 
 	public function applyCheckers($column_name, array $value, $type) {
-		foreach($value as $val) {
+		foreach ($value as $val) {
 			$this->where($column_name, $val, \Mesour\ArrayManage\Searcher\Condition::EQUAL, 'or');
 		}
 	}
 
 	public function fetchFullData($date_format = 'Y-m-d') {
 		$output = array();
-		foreach($this->full_select->fetchAll() as $data) {
-			foreach($data as $key => $val) {
-				if($val instanceof \DateTime) {
+		foreach ($this->full_select->fetchAll() as $data) {
+			foreach ($data as $key => $val) {
+				if ($val instanceof \DateTime) {
 					$data[$key] = $val->format($date_format);
 				}
 			}
@@ -169,11 +169,11 @@ class ArrayDataSource implements IDataSource {
 	public function orderBy($row, $sorting = 'ASC') {
 		$this->select->orderBy($row, $sorting);
 	}
-	
-	
+
+
 	/**
 	 * Return first element from data
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function fetch() {

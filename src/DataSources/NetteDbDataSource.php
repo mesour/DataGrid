@@ -1,15 +1,15 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
 class NetteDbDataSource implements IDataSource {
-	
+
 	private $parent_key = 'parent_id';
-	
+
 	private $primary_key = 'id';
 
 	/**
@@ -36,7 +36,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Create instance
-	 * 
+	 *
 	 * @param \Nette\Database\Table\Selection $nette_table
 	 */
 	public function __construct(\Nette\Database\Table\Selection $nette_table) {
@@ -53,7 +53,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Get total count of source data
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function getTotalCount() {
@@ -62,7 +62,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Add where condition
-	 * 
+	 *
 	 * @param Mixed $args NetteDatabase args
 	 */
 	public function where($args) {
@@ -71,7 +71,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Apply limit and offset
-	 * 
+	 *
 	 * @param Integer $limit
 	 * @param Integer $offset
 	 */
@@ -82,7 +82,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Get count after applied where
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function count() {
@@ -91,12 +91,12 @@ class NetteDbDataSource implements IDataSource {
 
 	private function getSelection($limit = TRUE, $where = TRUE) {
 		$selection = clone $this->nette_table;
-		if($where) {
-			foreach($this->where_arr as $conditions) {
+		if ($where) {
+			foreach ($this->where_arr as $conditions) {
 				call_user_func_array(array($selection, 'where'), $conditions);
 			}
 		}
-		if($limit) {
+		if ($limit) {
 			$selection->limit($this->limit, $this->offset);
 		}
 		return $selection;
@@ -104,7 +104,7 @@ class NetteDbDataSource implements IDataSource {
 
 	/**
 	 * Get searched values with applied limit, offset and where
-	 * 
+	 *
 	 * @return array
 	 */
 	public function fetchAll() {
@@ -119,7 +119,7 @@ class NetteDbDataSource implements IDataSource {
 	public function fetchAllForExport() {
 		$output = array();
 		$selection = $this->getSelection(FALSE);
-		foreach($selection as $data) {
+		foreach ($selection as $data) {
 			$output[] = $data->toArray();
 		}
 		return $output;
@@ -128,7 +128,7 @@ class NetteDbDataSource implements IDataSource {
 	private function customFilter($column_name, $how, $value, $type) {
 		$output = array();
 		$column_name = $type === 'date' ? ('DATE(' . $column_name . ')') : $column_name;
-		switch($how) {
+		switch ($how) {
 			case 'equal_to';
 				$output[] = $column_name . ' = ?';
 				$output[] = $value;
@@ -185,14 +185,14 @@ class NetteDbDataSource implements IDataSource {
 
 	public function applyCustom($column_name, array $custom, $type) {
 		$values = array();
-		if(!empty($custom['how1']) && !empty($custom['val1'])) {
+		if (!empty($custom['how1']) && !empty($custom['val1'])) {
 			$values[] = $this->customFilter($column_name, $custom['how1'], $custom['val1'], $type);
 		}
-		if(!empty($custom['how2']) && !empty($custom['val2'])) {
+		if (!empty($custom['how2']) && !empty($custom['val2'])) {
 			$values[] = $this->customFilter($column_name, $custom['how2'], $custom['val2'], $type);
 		}
-		if(count($values) === 2) {
-			if($custom['operator'] === 'and') {
+		if (count($values) === 2) {
+			if ($custom['operator'] === 'and') {
 				$operator = 'AND';
 			} else {
 				$operator = 'OR';
@@ -205,20 +205,20 @@ class NetteDbDataSource implements IDataSource {
 	}
 
 	public function applyCheckers($column_name, array $value, $type) {
-		if($type === 'date') {
+		if ($type === 'date') {
 			$is_timestamp = TRUE;
-			foreach($value as $val) {
-				if(!is_numeric($val)) {
+			foreach ($value as $val) {
+				if (!is_numeric($val)) {
 					$is_timestamp = FALSE;
 					break;
 				}
 			}
-			if($is_timestamp) {
+			if ($is_timestamp) {
 				$where = '(';
 				$i = 1;
-				foreach($value as $val) {
-					$where .= '(' . $column_name . ' >= ' . (int) $val . ' AND ' . $column_name . ' <= ' . (((int) $val) + 86398) . ')';
-					if($i < count($value)) {
+				foreach ($value as $val) {
+					$where .= '(' . $column_name . ' >= ' . (int)$val . ' AND ' . $column_name . ' <= ' . (((int)$val) + 86398) . ')';
+					if ($i < count($value)) {
 						$where .= ' OR ';
 					}
 					$i++;
@@ -236,10 +236,10 @@ class NetteDbDataSource implements IDataSource {
 	public function fetchFullData($date_format = 'Y-m-d') {
 		$output = array();
 		$selection = $this->getSelection(FALSE, FALSE);
-		foreach($selection as $data) {
+		foreach ($selection as $data) {
 			$current_data = $data->toArray();
-			foreach($current_data as $key => $val) {
-				if($val instanceof \Nette\Utils\DateTime) {
+			foreach ($current_data as $key => $val) {
+				if ($val instanceof \Nette\Utils\DateTime) {
 					$current_data[$key] = $val->format($date_format);
 				}
 			}
@@ -251,7 +251,7 @@ class NetteDbDataSource implements IDataSource {
 	public function fetchAssoc() {
 		$data = $this->fetchAll();
 		$output = array();
-		foreach($data as $row) {
+		foreach ($data as $row) {
 			$output[$row[$this->parent_key]][] = $row;
 		}
 		return $output;
@@ -260,29 +260,29 @@ class NetteDbDataSource implements IDataSource {
 	public function orderBy($row, $sorting = 'ASC') {
 		return $this->nette_table->order($row . ' ' . $sorting);
 	}
-	
+
 	/**
 	 * Return first element from data
-	 * 
+	 *
 	 * @return Array
 	 */
 	public function fetch() {
-		if($this->nette_table->fetch()) {
+		if ($this->nette_table->fetch()) {
 			$table = clone $this->nette_table;
 			return $table->limit(1, 0)->fetch()->toArray();
 		} else {
 			return array();
-		}	
+		}
 	}
-	
+
 	public function getPrimaryKey() {
 		return $this->primary_key;
 	}
-	
+
 	public function setPrimaryKey($primary_key) {
 		$this->primary_key = $primary_key;
 	}
-	
+
 	public function getParentKey() {
 		return $this->parent_key;
 	}

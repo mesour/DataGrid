@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
-use DataGrid\Grid_Exception;
+use Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -23,8 +23,8 @@ class Sortable extends BaseControl {
 		$item_id = $this->sortable_data['item'];
 		parse_str($this->sortable_data['serialized'], $params);
 		$data = $params[$this->parent->getName()];
-		foreach($data as $key => $val) {
-			if($val === 'null') {
+		foreach ($data as $key => $val) {
+			if ($val === 'null') {
 				$data[$key] = NULL;
 			}
 		}

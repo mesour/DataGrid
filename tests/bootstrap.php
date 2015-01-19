@@ -21,7 +21,6 @@ $configurator->setDebugMode(FALSE);
 $configurator->setTempDirectory(TEMP_DIR);
 $configurator->createRobotLoader()
     ->addDirectory(__DIR__ . '/../src')
-    ->addDirectory(__DIR__ . '/classes')
     ->register();
 
 $configurator->addConfig(__DIR__ . '/config.neon');

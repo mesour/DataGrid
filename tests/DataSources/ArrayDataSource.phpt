@@ -4,7 +4,7 @@ use Tester\Assert;
 
 $container = require_once __DIR__ . '/../bootstrap.php';
 
-class ArraySourceTest extends \Test\BaseTestCase {
+class ArraySourceTest extends \Tester\TestCase {
 
 	function testSomething() {
 		Assert::true(true);
@@ -12,5 +12,5 @@ class ArraySourceTest extends \Test\BaseTestCase {
 
 }
 
-$test = new ArraySourceTest($container);
+$test = new ArraySourceTest();
 $test->run();

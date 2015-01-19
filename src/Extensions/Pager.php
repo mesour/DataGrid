@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
 use \Nette\Application\UI\Form;
 
@@ -53,10 +53,10 @@ class Pager extends BaseControl {
 	public function setCounts($total_count, $limit) {
 		$this->paginator->setItemCount($total_count);
 		$this->paginator->setItemsPerPage($limit);
-		if(!isset($this->settings['page'])) {
+		if (!isset($this->settings['page'])) {
 			$this->settings['page'] = 1;
 		}
-		if($this->settings['page'] > $this->paginator->getPageCount()) {
+		if ($this->settings['page'] > $this->paginator->getPageCount()) {
 			$this->settings['page'] = $this->paginator->getPageCount();
 		}
 		$this->paginator->setPage(isset($this->settings['page']) ? $this->settings['page'] : 1);
@@ -80,7 +80,7 @@ class Pager extends BaseControl {
 		$this->template->middle_page_count = $this->middle_page_count;
 		$this->template->grid_dir = __DIR__;
 
-		if($this->paginator->getPageCount() > $this->max_for_normal) {
+		if ($this->paginator->getPageCount() > $this->max_for_normal) {
 			$this->template->setFile(dirname(__FILE__) . '/templates/Pager/PagerAdvanced.latte');
 		} else {
 			$this->template->setFile(dirname(__FILE__) . '/templates/Pager/Pager.latte');
@@ -107,10 +107,10 @@ class Pager extends BaseControl {
 		$form->setTranslator($this->parent["translator"]);
 
 		$form->getElementPrototype()
-			->action($this->link('toPage'));
+		    ->action($this->link('toPage'));
 
 		$form->addText('number')
-			->setAttribute('placeholder', 'Page');
+		    ->setAttribute('placeholder', 'Page');
 
 		$form->addSubmit('to_page', 'Go!');
 
@@ -119,8 +119,8 @@ class Pager extends BaseControl {
 
 	public function handleToPage() {
 
-		$number = (int) trim($this->number);
-		if($number <= 0) {
+		$number = (int)trim($this->number);
+		if ($number <= 0) {
 			$number = 1;
 		}
 		$this->settings['page'] = $number;

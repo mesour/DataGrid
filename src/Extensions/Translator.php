@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
-use DataGrid\Grid_Exception,
+use Mesour\DataGrid\Grid_Exception,
     Nette\Localization\ITranslator;
 
 /**
@@ -30,7 +30,7 @@ class Translator extends BaseControl implements ITranslator {
 	 * @throws Grid_Exception
 	 */
 	function setLocale($languageFile, $customDir = null) {
-		if(strpos($languageFile, ".php") === FALSE ) {
+		if (strpos($languageFile, ".php") === FALSE) {
 			$languageFile .= ".php";
 		}
 		if (is_null($customDir)) {

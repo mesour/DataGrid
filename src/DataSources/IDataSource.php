@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -15,14 +15,14 @@ interface IDataSource {
 
 	/**
 	 * Add where condition
-	 * 
+	 *
 	 * @param Mixed $args
 	 */
 	public function where($args);
 
 	/**
 	 * Apply limit and offset
-	 * 
+	 *
 	 * @param Integer $limit
 	 * @param Integer $offset
 	 */
@@ -30,14 +30,14 @@ interface IDataSource {
 
 	/**
 	 * Get count with applied where without limit
-	 * 
+	 *
 	 * @return Integer
 	 */
 	public function count();
 
 	/**
 	 * Get data with applied where, limit and offset
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function fetchAll();
@@ -57,7 +57,7 @@ interface IDataSource {
 
 	/**
 	 * Get first element from data
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function fetch();

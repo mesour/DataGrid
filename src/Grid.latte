@@ -1,10 +1,10 @@
 {snippet dataGrid}
-	<div class="data-grid{if $control instanceof \DataGrid\GridTree} data-grid-tree{/if} lang-{$locale}" data-mesour-grid="{$control->getName()}">
+	<div class="data-grid{if $control instanceof \Mesour\DataGrid\GridTree} data-grid-tree{/if} lang-{$locale}" data-mesour-grid="{$control->getName()}">
 		{snippet $control->getGridName()}
 			<script>
 				var mesour = !mesour ? { dataGrid: {} } : mesour;
 				mesour.dataGrid[{$control->getName()}] = {};
-				mesour.dataGrid.version = '1.4.5';
+				mesour.dataGrid.version = '2.0.0';
 			</script>
 			<div class="data-grid"{if isset($control['editable'])} data-editable-link="{$control['editable']->link('editCell!')}"{/if}>
 				{if isset($control['filter'])}
@@ -23,9 +23,9 @@
 					{control export}
 				{/if}
 			</div>
-			<script n:if="\DataGrid\Grid::$js_draw">{=file_get_contents($grid_dir . '/src/grid.js')|noescape}</script>
-                        <style n:if="\DataGrid\Grid::$css_draw">{=file_get_contents($grid_dir . '/src/grid.css')|noescape}</style>
-                        {? \DataGrid\Grid::disableJsDraw()}{? \DataGrid\Grid::disableCssDraw()}
+			<script n:if="\Mesour\DataGrid\Grid::$js_draw">{=file_get_contents($grid_dir . '/src/grid.js')|noescape}</script>
+                        <style n:if="\Mesour\DataGrid\Grid::$css_draw">{=file_get_contents($grid_dir . '/src/grid.css')|noescape}</style>
+                        {? \Mesour\DataGrid\Grid::disableJsDraw()}{? \Mesour\DataGrid\Grid::disableCssDraw()}
 			<hr style="clear:both;border:none;">
 		{/snippet}
 	</div>

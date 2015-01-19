@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace Mesour\DataGrid;
 
 /**
  * @author mesour <matous.nemec@mesour.com>

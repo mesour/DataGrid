@@ -1,8 +1,8 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
-use DataGrid\Setting;
+use Mesour\DataGrid\Setting;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -14,10 +14,10 @@ class Link extends Setting {
 	 * Possible option key
 	 */
 	const HREF = 'href',
-	    	PARAMS = 'parameters',
-	    	NAME = 'name',
-	        USE_NETTE_LINK = 'use_nette',
-		COMPONENT = 'component';
+	    PARAMS = 'parameters',
+	    NAME = 'name',
+	    USE_NETTE_LINK = 'use_nette',
+	    COMPONENT = 'component';
 
 	/**
 	 * Valid permission callback
@@ -137,11 +137,11 @@ class Link extends Setting {
 	 */
 	public function create($data = NULL) {
 		if (array_key_exists(self::HREF, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DropdownColumn::HREF is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HREF is required.');
 		}
-		if($this->hasUseNetteLink()) {
+		if ($this->hasUseNetteLink()) {
 			$link = self::getLink($this->option[self::HREF], $this->option[self::PARAMS], $data);
-			if(!$link) {
+			if (!$link) {
 				return FALSE;
 			}
 		} else {

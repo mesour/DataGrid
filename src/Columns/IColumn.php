@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -10,7 +10,7 @@ interface IColumn {
 
 	public function getId();
 
-	public function getText();
+	public function getHeader();
 
 	public function isEditable();
 

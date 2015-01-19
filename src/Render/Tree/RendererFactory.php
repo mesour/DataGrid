@@ -1,15 +1,15 @@
 <?php
 
-namespace DataGrid\Render\Tree;
+namespace Mesour\DataGrid\Render\Tree;
 
-use \DataGrid\Column,
-    DataGrid\Render;
+use Mesour\DataGrid\Column,
+    Mesour\DataGrid\Render;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class RendererFactory implements Render\IRendererFactory{
+class RendererFactory implements Render\IRendererFactory {
 
 	public function createHeaderCell(Column\IColumn $column) {
 		return new HeaderCell($column);

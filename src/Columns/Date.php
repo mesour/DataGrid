@@ -1,29 +1,23 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
-use \DataGrid\Grid_Exception;
+use Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Date extends BaseOrdering {
+class Date extends Filter {
 
 	/**
 	 * Possible option key
 	 */
 	const FORMAT = 'format',
-	    EDITABLE = 'editable',
-	    FILTERING = 'filtering';
+	    EDITABLE = 'editable';
 
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
-		return $this;
-	}
-
-	public function setFiltering($filtering) {
-		$this->option[self::FILTERING] = (bool) $filtering;
 		return $this;
 	}
 
@@ -33,19 +27,18 @@ class Date extends BaseOrdering {
 	}
 
 	protected function setDefaults() {
-		return array(
-		    self::EDITABLE => TRUE,
-		    self::FILTERING => TRUE
-		);
+		return array_merge(parent::setDefaults(), array(
+		    self::EDITABLE => TRUE
+		));
 	}
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DateColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HEADER is required.');
 		}
 		if (array_key_exists(self::FORMAT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\DateColumn::FORMAT is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::FORMAT is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]

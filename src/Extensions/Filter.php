@@ -1,12 +1,12 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
 use \Nette\Application\UI\Form,
     \Nette\Forms\Controls\SubmitButton,
     \Nette\Forms\Rendering\DefaultFormRenderer,
-    \DataGrid\FilterFormRenderer,
-	\DataGrid\Column\Date;
+    Mesour\DataGrid\FilterFormRenderer,
+    Mesour\DataGrid\Column\Date;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -18,6 +18,8 @@ class Filter extends BaseControl {
 	 * @var Form
 	 */
 	private $filter_form;
+
+	private $filter_values = NULL;
 
 	private $form_template;
 
@@ -60,10 +62,10 @@ class Filter extends BaseControl {
 		}
 		$this->fixSettingsForForm();
 		$output = array();
-		foreach($this->settings as $key => $val) {
-			if(strpos($key, '[') !== FALSE) {
+		foreach ($this->settings as $key => $val) {
+			if (strpos($key, '[') !== FALSE) {
 				$exploded = explode('[', $key);
-				if(!isset($output[$exploded[0]])) {
+				if (!isset($output[$exploded[0]])) {
 					$output[$exploded[0]] = array();
 				}
 				$output[$exploded[0]][$exploded[1]] = $val;
@@ -71,6 +73,7 @@ class Filter extends BaseControl {
 				$output[$key] = $val;
 			}
 		}
+		$this->filter_values = $output;
 		return $output;
 	}
 
@@ -78,6 +81,7 @@ class Filter extends BaseControl {
 		if (!$this->filter_form) {
 			$this->applyAutoFiltering();
 		}
+		$this->getFilterValues();
 	}
 
 	/**
@@ -85,21 +89,23 @@ class Filter extends BaseControl {
 	 */
 	public function render() {
 		$this->template->grid_dir = __DIR__;
-		foreach($this->settings as $key => $val) {
-			if(!in_array($key, $this->parent->getRealColumnNames())) {
+		foreach ($this->settings as $key => $val) {
+			if (!in_array($key, $this->parent->getRealColumnNames())) {
 				unset($this->settings[$key]);
 			}
 		}
-		$this->template->settings = $this->settings;
 
 		if (!$this->filter_form) {
 			$this->template->php_date = $this->date_format;
 			$this->template->js_date = $this->js_date_format;
+			$this->template->settings = $this->settings;
 
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/Filter.latte');
 		} else {
 			$this->template->filter_form = $this->filter_form;
 			$this->template->form_template = $this->form_template;
+
+			$this->template->settings = is_null($this->filter_values) ? $this->getFilterValues() : $this->filter_values;
 
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/FilterForm.latte');
 		}
@@ -108,7 +114,7 @@ class Filter extends BaseControl {
 
 	public function handleSubmitForm() {
 		$this->fixSettingsForForm();
-		if(isset($this->parent['pager'])) {
+		if (isset($this->parent['pager'])) {
 			$this->parent['pager']->reset(0);
 		}
 		$this->parent->onFilter($this->settings);
@@ -118,10 +124,10 @@ class Filter extends BaseControl {
 
 	private function fixSettingsForForm() {
 		$values = $this->settings;
-		if(isset($values['submittedBy'])) {
+		if (isset($values['submittedBy'])) {
 			$submittedBy = str_replace('_', '', $values['submittedBy']);
 			unset($this->settings['submittedBy'], $this->getSession()->settings['submittedBy']);
-			if($submittedBy === 'reset') {
+			if ($submittedBy === 'reset') {
 				$this->settings = array();
 				$this->getSession()->settings = array();
 			}
@@ -129,7 +135,7 @@ class Filter extends BaseControl {
 	}
 
 	public function handleApplyDefaultFilter() {
-		if(isset($this->parent['pager'])) {
+		if (isset($this->parent['pager'])) {
 			$this->parent['pager']->reset(0);
 		}
 		$this->parent->onFilter($this->settings);

@@ -1,22 +1,21 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
-use \DataGrid\Grid_Exception;
+use Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Text extends BaseOrdering {
+class Text extends Filter {
 
 	/**
 	 * Possible option key
 	 */
 	const EDITABLE = 'editable',
 	    CALLBACK = 'function',
-	    CALLBACK_ARGS = 'func_args',
-	    FILTERING = 'filtering';
+	    CALLBACK_ARGS = 'func_args';
 
 	public function setCallback($callback) {
 		$this->option[self::CALLBACK] = $callback;
@@ -28,27 +27,21 @@ class Text extends BaseOrdering {
 		return $this;
 	}
 
-	public function setFiltering($filtering) {
-		$this->option[self::FILTERING] = (bool) $filtering;
-		return $this;
-	}
-
 	public function setEditable($editable) {
 		$this->option[self::EDITABLE] = (bool)$editable;
 		return $this;
 	}
 
 	protected function setDefaults() {
-		return array(
-		    self::EDITABLE => TRUE,
-		    self::FILTERING => TRUE
-		);
+		return array_merge(parent::setDefaults(), array(
+		    self::EDITABLE => TRUE
+		));
 	}
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		if (array_key_exists(self::TEXT, $this->option) === FALSE) {
-			throw new Grid_Exception('Option \DataGrid\TextColumn::TEXT is required.');
+		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
+			throw new Grid_Exception('Option ' . __CLASS__ . '::HEADER is required.');
 		}
 		return array(
 		    'class' => 'grid-column-' . $this->option[self::ID]

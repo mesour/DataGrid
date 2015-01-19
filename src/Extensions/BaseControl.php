@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Extensions;
+namespace Mesour\DataGrid\Extensions;
 
 use \Nette\Application\UI\Control;
 
@@ -21,7 +21,7 @@ class BaseControl extends Control {
 	public $settings = array();
 
 	public function getSession() {
-		if(!$this->private_session) {
+		if (!$this->private_session) {
 			$this->private_session = $this->presenter->getSession()->getSection($this->parent->getGridName() . $this->getName());
 		}
 		return $this->private_session;
@@ -29,24 +29,23 @@ class BaseControl extends Control {
 
 	public function loadState(array $params) {
 		$session = $this->getSession();
-		if(!empty($params) && isset($params['settings'])) {
+		if (!empty($params) && isset($params['settings'])) {
 			$settings = array();
-			foreach($params['settings'] as $key => $val) {
+			foreach ($params['settings'] as $key => $val) {
 				$settings[$key] = $val;
 			}
 			$session['settings'] = $settings;
-		} elseif(!empty($session['settings'])) {
-			foreach($session['settings'] as $key => $val) {
+		} elseif (!empty($session['settings'])) {
+			foreach ($session['settings'] as $key => $val) {
 				$params['settings'][$key] = $val;
 			}
 		}
 		parent::loadState($params);
 	}
 
-    protected function createTemplate()
-    {
-        $template = parent::createTemplate();
-        $template->setTranslator( $this->parent["translator"] );
-        return $template;
-    }
+	protected function createTemplate() {
+		$template = parent::createTemplate();
+		$template->setTranslator($this->parent["translator"]);
+		return $template;
+	}
 }

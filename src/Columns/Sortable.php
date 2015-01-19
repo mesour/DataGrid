@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Column;
+namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html;
 
@@ -12,7 +12,7 @@ class Sortable extends Base {
 
 	public function getHeaderAttributes() {
 		$this->fixOption();
-		return array('class' => 'act buttons-count-1');
+		return array('class' => 'sortable-column');
 	}
 
 	public function getHeaderContent() {

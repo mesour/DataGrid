@@ -1,22 +1,21 @@
 <?php
 
-namespace DataGrid\Components;
+namespace Mesour\DataGrid\Components;
 
 use \Nette\Application\UI\Presenter,
-	DataGrid\Setting,
-	DataGrid\Grid_Exception;
+    Mesour\DataGrid\Setting,
+    Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class StatusButton extends Setting {
+class StatusButton extends Button {
 
 	/**
 	 * Possible option key
 	 */
-	const BUTTON = 'button',
-	    STATUS = 'name',
+	const STATUS = 'name',
 	    CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
 
@@ -44,15 +43,6 @@ class StatusButton extends Setting {
 			$this->data = $data;
 		}
 		$this->presenter = $presenter;
-	}
-
-	public function setPresenter(Presenter $presenter) {
-		$this->presenter = $presenter;
-	}
-
-	public function setButton(Button $button) {
-		$this->option[self::BUTTON] = $button;
-		return $this;
 	}
 
 	public function setStatus($status) {
@@ -91,12 +81,6 @@ class StatusButton extends Setting {
 		}
 	}
 
-	protected function setDefaults() {
-		return array(
-		    self::BUTTON => NULL
-		);
-	}
-
 	/**
 	 * Create button
 	 *
@@ -109,19 +93,12 @@ class StatusButton extends Setting {
 			$this->data = $data;
 		}
 		if (is_null($this->presenter)) {
-			throw new Grid_Exception('Presenter is not set for Components\StatusButton.');
+			throw new Grid_Exception('Presenter is not set for ' . __CLASS__ . '.');
 		}
 		if (!isset($this->option[self::STATUS])) {
-			throw new Grid_Exception('Option \DataGrid\StatusButton::STATUS is required.');
+			throw new Grid_Exception('Option ' . __CLASS__ . '::STATUS is required.');
 		}
-		if (!$this->option[self::BUTTON] instanceof Button) {
-			throw new Grid_Exception('Button must be instanceof Components\Button.');
-		}
-		$this->option[self::BUTTON]->setPresenter($this->presenter);
-		if($this->getTranslator()) {
-			$this->option[self::BUTTON]->setTranslator($this->getTranslator());
-		}
-		return $this->option[self::BUTTON]->create($data);
+		return parent::create($data);
 	}
 
 	/**
