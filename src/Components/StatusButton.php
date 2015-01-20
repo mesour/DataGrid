@@ -15,7 +15,7 @@ class StatusButton extends Button {
 	/**
 	 * Possible option key
 	 */
-	const STATUS = 'name',
+	const STATUS = 'status',
 	    CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
 
@@ -61,7 +61,7 @@ class StatusButton extends Button {
 	}
 
 	public function getStatus() {
-		return $this->option[self::STATUS];
+		return isset($this->option[self::STATUS]) ? $this->option[self::STATUS] : '';
 	}
 
 	public function isActive($column_name, $data) {
@@ -95,7 +95,7 @@ class StatusButton extends Button {
 		if (is_null($this->presenter)) {
 			throw new Grid_Exception('Presenter is not set for ' . __CLASS__ . '.');
 		}
-		if (!isset($this->option[self::STATUS])) {
+		if (!isset($this->option[self::STATUS]) && !isset($this->option[self::CALLBACK])) {
 			throw new Grid_Exception('Option ' . __CLASS__ . '::STATUS is required.');
 		}
 		return parent::create($data);

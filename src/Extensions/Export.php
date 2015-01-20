@@ -128,7 +128,7 @@ class Export extends BaseControl {
 					} else {
 						$column_name = $column;
 					}
-					if ($first && !isset($data[$column_name])) {
+					if ($first && !isset($data[$column_name]) && !is_null($data[$column_name])) {
 						throw new Grid_Exception('Column "' . $column_name . '" does not exist in data.');
 					}
 					$line_data[] = $data[$column_name];

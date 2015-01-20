@@ -28,6 +28,8 @@ class Grid extends Control {
 	 */
 	private $name;
 
+	private $grid_name;
+
 	/**
 	 * Columns array
 	 *
@@ -141,7 +143,10 @@ class Grid extends Control {
 	 * @return String
 	 */
 	public function getGridName() {
-		return $this->presenter->getName() . $this->name;
+		if(!$this->grid_name) {
+			$this->grid_name = str_replace(':', '-', $this->presenter->getName() . $this->name);
+		}
+		return $this->grid_name;
 	}
 
 	public function addStatus($column_name, $header = NULL) {

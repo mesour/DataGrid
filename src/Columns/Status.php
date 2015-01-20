@@ -44,7 +44,7 @@ class Status extends BaseOrdering {
 	}
 
 	public function getBodyAttributes($data) {
-		if (!isset($data[$this->option[self::ID]])) {
+		if (!isset($data[$this->option[self::ID]]) && !is_null($data[$this->option[self::ID]])) {
 			throw new Grid_Exception('Column "' . $this->option[self::ID] . '" does not exist in data.');
 		}
 		$class = 'button-component';
