@@ -105,7 +105,7 @@ class Export extends BaseControl {
 				if ($this->parent->getTranslator()) {
 					$column->setTranslator($this->parent->getTranslator());
 				}
-				$header_arr[] = $column->getText();
+				$header_arr[] = $column->getHeader();
 			} else {
 				if (is_array($column)) {
 					$header_arr[] = reset($column);
