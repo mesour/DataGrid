@@ -2,6 +2,8 @@
 
 namespace Mesour\DataGrid\Column;
 
+use \Nette\Localization\ITranslator;
+
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
@@ -24,5 +26,5 @@ interface IColumn {
 
 	public function getBodyContent($data);
 
-	public function setTranslator(\Nette\Localization\ITranslator $translator);
+	public function setTranslator(ITranslator $translator);
 }
