@@ -27,10 +27,6 @@ class RendererFactory implements Render\IRendererFactory {
 		return new Body();
 	}
 
-	public function createRowGroup($group_id) {
-		return new RowGroup($group_id);
-	}
-
 	public function createHeader() {
 		return new Header();
 	}

@@ -3,6 +3,7 @@
 namespace Mesour\DataGrid\Column;
 
 use \Nette\Utils\Html,
+    Nette\Utils\Callback,
     Mesour\DataGrid\Grid_Exception;
 
 /**
@@ -42,6 +43,7 @@ class Image extends Base {
 	}
 
 	public function setCallback($callback) {
+		Callback::check($callback);
 		$this->option[self::CALLBACK] = $callback;
 		return $this;
 	}
@@ -62,6 +64,9 @@ class Image extends Base {
 	}
 
 	public function getHeaderContent() {
+		if (array_key_exists(self::CALLBACK, $this->option)) {
+			Callback::check($this->option[self::CALLBACK]);
+		}
 		return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];
 	}
 
@@ -72,15 +77,14 @@ class Image extends Base {
 			}
 			$src = $data[$this->option[self::ID]];
 		} else {
-			if (is_callable($this->option[self::CALLBACK])) {
-				$args = array($data);
-				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
-					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
+			$args = array($data);
+			if (isset($this->option[self::CALLBACK_ARGS])) {
+				if(!is_array($this->option[self::CALLBACK_ARGS])) {
+					throw new Grid_Exception(__CLASS__ . '::CALLBACK_ARGS must be an array. ' . gettype($this->option[self::CALLBACK_ARGS]) . ' given.');
 				}
-				$src = call_user_func_array($this->option[self::CALLBACK], $args);
-			} else {
-				throw new Grid_Exception('Callback in column setting is not callable.');
+				$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 			}
+			$src = Callback::invokeArgs($this->option[self::CALLBACK], $args);
 		}
 
 		$img = Html::el('img', array('src' => $src));

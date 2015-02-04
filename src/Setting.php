@@ -2,13 +2,17 @@
 
 namespace Mesour\DataGrid;
 
+use Nette\Localization\ITranslator;
+
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
 abstract class Setting {
 
-	/** @var \Nette\Localization\ITranslator */
+	/**
+	 * @var \Nette\Localization\ITranslator
+	 */
 	protected $translator;
 
 	/**
@@ -25,7 +29,7 @@ abstract class Setting {
 	public function __construct(array $option = array()) {
 		$defaults = $this->setDefaults();
 		if (!is_array($defaults)) {
-			throw new Grid_Exception('Protected function setDefaults must return an array.');
+			throw new Grid_Exception('Method setDefaults must return an array.');
 		}
 		$this->option = $defaults;
 		if (!empty($option)) {
@@ -39,16 +43,17 @@ abstract class Setting {
 
 	/**
 	 * Sets translate adapter.
-	 * @return self
+	 *
+	 * @param ITranslator $translator
 	 */
-	public function setTranslator(\Nette\Localization\ITranslator $translator) {
+	public function setTranslator(ITranslator $translator) {
 		$this->translator = $translator;
 	}
 
 	protected function getTranslator() {
-		if ($this->translator instanceof \Nette\Localization\ITranslator) {
+		if ($this->translator instanceof ITranslator) {
 			return $this->translator;
-		} elseif (isset($this->grid) && $this->grid->getTranslator() instanceof \Nette\Localization\ITranslator) {
+		} elseif (isset($this->grid) && $this->grid->getTranslator() instanceof ITranslator) {
 			return $this->grid->getTranslator();
 		} else {
 			return null;

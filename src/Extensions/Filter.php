@@ -149,6 +149,7 @@ class Filter extends BaseControl {
 				continue;
 			}
 			foreach ($values as $key => $value) {
+				$value = is_numeric($value) ? (float) $value : $value;
 				switch ($key) {
 					case 'priority':
 						continue;
