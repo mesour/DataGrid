@@ -48,7 +48,7 @@ class NetteDbDataSource implements IDataSource {
 	 * @return \Nette\Database\Table\Selection
 	 */
 	public function getTableSelection() {
-		return $this->nette_table;
+		return $this->getSelection();
 	}
 
 	/**
@@ -267,9 +267,8 @@ class NetteDbDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		if ($this->nette_table->fetch()) {
-			$table = clone $this->nette_table;
-			return $table->limit(1, 0)->fetch()->toArray();
+		if ($this->total_count > 0) {
+			return $this->getSelection()->limit(1, 0)->fetch()->toArray();
 		} else {
 			return array();
 		}

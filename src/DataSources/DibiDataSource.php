@@ -18,9 +18,24 @@ class DibiDataSource implements IDataSource {
 	private $dibi_data_source = array();
 
 	/**
-	 * @var \DibiDataSource
+	 * @var array
 	 */
-	private $dibi_data_source_full = array();
+	private $where_arr = array();
+
+	/**
+	 * @var integer
+	 */
+	private $limit;
+
+	/**
+	 * @var integer
+	 */
+	private $offset;
+
+	/**
+	 * @var integer
+	 */
+	private $total_count = 0;
 
 	/**
 	 * Create instance
@@ -28,15 +43,15 @@ class DibiDataSource implements IDataSource {
 	 * @param \DibiDataSource $data_source
 	 */
 	public function __construct(\DibiDataSource $data_source) {
-		$this->dibi_data_source_full = clone $data_source;
 		$this->dibi_data_source = $data_source;
+		$this->total_count = $this->dibi_data_source->getTotalCount();
 	}
 
 	/**
 	 * @return \DibiDataSource
 	 */
 	public function getDibiDataSource() {
-		return $this->dibi_data_source;
+		return $this->getDataSource();
 	}
 
 	/**
@@ -45,7 +60,7 @@ class DibiDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function getTotalCount() {
-		return $this->dibi_data_source->getTotalCount();
+		return $this->total_count;
 	}
 
 	/**
@@ -54,7 +69,7 @@ class DibiDataSource implements IDataSource {
 	 * @param Mixed $args Dibi args
 	 */
 	public function where($args) {
-		call_user_func_array(array($this->dibi_data_source, 'where'), func_get_args());
+		$this->where_arr[] = func_get_args();
 	}
 
 	/**
@@ -64,7 +79,8 @@ class DibiDataSource implements IDataSource {
 	 * @param Integer $offset
 	 */
 	public function applyLimit($limit, $offset = 0) {
-		$this->dibi_data_source->applyLimit($limit, $offset);
+		$this->limit = $limit;
+		$this->offset = $offset;
 	}
 
 	/**
@@ -73,7 +89,7 @@ class DibiDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function count() {
-		return $this->dibi_data_source->count();
+		return $this->getDataSource()->count();
 	}
 
 	/**
@@ -82,16 +98,15 @@ class DibiDataSource implements IDataSource {
 	 * @return \DibiRow
 	 */
 	public function fetchAll() {
-		return $this->dibi_data_source->fetchAll();
+		return $this->getDataSource()->fetchAll();
 	}
 
 	public function fetchAssoc() {
-		return $this->dibi_data_source->fetchAssoc($this->parent_key . ',#');
+		return $this->getDataSource()->fetchAssoc($this->parent_key . ',#');
 	}
 
 	public function fetchAllForExport() {
-		$this->applyLimit(1000000, 0);
-		return $this->dibi_data_source->fetchAll();
+		return $this->getDataSource(FALSE, FALSE)->fetchAll();
 	}
 
 	private function customFilter($column_name, $how, $type) {
@@ -124,14 +139,13 @@ class DibiDataSource implements IDataSource {
 			default:
 				throw new Grid_Exception('Unexpected key for custom filtering.');
 		}
-		return $output;
 	}
 
 	public function applyCustom($column_name, array $custom, $type) {
 		$parameters = array('(');
 		if (!empty($custom['how1']) && !empty($custom['val1'])) {
 			$parameters[] = $this->customFilter($column_name, $custom['how1'], $type);
-			$parameters[] = $custom['val1'];
+			$parameters[] = is_numeric($custom['val1']) ? (float) $custom['val1'] : $custom['val1'];
 		}
 		if (!empty($custom['how2']) && !empty($custom['val2'])) {
 			if ($custom['operator'] === 'and') {
@@ -140,7 +154,7 @@ class DibiDataSource implements IDataSource {
 				$parameters[] = 'OR';
 			}
 			$parameters[] = $this->customFilter($column_name, $custom['how2'], $type);
-			$parameters[] = $custom['val2'];
+			$parameters[] = is_numeric($custom['val2']) ? (float) $custom['val2'] : $custom['val2'];
 		}
 		$parameters[] = ')';
 
@@ -178,7 +192,7 @@ class DibiDataSource implements IDataSource {
 
 	public function fetchFullData($date_format = 'Y-m-d') {
 		$output = array();
-		foreach ($this->dibi_data_source_full->fetchAll() as $data) {
+		foreach ($this->getDataSource(FALSE, FALSE)->fetchAll() as $data) {
 			$current_data = $data->toArray();
 			foreach ($current_data as $key => $val) {
 				if ($val instanceof \DibiDateTime) {
@@ -200,7 +214,7 @@ class DibiDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		if ($row = $this->dibi_data_source_full->fetch()) {
+		if ($row = $this->getDataSource(FALSE, FALSE)->applyLimit(1, 0)->fetch()) {
 			return $row->toArray();
 		} else {
 			return array();
@@ -221,6 +235,19 @@ class DibiDataSource implements IDataSource {
 
 	public function setParentKey($parent_key) {
 		$this->parent_key = $parent_key;
+	}
+
+	private function getDataSource($limit = TRUE, $where = TRUE) {
+		$source = clone $this->dibi_data_source;
+		if ($where) {
+			foreach ($this->where_arr as $conditions) {
+				call_user_func_array(array($source, 'where'), $conditions);
+			}
+		}
+		if ($limit) {
+			$source->applyLimit($this->limit, $this->offset);
+		}
+		return $source;
 	}
 
 }
