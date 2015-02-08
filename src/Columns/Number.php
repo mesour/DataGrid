@@ -79,7 +79,7 @@ class Number extends Filter {
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',
 			    'data-separator' => $this->option[self::THOUSANDS_SEP],
-			    'data-unit' => is_null($this->option[self::UNIT]) ? '' : (' ' . $this->option[self::UNIT]),
+			    'data-unit' => is_null($this->option[self::UNIT]) ? '' : $this->option[self::UNIT],
 			);
 		}
 		$attributes['class'] = 'type-number';
