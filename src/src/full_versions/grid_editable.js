@@ -26,7 +26,11 @@
             if(isInEdit) return;
             isInEdit = true;
 
-            var gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
+            var $_this = $(this),
+                gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
+            if($_this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').is('*')) {
+                gridName = $_this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').attr('data-mesour-grid')+'-'+gridName;
+            }
 
             var column = $(this);
             column.width(column.width());

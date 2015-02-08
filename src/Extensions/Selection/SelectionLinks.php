@@ -3,13 +3,20 @@
 namespace Mesour\DataGrid\Extensions;
 
 use Mesour\DataGrid\Column,
-    \Nette\Application\UI\Control;
+	Nette\Object;
+use Nette\ComponentModel\IComponent;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class SelectionLinks extends Control {
+class SelectionLinks extends Object {
+
+	private $parent;
+
+	public function __construct(IComponent $parent) {
+		$this->parent = $parent;
+	}
 
 	private $links = array();
 

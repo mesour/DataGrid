@@ -19,16 +19,31 @@ class Selection extends BaseControl {
 	 */
 	public $selected = array();
 
+	/**
+	 * @var SelectionLinks
+	 */
+	private $links;
+
+	private $enabled = FALSE;
+
 	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
-		new SelectionLinks($this, 'links');
+		$this->links = new SelectionLinks($this);
 	}
 
 	/**
 	 * @return SelectionLinks
 	 */
 	public function getLinks() {
-		return $this['links'];
+		return $this->links;
+	}
+
+	public function enable() {
+		$this->enabled = TRUE;
+	}
+
+	public function isEnabled() {
+		return $this->enabled;
 	}
 
 	public function setPrimaryKey($primary_key) {
@@ -46,7 +61,7 @@ class Selection extends BaseControl {
 	}
 
 	public function render() {
-		$this->template->links = $this['links']->getLinks();
+		$this->template->links = $this->links->getLinks();
 		$this->template->grid_dir = __DIR__;
 
 		$this->template->setFile(dirname(__FILE__) . '/Selection.latte');
@@ -54,7 +69,8 @@ class Selection extends BaseControl {
 	}
 
 	public function handleOnSelect($name) {
-		$this['links']->getLink($name)->onCall($this->selected['items']);
+		$this->getLinks()->getLink($name)
+		    ->onCall($this->selected['items']);
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
 	}

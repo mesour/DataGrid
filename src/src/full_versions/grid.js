@@ -10,6 +10,17 @@ mesour.dataGrid.live = function() {
         });
         $(this).width(count+(5*i+5));
     });
+    grid.find('.button-component').each(function(){
+        var $this = $(this),
+            td = $this.closest('td');
+        if(td.is('*')) {
+            td.width($this.width());
+        }
+    });
+    grid.find('td.button-component').each(function(){
+        var $this = $(this);
+        $this.width($this.find('> div').width());
+    });
 };
 $(document).on('ready', function() {
     $('.tree-grid').find('.grid-header').find('.separator:visible:last').hide();

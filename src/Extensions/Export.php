@@ -96,8 +96,6 @@ class Export extends BaseControl {
 				}
 			}
 		}
-
-
 		$this->file_path = $this->cache_dir . "/" . Strings::webalize($this->parent->getGridName()) . time() . ".csv";
 		$file = fopen($this->file_path, "w");
 		foreach ($export_columns as $column) {
@@ -114,7 +112,7 @@ class Export extends BaseControl {
 				}
 			}
 		}
-		fputcsv($file, $header_arr, $this->delimiter);
+		//fputcsv($file, $header_arr, $this->delimiter);
 
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {

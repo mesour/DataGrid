@@ -32,6 +32,9 @@ class Sortable extends BaseControl {
 			throw new Grid_Exception('Empty post data from column sorting.');
 		}
 		$this->parent->onSort($data, $item_id);
+		$this->parent->reset();
+		$this->parent->redrawControl();
+		$this->presenter->redrawControl();
 	}
 
 }

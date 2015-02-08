@@ -40,6 +40,10 @@ class BaseControl extends Control {
 				$params['settings'][$key] = $val;
 			}
 		}
+		if($this->getName() === 'ordering') {
+			//echo $this->parent->getGridName() . $this->getName();
+			//print_r($params);
+		}
 		parent::loadState($params);
 	}
 

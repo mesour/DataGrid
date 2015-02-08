@@ -63,6 +63,10 @@ class Ordering extends BaseControl {
 
 	}
 
+	public function reset() {
+		$this->getSession()->settings = $this->settings = array();
+	}
+
 	public function handleOrdering($column_id) {
 		if (isset($this->parent['pager'])) {
 			$this->parent['pager']->reset(0);

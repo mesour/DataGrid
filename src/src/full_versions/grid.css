@@ -9,7 +9,7 @@ table.table th.act.act-select{
 table.table th.act.act-select > .btn-group{
 	
 }
-table.table th.act.act-select > .btn-group .dropdown-toggle{
+.data-grid .act.act-select > .btn-group .dropdown-toggle{
 	border-bottom-left-radius: 3px;
 	border-top-left-radius: 3px;
 	padding-top: 3px;
@@ -31,6 +31,7 @@ table.table th.act.act-select > .btn-group .caret{
 table.table td.with-checkbox{
 	padding-left: 21px;
 }
+.select-checkbox{width: 24px}
 .datagrid-bottom .pagination{
 	margin: 0;
 }
@@ -211,3 +212,4 @@ td.button-component{float:none}
 .data-grid table.table td,.data-grid table.table th{vertical-align:middle}
 .sortable-column{width:44px;text-align:center}
 .with-actions{text-align: center}
+.data-grid table.table td.subgrid-button{vertical-align: top}

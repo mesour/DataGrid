@@ -16,7 +16,7 @@ use Mesour\DataGrid\Render\Tree\RendererFactory;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class _GridTree extends _Grid {
+class GridTree extends ExtendedGrid {
 
 	protected $main_parent_value = 0;
 

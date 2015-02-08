@@ -10,6 +10,7 @@
 
 namespace Mesour\DataGrid;
 
+use Mesour\DataGrid\Column\IColumn;
 use Nette\ComponentModel\IContainer,
     Nette\Application\UI\Control,
     Mesour\DataGrid\Render\IRendererFactory,
@@ -85,6 +86,11 @@ abstract class BaseGrid extends Control {
 		$this["translator"]->setLocale("en");
 	}
 
+	public function setName($name) {
+		$this->name = $name;
+		$this->grid_name = NULL;
+	}
+
 	static public function disableJsDraw() {
 		self::$js_draw = FALSE;
 	}
@@ -127,7 +133,7 @@ abstract class BaseGrid extends Control {
 	 * @return Integer
 	 */
 	public function getTotalCount() {
-		if (!$this->total_count === FALSE) {
+		if ($this->total_count === FALSE) {
 			$this->setTotalCount();
 		}
 		return $this->total_count;
@@ -244,6 +250,15 @@ abstract class BaseGrid extends Control {
 				$this->column_arr[] = $column;
 			}
 		}
+	}
+
+	/**
+	 * @param IColumn $column
+	 * @return IColumn
+	 */
+	protected function addColumn(IColumn $column) {
+		$this->column_arr[] = $column;
+		return $column;
 	}
 
 	/**
