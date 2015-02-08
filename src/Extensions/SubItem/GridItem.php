@@ -11,13 +11,16 @@ use Nette\ComponentModel\IComponent;
  */
 class GridItem extends Item {
 
+	private $keys = array();
+
 	public function __construct(IComponent $parent, $name, $description = NULL, BasicGrid $grid = NULL) {
 		parent::__construct($parent, $name, $description);
 		$i = 0;
-		while ($i <= (is_null($this->page_limit) ? 20 : $this->page_limit)) {
+		while ($i <= (is_null($this->page_limit) ? self::DEFAULT_COUNT : $this->page_limit)) {
 			$_grid = clone $grid;
 			$_grid->setName($name . $i);
 			$this->parent->getParent()->addComponent($_grid, $name . $i);
+			$this->keys[] = $i;
 			$i++;
 		}
 	}
@@ -26,13 +29,13 @@ class GridItem extends Item {
 		if (is_null($key)) {
 			return '';
 		}
-		$grid = $this->parent->parent[$this->name . $key];
+		$grid = $this->parent->parent[$this->name . $this->getTranslatedKey($key)];
 		return $grid->render(TRUE);
 	}
 
 	public function reset() {
 		$i = 0;
-		while ($i <= (is_null($this->page_limit) ? 20 : $this->page_limit)) {
+		while ($i <= (is_null($this->page_limit) ? self::DEFAULT_COUNT : $this->page_limit)) {
 			$this->parent->parent[$this->name . $i]->reset(TRUE);
 			$i++;
 		}
@@ -40,6 +43,10 @@ class GridItem extends Item {
 
 	public function hasKey($key) {
 		return isset($this->parent->parent[$this->name . $key]);
+	}
+
+	public function getKeys() {
+		return $this->keys;
 	}
 
 }

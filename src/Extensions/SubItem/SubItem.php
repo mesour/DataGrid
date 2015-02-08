@@ -48,10 +48,20 @@ class SubItem extends BaseControl {
 				unset($this->settings[$name]);
 				continue;
 			}
+			$keys = $this->items[$name]->getKeys();
+			if(count($keys) < count($this->settings[$name])) {
+				while(count($keys) < count($this->settings[$name])) {
+					array_shift($this->settings[$name]);
+				}
+			}
 			foreach($this->settings[$name] as $key => $i) {
-				if (!isset($this->settings[$name][$key]) || !$this->items[$name]->hasKey($this->settings[$name][$key])) {
+				if (!isset($this->settings[$name][$key])) {
 					unset($this->settings[$name][$key]);
 					continue;
+				}
+				if(!$this->items[$name]->hasKey($this->settings[$name][$key])) {
+
+					$this->items[$name]->addAlias($i, end($keys));
 				}
 				$output[$name]['keys'][] = $this->settings[$name][$key];
 				if (!isset($output[$name]['item'])) {
@@ -59,6 +69,7 @@ class SubItem extends BaseControl {
 				}
 			}
 		}
+
 		$this->getSession()->settings = $this->settings;
 		return $output;
 	}
@@ -83,6 +94,7 @@ class SubItem extends BaseControl {
 	}
 
 	public function handleToggleItem($key, $name) {
+
 		if (isset($this->settings[$name])) {
 			if (in_array($key, $this->settings[$name])) {
 				unset($this->settings[$name][array_search($key, $this->settings[$name])]);

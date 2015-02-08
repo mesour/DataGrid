@@ -5,7 +5,7 @@
  * Documentation here: https://github.com/mesour/ArrayManager
  *
  * @license LGPL-3.0 and MIT License
- * @copyright (c) 2014 Matous Nemec <matous.nemec@mesour.com>
+ * @copyright (c) 2014 - 2015 Matous Nemec <matous.nemec@mesour.com>
  */
 
 namespace Mesour;

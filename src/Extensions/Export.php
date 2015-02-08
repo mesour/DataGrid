@@ -112,7 +112,7 @@ class Export extends BaseControl {
 				}
 			}
 		}
-		//fputcsv($file, $header_arr, $this->delimiter);
+		fputcsv($file, $header_arr, $this->delimiter);
 
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {

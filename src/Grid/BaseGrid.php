@@ -5,7 +5,7 @@
  * Documentation here: http://grid.mesour.com
  *
  * @license LGPL-3.0 and BSD-3-Clause
- * @copyright (c) 2013 - 2014 Matous Nemec <matous.nemec@mesour.com>
+ * @copyright (c) 2013 - 2015 Matous Nemec <matous.nemec@mesour.com>
  */
 
 namespace Mesour\DataGrid;
@@ -78,6 +78,8 @@ abstract class BaseGrid extends Control {
 	 * @var bool
 	 */
 	static public $css_draw = TRUE;
+
+	private $primary_key = NULL;
 
 	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
@@ -182,6 +184,22 @@ abstract class BaseGrid extends Control {
 
 	public function setDataSource(IDataSource & $dataSource) {
 		$this->dataSource = $dataSource;
+		if(is_null($this->primary_key)) {
+			$this->primary_key = $this->dataSource->getPrimaryKey();
+		} else {
+			$this->dataSource->setPrimaryKey($this->primary_key);
+		}
+	}
+
+	public function setPrimaryKey($primary_key) {
+		$this->primary_key = $primary_key;
+		if($this->dataSource) {
+			$this->dataSource->setPrimaryKey($primary_key);
+		}
+	}
+
+	public function getPrimaryKey() {
+		return $this->primary_key;
 	}
 
 	public function isSubGrid() {
@@ -207,10 +225,10 @@ abstract class BaseGrid extends Control {
 	abstract public function render();
 
 	protected function getLineId($data) {
-		if(!isset($data[$this->dataSource->getPrimaryKey()])) {
-			throw new Grid_Exception('Primary key "' . $this->dataSource->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.');
+		if(!isset($data[$this->getPrimaryKey()])) {
+			throw new Grid_Exception('Primary key "' . $this->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.');
 		}
-		return $this->getName() . '-' . $data[$this->dataSource->getPrimaryKey()];
+		return $this->getName() . '-' . $data[$this->getPrimaryKey()];
 	}
 
 	/**

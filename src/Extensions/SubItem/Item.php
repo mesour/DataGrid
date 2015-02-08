@@ -12,6 +12,8 @@ use Nette\Utils\Callback;
  */
 abstract class Item extends Object {
 
+	const DEFAULT_COUNT = 20;
+
 	protected $parent;
 
 	protected $callback;
@@ -23,6 +25,8 @@ abstract class Item extends Object {
 	protected $description;
 
 	protected $page_limit;
+
+	protected $aliases = array();
 
 	public function __construct(IComponent $parent, $name, $description = NULL) {
 		$this->parent = $parent;
@@ -47,6 +51,14 @@ abstract class Item extends Object {
 
 	public function getDescription() {
 		return $this->description ? $this->description : $this->name;
+	}
+
+	public function addAlias($for_key, $alias) {
+		$this->aliases[$for_key] = $alias;
+	}
+
+	public function getTranslatedKey($key) {
+		return isset($this->aliases[$key]) ? $this->aliases[$key] : $key;
 	}
 
 	public function invoke(array $args = array()) {

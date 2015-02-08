@@ -5,7 +5,7 @@
  * Documentation here: http://grid.mesour.com
  *
  * @license LGPL-3.0 and BSD-3-Clause
- * @copyright (c) 2013 - 2014 Matous Nemec <matous.nemec@mesour.com>
+ * @copyright (c) 2013 - 2015 Matous Nemec <matous.nemec@mesour.com>
  */
 
 namespace Mesour\DataGrid;
@@ -171,7 +171,7 @@ class BasicGrid extends BaseGrid {
 	 */
 	public function enableRowSelection() {
 		$this['selection']->enable();
-		$this['selection']->setPrimaryKey($this->dataSource->getPrimaryKey());
+		$this['selection']->setPrimaryKey($this->getPrimaryKey());
 		return $this['selection']->getLinks();
 	}
 
@@ -212,6 +212,7 @@ class BasicGrid extends BaseGrid {
 		if(!$this->rendererFactory) {
 			$this->setRendererFactory(new RendererFactory);
 		}
+
 		$this->template->content = $this->createBody('table table-striped table-condensed');
 
 		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
@@ -273,8 +274,9 @@ class BasicGrid extends BaseGrid {
 			foreach ($full_data as $key => $rowData) {
 				foreach($this['subitem']->getOpened() as $name => $item) {
 					if(in_array($key, $item['keys'])) {
-						$item['item']->invoke(array($this[$name.$key], $rowData));
-						$sub_items[$key][$name] = $this[$name.$key];
+						$t_key = $item['item']->getTranslatedKey($key);
+						$item['item']->invoke(array($this[$name.$t_key], $rowData));
+						$sub_items[$key][$name] = $this[$name.$t_key];
 					}
 				}
 			}
