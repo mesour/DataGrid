@@ -15,6 +15,7 @@ class Number extends Filter {
 	 */
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
+	    UNIT = 'unit',
 	    THOUSANDS_SEP = 'thousands_sep',
 	    EDITABLE = 'editable';
 
@@ -25,6 +26,11 @@ class Number extends Filter {
 
 	public function setDecimalPoint($dec_point = '.') {
 		$this->option[self::DEC_POINT] = $dec_point;
+		return $this;
+	}
+
+	public function setUnit($unit) {
+		$this->option[self::UNIT] = $unit;
 		return $this;
 	}
 
@@ -41,6 +47,7 @@ class Number extends Filter {
 	protected function setDefaults() {
 		return array_merge(parent::setDefaults(), array(
 		    self::DECIMALS => 0,
+		    self::UNIT => NULL,
 		    self::DEC_POINT => '.',
 		    self::THOUSANDS_SEP => ',',
 		    self::EDITABLE => TRUE
@@ -72,6 +79,7 @@ class Number extends Filter {
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',
 			    'data-separator' => $this->option[self::THOUSANDS_SEP],
+			    'data-unit' => is_null($this->option[self::UNIT]) ? '' : (' ' . $this->option[self::UNIT]),
 			);
 		}
 		$attributes['class'] = 'type-number';
@@ -79,7 +87,8 @@ class Number extends Filter {
 	}
 
 	public function getBodyContent($data) {
-		return number_format($data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP]);
+		return number_format($data[$this->option[self::ID]], $this->option[self::DECIMALS], $this->option[self::DEC_POINT], $this->option[self::THOUSANDS_SEP])
+		. ($this->option[self::UNIT] ? (' ' . $this->option[self::UNIT]) : '');
 	}
 
 }

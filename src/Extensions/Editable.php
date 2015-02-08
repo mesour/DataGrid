@@ -31,8 +31,6 @@ class Editable extends BaseControl {
 		}
 		if ($has_permission) {
 			$this->parent->onEditCell($data['lineId'], $data['columnName'], $data['newValue'], $data['oldValue']);
-			print_r($this->parent);
-			die;
 			$this->parent->redrawControl();
 			$this->presenter->redrawControl();
 		} else {

@@ -213,7 +213,7 @@ class BasicGrid extends BaseGrid {
 			$this->setRendererFactory(new RendererFactory);
 		}
 
-		$this->template->content = $this->createBody('table table-striped table-condensed');
+		$this->template->content = $this->createBody('table table-striped table-condensed table-hover');
 
 		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
 		if($return) {
