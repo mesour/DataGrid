@@ -23,49 +23,75 @@ class Container extends BaseOrdering {
 		);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Status
+	 */
 	public function addStatus($column_name, $header = NULL) {
-		$column = new Status();
-		$column->setId($column_name)
-		    ->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
+		return $this->addColumn(new Status, $column_name, $header);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Date
+	 */
 	public function addDate($column_name, $header = NULL) {
-		$column = new Date();
-		$column->setId($column_name)
-		    ->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
+		return $this->addColumn(new Date, $column_name, $header);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Number
+	 */
 	public function addNumber($column_name, $header = NULL) {
-		$column = new Number();
-		$column->setId($column_name)
-		    ->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
+		return $this->addColumn(new Number, $column_name, $header);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Text
+	 */
 	public function addText($column_name, $header = NULL) {
-		$column = new Text();
-		$column->setId($column_name)
-		    ->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
+		return $this->addColumn(new Text, $column_name, $header);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Image
+	 */
 	public function addImage($column_name, $header = NULL) {
-		$column = new Image();
-		$column->setId($column_name)
-		    ->setHeader($header);
-		$this->option[self::COLUMNS][] = $column;
-		return $column;
+		return $this->addColumn(new Image, $column_name, $header);
 	}
 
-	public function addActions($header = NULL) {
-		$column = new Actions();
-		$column->setHeader($header);
+	/**
+	 * @param string $header
+	 * @return Actions
+	 */
+	public function addActions($header) {
+		return $this->addColumn(new Actions, NULL, $header);
+	}
+
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Template
+	 */
+	public function addTemplate($column_name, $header = NULL) {
+		return $this->addColumn(new Template, $column_name, $header);
+	}
+
+	protected function addColumn(IColumn $column, $column_name = NULL, $header = NULL) {
+		if (!is_null($header)) {
+			$column->setHeader($header);
+		}
+		if (!is_null($column_name)) {
+			$column->setId($column_name);
+		}
 		$this->option[self::COLUMNS][] = $column;
 		return $column;
 	}

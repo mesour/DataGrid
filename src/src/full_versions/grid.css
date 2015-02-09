@@ -1,211 +1,296 @@
-table.table th.act{
-	text-align: left;
-	padding-left: 15px;
-	width: 132px;
+table.table th.act {
+	text-align:left;
+	padding-left:15px;
 }
-table.table th.act.act-select{
-	width: 60px;
+
+table.table th.act.act-select {
+	width:60px;
 }
-table.table th.act.act-select > .btn-group{
-	
+
+.data-grid .act.act-select > .btn-group .dropdown-toggle {
+	border-bottom-left-radius:3px;
+	border-top-left-radius:3px;
+	padding-top:3px;
+	padding-bottom:3px;
+	padding-right:6px;
 }
-.data-grid .act.act-select > .btn-group .dropdown-toggle{
-	border-bottom-left-radius: 3px;
-	border-top-left-radius: 3px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-right: 6px;
+
+table.table th.act.act-select > .btn-group .caret {
+	margin-left:3px;
 }
-table.table th.act.act-select > .btn-group .caret{
-	margin-left: 3px;
+
+#checkbox-button {
+	float:left;
+	cursor:not-allowed;
+	margin-left:16px;
+	z-index:50;
 }
-#checkbox-button{
-	float: left;
-	cursor: not-allowed;
-	margin-left: 16px;
-    z-index:50;
+
+table.table td.with-checkbox {
+	padding-left:21px;
 }
-.main-checkbox{
-    width: 24px;
+
+.datagrid-bottom .pagination {
+	margin:0;
 }
-table.table td.with-checkbox{
-	padding-left: 21px;
+
+.right-buttons {
+	text-align:right;
 }
-.select-checkbox{width: 24px}
-.datagrid-bottom .pagination{
-	margin: 0;
+
+.data-grid {
+	position:relative;
+	z-index:20;
+	padding-bottom:50px;
 }
-.right-buttons{
-	text-align: right;
+
+.data-grid .data-grid {
+	padding-bottom:0;
 }
-.data-grid{
-	position: relative;
-	z-index: 20;
-    padding-bottom: 50px;
+
+.datagrid-bottom {
+	position:relative;
+	z-index:10;
 }
-.data-grid .data-grid{
-    padding-bottom: 0;
+
+.button-component > div > a,.button-component .dropdown {
+	float:left;
+	margin-right:5px;
 }
-.datagrid-bottom{
-	position: relative;
-	z-index: 10;
+
+.button-component .dropdown {
+	margin-top:4px;
 }
-.button-component > div > a,
-.button-component .dropdown{
-	float: left;
-	margin-right: 5px;
+
+td.table-striped>tbody>tr.placeholder td {
+	background:#f8efc0;
 }
-.button-component .dropdown{
-	margin-top: 4px;
+
+.placeholder,tr.placeholder > td {
+	border:0;
+	background:#747474!important;
+	border-radius:0;
 }
-td.button-component{float:none}
-.table-striped>tbody>tr.placeholder td{
-	background: #f8efc0;
+
+.data-grid-tree .grid-header {
+	margin-bottom:10px;
 }
-/* for nested */
-.placeholder, tr.placeholder > td {
-	border: 0;
-	background: #747474 !important;
-	border-radius: 0px;
+
+.data-grid-tree span.act.act-select {
+	display:inline-block;
+	margin-right:10px;
 }
-.data-grid-tree .grid-header{
-    margin-bottom: 10px;
+
+.data-grid .pagination-outer {
+	position:relative;
 }
-.data-grid-tree span.act{
-    display: none;
+
+.data-grid .pager-form {
+	display:inline-block;
+	position:absolute;
+	right:0;
+	top:10px;
+	width:95px;
 }
-.data-grid-tree span.act.act-select{
-    display: inline-block;
-    margin-right: 10px;
+
+.data-grid .pager-form .number {
+	padding-left:5px;
+	padding-right:5px;
 }
-.data-grid-tree span.act.act-select span.separator{
-    display: none;
+
+.data-grid-tree span.separator {
+	padding:0 5px;
 }
-.data-grid .pagination-outer{
-    position: relative;
+
+.data-grid-tree ul.grid-ul {
+	list-style-type:none;
+	padding-left:20px;
+	padding-right:20px;
 }
-.data-grid .pagination{
-    display: inline-block;
+
+.data-grid-tree .tree-grid > ul.grid-ul {
+	padding-left:0;
 }
-.data-grid .pager-form{
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    top: 10px;
-    width: 95px;
+
+.data-grid-tree .tree-grid ul li > div > span {
+	display:inline-block;
+	margin:0 2px;
 }
-.data-grid .pager-form .number{
-    padding-left: 5px;
-    padding-right: 5px;
+
+.data-grid-tree ul.grid-ul ul {
+	list-style-type:none;
+	margin-top:10px;
 }
-.data-grid-tree span.separator{
-    padding: 0 5px;
+
+.data-grid-tree ul.grid-ul li {
+	list-style-type:none;
+	min-height:30px;
+	margin-bottom:10px;
+	width:100%;
 }
-.data-grid-tree ul.grid-ul{
-	list-style-type: none;
-	padding-left: 20px;
-	padding-right: 20px;
+
+.data-grid-tree ul.grid-ul ul li {
+	list-style-type:none;
 }
-.data-grid-tree .tree-grid > ul.grid-ul{
-    padding-left: 0;
+
+.data-grid-tree ul.grid-ul li:hover {
+	background:#ddd;
 }
-.data-grid-tree .tree-grid ul li > div > span{
-    display: inline-block;
-    margin: 0 2px;
+
+.data-grid-tree ul.grid-ul li:hover li {
+	background:#eee;
 }
-.data-grid-tree ul.grid-ul ul{
-	list-style-type: none;
+
+.data-grid-tree ul.grid-ul li:hover li:hover {
+	background:#ccc;
 }
-.data-grid-tree ul.grid-ul li{
-	list-style-type: none;
+
+.grid-selection {
+	margin-left:20px;
+	height:30px;
 }
-.data-grid-tree ul.grid-ul ul li{
-	list-style-type: none;
+
+.ordering .glyphicon {
+	display:inline-block;
+	padding-left:5px;
 }
-.data-grid-tree ul.grid-ul ul{
-	margin-top: 10px;
+
+.pagination-outer {
+	text-align:center;
+	padding-top:10px;
 }
-.data-grid-tree ul.grid-ul li{
-	min-height: 30px;
-	margin-bottom: 10px;
-	width: 100%;
+
+.data-grid .editable-input {
+	border:1px solid #aaa;
+	padding:1px 0;
 }
-.data-grid-tree ul.grid-ul li:hover{
-	background: #ddd;
+
+.ui-timepicker-div .ui-widget-header {
+	margin-bottom:8px;
 }
-.data-grid-tree ul.grid-ul li:hover li{
-	background: #eee;
+
+.ui-timepicker-div dl {
+	text-align:left;
 }
-.data-grid-tree ul.grid-ul li:hover li:hover{
-	background: #ccc;
+
+.ui-timepicker-div dl dt {
+	float:left;
+	clear:left;
+	padding:0 0 0 5px;
 }
-.data-grid-tree ul.grid-ul li .right-buttons{
-	float: right;
+
+.ui-timepicker-div dl dd {
+	margin:0 10px 10px 45%;
 }
-.grid-selection{
-	margin-left: 20px;
-	height: 30px;
+
+.ui-timepicker-div td {
+	font-size:90%;
 }
+
+.ui-tpicker-grid-label {
+	background:none;
+	border:none;
+	margin:0;
+	padding:0;
+}
+
+.ui-timepicker-rtl {
+	direction:rtl;
+}
+
+.ui-timepicker-rtl dl {
+	text-align:right;
+	padding:0 5px 0 0;
+}
+
+.ui-timepicker-rtl dl dt {
+	float:right;
+	clear:right;
+}
+
+.ui-timepicker-rtl dl dd {
+	margin:0 45% 10px 10px;
+}
+
+.empty-data {
+	text-align:center;
+	padding-top:20px;
+	padding-bottom:20px;
+}
+
+.dropdown-component {
+	float:left;
+	margin-right:5px;
+	margin-top:4px;
+}
+
+.button-component {
+	float:left;
+	text-align:left;
+}
+
+.data-grid table.table td,.data-grid table.table th {
+	vertical-align:middle;
+}
+
+.sortable-column {
+	width:44px;
+	text-align:center;
+}
+
+.with-actions {
+	text-align:center;
+}
+
+td.button-component {
+	float:none;
+}
+
+.data-grid table.table td.subgrid-button {
+	vertical-align:top;
+}
+
+.main-checkbox,.select-checkbox {
+	width:24px;
+}
+
 .ordering .glyphicon{
-    display: inline-block;
-    padding-left: 5px;
+	display: inline-block;
+	padding-left: 5px;
 }
-.ordering .glyphicon-sort-by-alphabet,
-.ordering .glyphicon-sort-by-alphabet-alt{
-    display: none;
+.ordering .order-asc,
+.ordering .order-desc{
+	display: none;
 }
 .ordering.asc .no-sort,
 .ordering.desc .no-sort,
-.ordering.asc:hover .glyphicon-sort-by-alphabet,
+.ordering.asc:hover .order-asc,
 .ordering:hover .no-sort{
-    display: none;
+	display: none;
 }
-.ordering:hover .glyphicon-sort-by-alphabet,
-.ordering.asc .glyphicon-sort-by-alphabet{
-    display: inline-block;
+.ordering:hover .order-asc,
+.ordering.asc .order-asc{
+	display: inline-block;
 }
-.ordering.asc:hover .glyphicon-sort-by-alphabet-alt,
-.ordering.desc .glyphicon-sort-by-alphabet-alt{
-    display: inline-block;
+.ordering.asc:hover .order-desc,
+.ordering.desc .order-desc{
+	display: inline-block;
 }
-.ordering.desc:hover .glyphicon-sort-by-alphabet,
-.ordering.desc:hover .glyphicon-sort-by-alphabet-alt{
-    display: none;
+.ordering.desc:hover .order-asc,
+.ordering.desc:hover .order-desc{
+	display: none;
 }
 .ordering.desc:hover .no-sort{
-    display: inline-block;
+	display: inline-block;
 }
-.pagination-outer{
-    text-align: center;
-    padding-top: 10px;
-}
-.data-grid .editable-input{
-    border: 1px solid #aaa;
-    padding: 1px 0;
-}
-/* css for timepicker */
-.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
-.ui-timepicker-div dl { text-align: left; }
-.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
-.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
-.ui-timepicker-div td { font-size: 90%; }
-.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 
-.ui-timepicker-rtl{ direction: rtl; }
-.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
-.ui-timepicker-rtl dl dt{ float: right; clear: right; }
-.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
-
-.export{
-    float: right;
-}
-.show-export{
-    float: right;
+.data-grid-tree ul.grid-ul li .right-buttons,.export,.show-export {
+	float:right;
 }
 .empty-data{
-    text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 .dropdown-component{float:left;margin-right:5px;margin-top:4px}
 .button-component{float:left;text-align:left}
@@ -213,3 +298,4 @@ td.button-component{float:none}
 .sortable-column{width:44px;text-align:center}
 .with-actions{text-align: center}
 .data-grid table.table td.subgrid-button{vertical-align: top}
+.select-checkbox{width: 24px}

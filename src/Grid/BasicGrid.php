@@ -121,10 +121,10 @@ class BasicGrid extends BaseGrid {
 	}
 
 	/**
-	 * @param null|string $header
+	 * @param string $header
 	 * @return Column\Actions
 	 */
-	public function addActions($header = NULL) {
+	public function addActions($header) {
 		return $this->addColumn(new Column\Actions, NULL, $header);
 	}
 

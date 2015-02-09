@@ -5,6 +5,7 @@ namespace Mesour\DataGrid\Components;
 use \Nette\Application\UI\Presenter,
     Mesour\DataGrid\Setting,
     Mesour\DataGrid\Grid_Exception;
+use Nette\Utils\Callback;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -51,6 +52,7 @@ class StatusButton extends Button {
 	}
 
 	public function setCallback($callback) {
+		Callback::check($callback);
 		$this->option[self::CALLBACK] = $callback;
 		return $this;
 	}
@@ -74,7 +76,7 @@ class StatusButton extends Button {
 				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
 					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 				}
-				return call_user_func_array($this->option[self::CALLBACK], $args);
+				return Callback::invokeArgs($this->option[self::CALLBACK], $args);
 			} else {
 				throw new Grid_Exception('Callback in Component\StatusButton setting is not callable.');
 			}

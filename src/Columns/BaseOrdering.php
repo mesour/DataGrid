@@ -41,8 +41,16 @@ abstract class BaseOrdering extends Base {
 			$link = Html::el('a', array('href' => $this->grid['ordering']->link('ordering!', $this->option[self::ID]), 'class' => 'mesour-ajax ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : '')));
 			$link->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER]);
 			$link->add(Html::el('span', array('class' => 'glyphicon no-sort'))->setHtml('&nbsp;'));
-			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet')));
-			$link->add(Html::el('span', array('class' => 'glyphicon glyphicon-sort-by-alphabet-alt')));
+			if($this instanceof Number || $this instanceof Date) {
+				$link->add(Html::el('span', array('class' => 'order-asc glyphicon glyphicon-sort-by-order')));
+				$link->add(Html::el('span', array('class' => 'order-desc glyphicon glyphicon-sort-by-order-alt')));
+			} else if($this instanceof Status) {
+				$link->add(Html::el('span', array('class' => 'order-asc glyphicon glyphicon-sort-by-attributes')));
+				$link->add(Html::el('span', array('class' => 'order-desc glyphicon glyphicon-sort-by-attributes-alt')));
+			} else {
+				$link->add(Html::el('span', array('class' => 'order-asc glyphicon glyphicon-sort-by-alphabet')));
+				$link->add(Html::el('span', array('class' => 'order-desc glyphicon glyphicon-sort-by-alphabet-alt')));
+			}
 			return $link;
 		} else {
 			return $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::HEADER]) : $this->option[self::HEADER];

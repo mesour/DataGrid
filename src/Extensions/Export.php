@@ -28,7 +28,9 @@ class Export extends BaseControl {
 	private $export_columns = array();
 
 	private $file_name = NULL;
-	private $delimiter = ",";
+
+	private $delimiter = ',';
+
 	private $file_path;
 
 	public function setFileName($file_name) {
