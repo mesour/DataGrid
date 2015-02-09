@@ -26,6 +26,8 @@ abstract class Item extends Object {
 
 	protected $page_limit;
 
+	protected $keys = array();
+
 	protected $aliases = array();
 
 	public function __construct(IComponent $parent, $name, $description = NULL) {
@@ -61,8 +63,16 @@ abstract class Item extends Object {
 		return isset($this->aliases[$key]) ? $this->aliases[$key] : $key;
 	}
 
-	public function invoke(array $args = array()) {
-		return Callback::invokeArgs($this->callback, $args);
+	public function invoke(array $args = array(), $name, $key) {
+		return $this->callback ? Callback::invokeArgs($this->callback, $args) : NULL;
+	}
+
+	public function hasKey($key) {
+		return isset($this->parent->parent[$this->name . $key]);
+	}
+
+	public function getKeys() {
+		return $this->keys;
 	}
 
 	abstract public function render();

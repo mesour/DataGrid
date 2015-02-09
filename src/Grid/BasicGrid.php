@@ -10,8 +10,8 @@
 
 namespace Mesour\DataGrid;
 
-use Mesour\DataGrid\Column\IColumn;
-use \Nette\ComponentModel\IContainer,
+use Mesour\DataGrid\Column\IColumn,
+    \Nette\ComponentModel\IContainer,
     \Nette\Localization\ITranslator,
     Mesour\DataGrid\Render\Table\RendererFactory;
 
@@ -128,11 +128,20 @@ class BasicGrid extends BaseGrid {
 		return $this->addColumn(new Column\Actions, NULL, $header);
 	}
 
+	/**
+	 * @param $column_name
+	 * @param null|string $header
+	 * @return Column\Template
+	 */
+	public function addTemplate($column_name, $header = NULL) {
+		return $this->addColumn(new Column\Template, $column_name, $header);
+	}
+
 	protected function addColumn(IColumn $column, $column_name = NULL, $header = NULL) {
-		if(!is_null($header)) {
+		if (!is_null($header)) {
 			$column->setHeader($header);
 		}
-		if(!is_null($column_name)) {
+		if (!is_null($column_name)) {
 			$column->setId($column_name);
 		}
 		return parent::addColumn($column);
@@ -198,10 +207,10 @@ class BasicGrid extends BaseGrid {
 		if ($this['pager']->isEnabled()) {
 			$this['pager']->reset(0);
 		}
-		if(isset($this['subitem'])) {
+		if (isset($this['subitem'])) {
 			$this['subitem']->reset();
 		}
-		if($ordering) {
+		if ($ordering) {
 			$this['ordering']->reset();
 		}
 	}
@@ -209,14 +218,14 @@ class BasicGrid extends BaseGrid {
 	public function render($return = FALSE) {
 		$this->template->grid_dir = __DIR__;
 
-		if(!$this->rendererFactory) {
+		if (!$this->rendererFactory) {
 			$this->setRendererFactory(new RendererFactory);
 		}
 
 		$this->template->content = $this->createBody('table table-striped table-condensed table-hover');
 
 		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
-		if($return) {
+		if ($return) {
 			return $this->template;
 		}
 		$this->template->render();
@@ -264,19 +273,27 @@ class BasicGrid extends BaseGrid {
 		}
 	}
 
+	public function getCreatedTemplate() {
+		return $this->createTemplate();
+	}
+
 	public function createBody($table_class = 'table') {
 		$table = parent::createBody($table_class);
 
 		$sub_items = array();
 		$full_data = $this->getDataSource()->fetchAll();
 
-		if(isset($this['subitem']) && $this['subitem']->hasSubItems()) {
+		if (isset($this['subitem']) && $this['subitem']->hasSubItems()) {
 			foreach ($full_data as $key => $rowData) {
-				foreach($this['subitem']->getOpened() as $name => $item) {
-					if(in_array($key, $item['keys'])) {
+				foreach ($this['subitem']->getOpened() as $name => $item) {
+					if (in_array((string)$key, $item['keys'])) {
 						$t_key = $item['item']->getTranslatedKey($key);
-						$item['item']->invoke(array($this[$name.$t_key], $rowData));
-						$sub_items[$key][$name] = $this[$name.$t_key];
+						$item['item']->invoke(array($rowData), $name, $t_key);
+						if(isset($this[$name . $t_key])) {
+							$sub_items[$key][$name] = $this[$name . $t_key];
+						} else {
+							$sub_items[$key][$name] = TRUE;
+						}
 					}
 				}
 			}
@@ -301,10 +318,14 @@ class BasicGrid extends BaseGrid {
 		} else {
 			foreach ($full_data as $key => $rowData) {
 				$this->addRow($body, $rowData);
-				if(isset($sub_items[$key])) {
-					$this->addRow($body, $rowData, $sub_items[$key], $key);
-				} elseif(isset($this['subitem'])) {
-					$this->addRow($body, $rowData, $this['subitem']->getItemsCount(), $key);
+				if (isset($this['subitem'])) {
+					foreach($this['subitem']->getItems() as $name => $item) {
+						if (isset($sub_items[$key][$name])) {
+							$this->addOpenedSubItemRow($body, $rowData, $name, $key);
+						} else {
+							$this->addClosedSubItemRow($body, $rowData, $name, $key);
+						}
+					}
 				}
 			}
 		}
@@ -312,7 +333,56 @@ class BasicGrid extends BaseGrid {
 		return $table;
 	}
 
-	protected function addRow(Render\Body &$body, $rowData, $empty = FALSE, $key = 0) {
+	protected function addClosedSubItemRow(Render\Body &$body, $rowData, $name, $key) {
+		$columns_count = count($this->column_arr);
+		$name = $this['subitem']->getItem($name)->getName();
+		$column = new Column\SubItemButton();
+		$column->setGridComponent($this)
+		    ->setName($name)
+		    ->setKey($key);
+		$cell = $this->rendererFactory->createCell(1, $column);
+		$row = $this->rendererFactory->createRow($rowData);
+		$row->addCell($cell);
+		$columns_count--;
+		$cell = $this->rendererFactory->createCell($columns_count, new Column\SubItem(array(
+		    Column\SubItem::TEXT => $this['subitem']->getItem($name)->getDescription()
+		)));
+		$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+		$row->addCell($cell);
+		$body->addRow($row);
+	}
+
+	protected function addOpenedSubItemRow(Render\Body &$body, $rowData, $name, $key) {
+		$columns_count = count($this->column_arr);
+		$columns_count--;
+		$content = $this['subitem']->getItem($name)->render($key, $rowData);
+		$column = new Column\SubItemButton();
+		$column->setGridComponent($this)
+		    ->setName($name)
+		    ->setKey($key)
+		    ->setTwoRows()
+		    ->setOpened(TRUE);
+
+		$cell = $this->rendererFactory->createCell($columns_count, new Column\SubItem(array(
+		    Column\SubItem::TEXT => $content
+		)));
+		$row = $this->rendererFactory->createRow($rowData);
+		$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+		$row->addCell($cell);
+
+		$_row = $this->rendererFactory->createRow($rowData);
+		$description = new Column\SubItem(array(
+		    Column\SubItem::TEXT => $this['subitem']->getItem($name)->getDescription()
+		));
+		$_cell = $this->rendererFactory->createCell($columns_count, $description);
+		$_row->addCell($this->rendererFactory->createCell(1, $column));
+		$_row->addCell($_cell);
+		$_row->addAttribute('class', 'no-sort');
+		$body->addRow($_row);
+		$body->addRow($row);
+	}
+
+	protected function addRow(Render\Body &$body, $rowData, $empty = FALSE) {
 		$row = $this->rendererFactory->createRow($rowData);
 		if (!$this->hasEmptyData()) {
 			$row->setAttributes(array(
@@ -323,67 +393,24 @@ class BasicGrid extends BaseGrid {
 		if ($empty !== FALSE) {
 			$columns_count = count($this->column_arr);
 			if (!is_bool($empty)) {
-				if(is_array($empty)) {
-					$columns_count--;
-					foreach($empty as $name => $item) {
-						$content = $this['subitem']->getItem($name)->render($key);
-						$column = new Column\SubItemButton();
-						$column->setGridComponent($this)
-						    ->setName($name)
-						    ->setKey($key)
-						    ->setTwoRows()
-						    ->setOpened(TRUE);
-						$cell = $this->rendererFactory->createCell(1, $column);
-
-						$empty_column = new Column\SubItem(array(
-						    Column\SubItem::TEXT => $content
-						));
-						$_row = $this->rendererFactory->createRow($rowData);
-						$description = new Column\SubItem(array(
-						    Column\SubItem::TEXT => $this['subitem']->getItem($name)->getDescription()
-						));
-						$_cell = $this->rendererFactory->createCell($columns_count, $description);
-						$_row->addCell($cell);
-						$_row->addCell($_cell);
-						$_row->addAttribute('class', 'no-sort');
-						$body->addRow($_row);
-					}
-				} elseif(is_numeric($empty)) {
-					foreach($this['subitem']->getNames() as $name) {
-						$column = new Column\SubItemButton();
-						$column->setGridComponent($this)
-						    ->setName($name)
-							->setKey($key);
-						$cell = $this->rendererFactory->createCell(1, $column);
-						$row->addCell($cell);
-						$columns_count--;
-						$empty_column = new Column\SubItem(array(
-						    Column\SubItem::TEXT => $this['subitem']->getItem($name)->getDescription()
-						));
-					}
-				} else {
-					$empty_column = new Column\SubItem(array(
-					    Column\SubItem::TEXT => $empty
-					));
-				}
-
+				$empty_column = new Column\SubItem(array(
+				    Column\SubItem::TEXT => $empty
+				));
 			} else {
 				$empty_column = new Column\EmptyData(array(
 				    Column\EmptyData::TEXT => $this->empty_text ? $this->empty_text : 'Nothing to display.'
 				));
 			}
 
-			if(isset($empty_column)) {
-				$cell = $this->rendererFactory->createCell($columns_count, $empty_column);
-				$row->addCell($cell);
-			}
+			$cell = $this->rendererFactory->createCell($columns_count, $empty_column);
 			$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+			$row->addCell($cell);
 		} else {
 			foreach ($this->getColumns() as $column) {
 				$row->addCell($this->rendererFactory->createCell($rowData, $column));
 			}
-		}
 
+		}
 		$body->addRow($row);
 		return $row;
 	}

@@ -11,8 +11,6 @@ use Nette\ComponentModel\IComponent;
  */
 class GridItem extends Item {
 
-	private $keys = array();
-
 	public function __construct(IComponent $parent, $name, $description = NULL, BasicGrid $grid = NULL) {
 		parent::__construct($parent, $name, $description);
 		$i = 0;
@@ -41,12 +39,11 @@ class GridItem extends Item {
 		}
 	}
 
-	public function hasKey($key) {
-		return isset($this->parent->parent[$this->name . $key]);
+	public function invoke(array $args = array(), $name, $key) {
+		$arguments = array($this->parent->parent[$name . $key]);
+		$arguments = array_merge($arguments, $args);
+		return parent::invoke($arguments, $name, $key);
 	}
 
-	public function getKeys() {
-		return $this->keys;
-	}
 
 }

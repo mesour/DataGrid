@@ -28,15 +28,52 @@ class SubItem extends BaseControl {
 	 * @param null|string $description
 	 * @return GridItem
 	 */
-	public function addGrid($name, BasicGrid $grid, $description = NULL) {
+	public function addGridItem($name, $description, BasicGrid $grid) {
+		$this->check($name);
 		$item = new GridItem($this, $name, $description, $grid);
 		$this->items[$name] = $item;
 		return $item;
 	}
 
+	public function addTemplateItem($name, $description, $template_path, $block = NULL) {
+		$this->check($name);
+		if (!is_file($template_path)) {
+			throw new Grid_Exception('Template path ' . $template_path . ' does not exist.');
+		}
+		$this->createTemplate();
+		$this->template->setFile(__DIR__ . '/Template.latte');
+		$item = new TemplateItem($this, $name, $description, $this->template, $template_path, $block);
+		$this->items[$name] = $item;
+		return $item;
+	}
+
+	public function addComponentItem($name, $description, $callback) {
+		if(!$callback instanceof IContainer) {
+			Callback::check($callback);
+		}
+		$this->check($name);
+		$item = new ComponentItem($this, $name, $description, $callback);
+		$this->items[$name] = $item;
+		return $item;
+	}
+
+	public function addCallbackItem($name, $description, $callback) {
+		$this->check($name);
+		Callback::check($callback);
+		$item = new CallbackItem($this, $name, $description, $callback);
+		$this->items[$name] = $item;
+		return $item;
+	}
+
+	private function check($name) {
+		if (isset($this->items[$name])) {
+			throw new Grid_Exception('Sub item with name ' . $this->items[$name] . ' is already exist.');
+		}
+	}
+
 	public function reset() {
 		$this->getSession()->settings = $this->settings = array();
-		foreach($this->items as $item) {
+		foreach ($this->items as $item) {
 			$item->reset();
 		}
 	}
@@ -49,17 +86,17 @@ class SubItem extends BaseControl {
 				continue;
 			}
 			$keys = $this->items[$name]->getKeys();
-			if(count($keys) < count($this->settings[$name])) {
-				while(count($keys) < count($this->settings[$name])) {
+			if (count($keys) > 0 && count($keys) < count($this->settings[$name])) {
+				while (count($keys) < count($this->settings[$name])) {
 					array_shift($this->settings[$name]);
 				}
 			}
-			foreach($this->settings[$name] as $key => $i) {
+			foreach ($this->settings[$name] as $key => $i) {
 				if (!isset($this->settings[$name][$key])) {
 					unset($this->settings[$name][$key]);
 					continue;
 				}
-				if(!$this->items[$name]->hasKey($this->settings[$name][$key])) {
+				if (!$this->items[$name]->hasKey($this->settings[$name][$key])) {
 
 					$this->items[$name]->addAlias($i, end($keys));
 				}
@@ -69,7 +106,6 @@ class SubItem extends BaseControl {
 				}
 			}
 		}
-
 		$this->getSession()->settings = $this->settings;
 		return $output;
 	}
@@ -89,12 +125,15 @@ class SubItem extends BaseControl {
 		return count($this->items);
 	}
 
+	public function getItems() {
+		return $this->items;
+	}
+
 	public function hasSubItems() {
 		return count($this->items) > 0;
 	}
 
 	public function handleToggleItem($key, $name) {
-
 		if (isset($this->settings[$name])) {
 			if (in_array($key, $this->settings[$name])) {
 				unset($this->settings[$name][array_search($key, $this->settings[$name])]);
