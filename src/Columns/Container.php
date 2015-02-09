@@ -4,6 +4,7 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour\DataGrid\Grid_Exception,
     Nette\Utils\Html;
+use Nette\ComponentModel\IComponent;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -95,11 +96,16 @@ class Container extends BaseOrdering {
 		return $attributes;
 	}
 
-	public function getBodyContent($data) {
+	public function getBodyContent($data, $export = FALSE) {
 		$container = Html::el('span', array('class' => 'container-content'));
 		$only_buttons = TRUE;
 		foreach($this->option[self::COLUMNS] as $column) {
-			if($only_buttons && !$column instanceof Button && !$column instanceof Dropdown && !$column instanceof Status) {
+			if($export && isset($this->grid['export'])) {
+				if(!$this->grid['export']->hasExport($column)) {
+					continue;
+				}
+			}
+			if($only_buttons && !$column instanceof Actions && !$column instanceof Status) {
 				$only_buttons = FALSE;
 			}
 			$span = Html::el('span');
@@ -107,7 +113,7 @@ class Container extends BaseOrdering {
 			$span->addAttributes($column->getBodyAttributes($data));
 			$content = $column->getBodyContent($data);
 			if(!is_null($content)) {
-				$span->add($column->getBodyContent($data));
+				$span->add($content);
 			}
 			$container->add($span);
 			$container->add(' ');
@@ -115,7 +121,29 @@ class Container extends BaseOrdering {
 		if($only_buttons) {
 			$container->class('only-buttons', TRUE);
 		}
-		return $container;
+		return $export ? strip_tags($container) : $container;
+	}
+
+	public function hasExportableColumns() {
+		$exportable = FALSE;
+		foreach($this->option[self::COLUMNS] as $column) {
+			if($this->grid['export']->hasExport($column)) {
+				return TRUE;
+			}
+		}
+		return $exportable;
+	}
+
+	/**
+	 * @param IComponent $grid
+	 * @return $this
+	 */
+	public function setGridComponent(IComponent $grid) {
+		foreach($this->option[self::COLUMNS] as $column) {
+			$column->setGridComponent($grid);
+		}
+		$this->grid = $grid;
+		return $this;
 	}
 
 }
