@@ -76,7 +76,7 @@ class Text extends Filter {
 			if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
 				$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 			}
-			Callback::invokeArgs($this->option[self::CALLBACK], $args);
+			return Callback::invokeArgs($this->option[self::CALLBACK], $args);
 		}
 	}
 
