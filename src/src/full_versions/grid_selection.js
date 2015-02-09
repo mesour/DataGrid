@@ -1,15 +1,15 @@
 (function($) {
-    var native_confirm = true;
-    var gridConfirm = function(message) {
-        return confirm(message);
-    };
-    var gridCustomSend = function(url, data) {
-        $('#confirm-modal .yes').data('confirm-post-data', data);
-    };
+	var native_confirm = true;
+	var gridConfirm = function(message) {
+		return confirm(message);
+	};
+	var gridCustomSend = function(url, data) {
+		$('#confirm-modal .yes').data('confirm-post-data', data);
+	};
 	var options = {
 		mainCheckboxClass: 'main-checkbox',
-		checkboxButtonIdent: '#checkbox-button',
-		checkboxSelectorIdent: '#checkbox-selector',
+		checkboxButtonIdent: '.checkbox-button',
+		checkboxSelectorIdent: '.checkbox-selector',
 		selectCheckboxClass: 'select-checkbox',
 		isUnactiveClass: 'is-unactive',
 		isActiveClass: 'is-active',
@@ -33,7 +33,16 @@
 	};
 
 	$(document).ready(function() {
-		var $tbody = $('.' + options.mainCheckboxClass).closest('.data-grid').find('tbody, ul');
+		$('.checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid');
+
+		$(options.checkboxSelectorIdent + ' ul.' + options.dropDownMenuClass + ' li a').off('click.grid');
+		$(options.checkboxButtonIdent + ' ul li a').on('click.grid');
+		$('.checkbox-selector .dropdown-toggle').off('click.grid, mouseenter.grid, mouseleave.grid');
+		$('.checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid, mouseenter.grid, mouseleave.grid');
+		$('.select-checkbox').off('click.grid');
+		$(window).off('click.grid');
+		$('.data-grid').find('td').off('click.grid');
+
 		var toggleCheckbox = function($this) {
 			var button = $(this).find('.' + options.selectCheckboxClass);
 			if ($($this).hasClass('checked')) {
@@ -42,160 +51,168 @@
 				buttonToChecked(button);
 			}
 		};
-		var checkAllCheckboxes = function(no_main) {
-			var check_all = true;
-			var one_checked = false;
-			$tbody.find('tr, li').each(function() {
-				if (!$(this).find('.' + options.selectCheckboxClass).hasClass('checked'))
-					check_all = false;
-				else
-					one_checked = true;
-			});
 
-			if (!no_main) {
-				if (check_all) {
-					buttonToChecked($('.' + options.mainCheckboxClass));
-				} else {
-					if(one_checked)
-						buttonToAnyChecked($('.' + options.mainCheckboxClass));
+		var main_checkboxes = $('.main-checkbox');
+		main_checkboxes.off('click.grid');
+
+		main_checkboxes.each(function() {
+			var mainCheckboxButton = $(this),
+				$tbody = mainCheckboxButton.closest('.data-grid').find('tbody:first, ul.grid-ul');
+
+			var checkAllCheckboxes = function(no_main) {
+				var check_all = true;
+				var one_checked = false;
+				$tbody.find('>tr, >li').each(function() {
+					if (!$(this).find('.' + options.selectCheckboxClass).hasClass('checked'))
+						check_all = false;
 					else
-						buttonToNoChecked($('.' + options.mainCheckboxClass));
-				}
-			}
-			if (one_checked)
-				$(options.checkboxButtonIdent + ' button').removeClass('disabled').closest('div').css('cursor', 'pointer');
-			else
-				$(options.checkboxButtonIdent + ' button').addClass('disabled').closest('div').css('cursor', 'not-allowed');
-		};
-		$('#checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid');
-		$('.' + options.mainCheckboxClass).off('click.grid');
-		$(options.checkboxSelectorIdent + ' ul.' + options.dropDownMenuClass + ' li a').off('click.grid');
-		$(options.checkboxButtonIdent + ' ul li a').on('click.grid');
-		$('#checkbox-selector .dropdown-toggle').off('click.grid, mouseenter.grid, mouseleave.grid');
-		$('#checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid, mouseenter.grid, mouseleave.grid');
-		$('.select-checkbox').off('click.grid');
-		$(window).off('click.grid');
-		$('.data-grid').find('td').off('click.grid');
+						one_checked = true;
+				});
 
-		$('.' + options.mainCheckboxClass).on('click.grid', function(e) {
-			e.stopPropagation();
-			var $this = $(this);
-			$tbody.find('tr, li').each(toggleCheckbox, $this);
-			checkAllCheckboxes(true);
-		});
-		$(options.checkboxSelectorIdent + ' ul.' + options.dropDownMenuClass + ' li a').on('click.grid', function(e) {
-			e.preventDefault();
-			switch ($(this).attr('data-select')) {
-				case 'active':
-					$tbody.find('tr, li').each(function() {
-						if ($(this).find('.' + options.isActiveClass).is('*'))
-							buttonToChecked($(this).find('.' + options.selectCheckboxClass));
+				if (!no_main) {
+					if (check_all) {
+						buttonToChecked(mainCheckboxButton);
+					} else {
+						if(one_checked)
+							buttonToAnyChecked(mainCheckboxButton);
 						else
-							buttonToNoChecked($(this).find('.' + options.selectCheckboxClass));
-					});
-					break;
-				case 'unactive':
-					$tbody.find('tr, li').each(function() {
-						if ($(this).find('.' + options.isUnactiveClass).is('*'))
-							buttonToChecked($(this).find('.' + options.selectCheckboxClass));
-						else
-							buttonToNoChecked($(this).find('.' + options.selectCheckboxClass));
-					});
-					break;
-				case 'inverse':
-					$tbody.find('tr, li').each(function() {
-						var $checkbox = $(this).find('.' + options.selectCheckboxClass);
-						if ($checkbox.hasClass('checked'))
-							buttonToNoChecked($checkbox);
-						else
-							buttonToChecked($checkbox);
-					});
-					break;
-			}
-			checkAllCheckboxes();
-		});
-		$(options.checkboxButtonIdent + ' ul li a').on('click.grid', function(e) {
-			e.preventDefault();
-			var data = [],
-				gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
-			$tbody.find('.' + options.selectCheckboxClass + '.checked').each(function() {
-				data.push($(this).attr('data-value'));
+							buttonToNoChecked(mainCheckboxButton);
+					}
+				}
+				if (one_checked)
+					$tbody.closest('.data-grid').next('.datagrid-bottom').find(options.checkboxButtonIdent + ' button').removeClass('disabled').closest('div').css('cursor', 'pointer');
+				else
+					$tbody.closest('.data-grid').next('.datagrid-bottom').find(options.checkboxButtonIdent + ' button').addClass('disabled').closest('div').css('cursor', 'not-allowed');
+			};
+
+			mainCheckboxButton.on('click.grid', function(e) {
+				e.stopPropagation();
+				var $this = $(this);
+				$tbody.find('>tr:not(.no-sort), >li:not(.no-sort)').each(toggleCheckbox, $this);
+				checkAllCheckboxes(true);
 			});
-			if (data.length > 0) {
-				var isConfirm = $(this).attr('data-confirm'),
-					isAjax = $(this).hasClass('is-ajax');
-				var href = mesour.getUrlWithParam(gridName, $(this).attr('href'), 'selection', 'selected', {items: data});
-				if(native_confirm && isConfirm) {
-					if(gridConfirm(isConfirm)) {
+
+			$tbody.closest('.data-grid').next('.datagrid-bottom').find(options.checkboxButtonIdent + ' ul li a').on('click.grid', function(e) {
+				e.preventDefault();
+				var data = [],
+					$this = $(this),
+					gridName = $(this).closest('[data-mesour-grid]').attr('data-mesour-grid');
+				if($this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').is('*')) {
+					gridName = $this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').attr('data-mesour-grid')+'-'+gridName;
+				}
+				$tbody.find('.' + options.selectCheckboxClass + '.checked').each(function() {
+					data.push($(this).attr('data-value'));
+				});
+				if (data.length > 0) {
+					var isConfirm = $(this).attr('data-confirm'),
+						isAjax = $(this).hasClass('is-ajax');
+					var href = mesour.getUrlWithParam(gridName, $(this).attr('href'), 'selection', 'selected', {items: data});
+					if(native_confirm && isConfirm) {
+						if(gridConfirm(isConfirm)) {
+							if(isAjax) {
+								$.get(href);
+							} else {
+								location.href = href;
+							}
+
+						}
+					} else if(isConfirm) {
+						gridCustomSend(href, {selected: data});
+					} else {
 						if(isAjax) {
 							$.get(href);
 						} else {
 							location.href = href;
 						}
-
-					}
-				} else if(isConfirm) {
-					gridCustomSend(href, {selected: data});
-				} else {
-					if(isAjax) {
-						$.get(href);
-					} else {
-						location.href = href;
 					}
 				}
-			}
 
-		});
-		var inCheckbox = false, inButton = false;
-		$('#checkbox-selector .dropdown-toggle').on({
-			'click.grid': function(e) {
+			});
+
+			mainCheckboxButton.closest('.checkbox-selector').find('ul.' + options.dropDownMenuClass + ' li a').on('click.grid', function(e) {
 				e.preventDefault();
-				if(inCheckbox) {
-					return;
+				switch ($(this).attr('data-select')) {
+					case 'active':
+						$tbody.find('tr, li').each(function() {
+							if ($(this).find('.' + options.isActiveClass).is('*'))
+								buttonToChecked($(this).find('.' + options.selectCheckboxClass));
+							else
+								buttonToNoChecked($(this).find('.' + options.selectCheckboxClass));
+						});
+						break;
+					case 'unactive':
+						$tbody.find('tr, li').each(function() {
+							if ($(this).find('.' + options.isUnactiveClass).is('*'))
+								buttonToChecked($(this).find('.' + options.selectCheckboxClass));
+							else
+								buttonToNoChecked($(this).find('.' + options.selectCheckboxClass));
+						});
+						break;
+					case 'inverse':
+						$tbody.find('tr, li').each(function() {
+							var $checkbox = $(this).find('.' + options.selectCheckboxClass);
+							if ($checkbox.hasClass('checked'))
+								buttonToNoChecked($checkbox);
+							else
+								buttonToChecked($checkbox);
+						});
+						break;
 				}
-				var $group = $(this).closest('.btn-group');
-				$group.addClass('open');
-			},
-			'mouseenter.grid': function() {
-				inButton = true;
-			},
-			'mouseleave.grid': function() {
-				inButton = false;
-			}
-		});
-		$('#checkbox-selector .dropdown-toggle').find('a.btn').on({
-			'click.grid': function(e) {
-				e.preventDefault();
-				var $this = $(this);
+				checkAllCheckboxes();
+			});
+
+			var checkButton = function($this) {
 				if ($this.hasClass('checked')) {
 					buttonToNoChecked($this);
 				} else {
 					buttonToChecked($this);
 				}
-			},
-			'mouseenter.grid': function() {
-				inCheckbox = true;
-			},
-			'mouseleave.grid': function() {
-				inCheckbox = false;
-			}
-		});
-		var checkButton = function($this) {
-			if ($this.hasClass('checked')) {
-				buttonToNoChecked($this);
-			} else {
-				buttonToChecked($this);
-			}
-			checkAllCheckboxes();
-		};
-		$('.' + options.selectCheckboxClass).on('click.grid', function(e) {
-			e.preventDefault();
-			var $this = $(this);
-			checkButton($this)
-		});
-		$(window).on('click.grid', function() {
-			if (!inButton)
-				$('#checkbox-selector').removeClass('open');
+				checkAllCheckboxes();
+			};
+			$tbody.find('>tr>td.with-checkbox, >li>div>span.with-checkbox').find('.' + options.selectCheckboxClass).on('click.grid', function(e) {
+				e.preventDefault();
+				var $this = $(this);
+				checkButton($this);
+			});
+
+			var inCheckbox = false, inButton = false;
+			mainCheckboxButton.closest('.checkbox-selector').find('.dropdown-toggle').on({
+				'click.grid': function(e) {
+					e.preventDefault();
+					if(inCheckbox) {
+						return;
+					}
+					var $group = $(this).closest('.btn-group');
+					$group.addClass('open');
+				},
+				'mouseenter.grid': function() {
+					inButton = true;
+				},
+				'mouseleave.grid': function() {
+					inButton = false;
+				}
+			});
+			mainCheckboxButton.closest('.checkbox-selector').find('.dropdown-toggle').find('a.btn').on({
+				'click.grid': function(e) {
+					e.preventDefault();
+					var $this = $(this);
+					if ($this.hasClass('checked')) {
+						buttonToNoChecked($this);
+					} else {
+						buttonToChecked($this);
+					}
+				},
+				'mouseenter.grid': function() {
+					inCheckbox = true;
+				},
+				'mouseleave.grid': function() {
+					inCheckbox = false;
+				}
+			});
+			$(window).on('click.grid', function() {
+				if (!inButton)
+					mainCheckboxButton.closest('.checkbox-selector').removeClass('open');
+			});
 		});
 	});
 })(jQuery);

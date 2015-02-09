@@ -37,10 +37,12 @@ abstract class Base extends Setting implements IColumn {
 	}
 
 	/**
-	 * @param \Nette\ComponentModel\IComponent $grid
+	 * @param IComponent $grid
+	 * @return $this
 	 */
 	public function setGridComponent(IComponent $grid) {
 		$this->grid = $grid;
+		return $this;
 	}
 
 	protected function getGrid() {
@@ -57,7 +59,7 @@ abstract class Base extends Setting implements IColumn {
 		} elseif (isset($this->option['header'])) {
 			return $this->option['header'];
 		} else {
-			return NULL;
+			return isset($this->option['id']) ? $this->option['id'] : NULL;
 		}
 	}
 

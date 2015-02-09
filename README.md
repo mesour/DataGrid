@@ -12,5 +12,5 @@ Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edi
 - With [Composer](https://getcomposer.org)
 
         "require": {
-            "mesour/datagrid": "~2.0.0"
+            "mesour/datagrid": "~2.0.3"
         }

@@ -26,7 +26,7 @@ class Selection extends Base {
 	}
 
 	public function getHeaderContent() {
-		$div = Html::el('div', array('class' => 'btn-group', 'id' => 'checkbox-selector'));
+		$div = Html::el('div', array('class' => 'btn-group checkbox-selector'));
 
 		$button = Html::el('button', array('type' => 'button'));
 		$checkbox = Html::el('a', array('type' => 'button', 'class' => 'btn btn-xs btn-default main-checkbox'));

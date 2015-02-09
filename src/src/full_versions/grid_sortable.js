@@ -1,6 +1,6 @@
 (function($) {
     $(document).ready(function() {
-        $('tbody.sortable').nestedSortable({
+        $('tbody.sortable').sortable({
             disableNesting: 'no-child',
             forcePlaceholderSize: true,
             autoScroll: true,
@@ -19,10 +19,13 @@
                 var item_id = b.item.attr('id').split('-');
                 var $this = $(this);
                 var data = {
-                    serialized: $this.nestedSortable('serialize'),
+                    serialized: $this.sortable('serialize'),
                     item: item_id[item_id.length-1]
                 };
                 var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
+                if($this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').is('*')) {
+                    gridName = $this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').attr('data-mesour-grid')+'-'+gridName;
+                }
                 $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
 
                 });

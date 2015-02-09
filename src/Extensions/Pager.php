@@ -26,6 +26,8 @@ class Pager extends BaseControl {
 
 	private $middle_page_count = 2;
 
+	private $enabled = FALSE;
+
 	public function __construct(\Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 		$this->paginator = new \Nette\Utils\Paginator;
@@ -88,7 +90,18 @@ class Pager extends BaseControl {
 		$this->template->render();
 	}
 
+	public function enable() {
+		$this->enabled = TRUE;
+	}
+
+	public function isEnabled() {
+		return $this->enabled;
+	}
+
 	public function handleChangePage() {
+		if(isset($this->parent['subitem'])) {
+			$this->parent['subitem']->reset();
+		}
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
 	}

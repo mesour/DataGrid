@@ -3,6 +3,7 @@
 namespace Mesour\DataGrid\Column;
 
 use Mesour\DataGrid\Grid_Exception;
+use Nette\Utils\Callback;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -18,6 +19,7 @@ class Text extends Filter {
 	    CALLBACK_ARGS = 'func_args';
 
 	public function setCallback($callback) {
+		Callback::check($callback);
 		$this->option[self::CALLBACK] = $callback;
 		return $this;
 	}
@@ -70,15 +72,11 @@ class Text extends Filter {
 			$this->checkColumnId($data);
 			return $data[$this->option[self::ID]];
 		} else {
-			if (is_callable($this->option[self::CALLBACK])) {
-				$args = array($data);
-				if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
-					$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
-				}
-				return call_user_func_array($this->option[self::CALLBACK], $args);
-			} else {
-				throw new Grid_Exception('Callback in column setting is not callable.');
+			$args = array($data);
+			if (isset($this->option[self::CALLBACK_ARGS]) && is_array($this->option[self::CALLBACK_ARGS])) {
+				$args = array_merge($args, $this->option[self::CALLBACK_ARGS]);
 			}
+			return Callback::invokeArgs($this->option[self::CALLBACK], $args);
 		}
 	}
 

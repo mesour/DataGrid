@@ -28,7 +28,9 @@ class Export extends BaseControl {
 	private $export_columns = array();
 
 	private $file_name = NULL;
-	private $delimiter = ",";
+
+	private $delimiter = ',';
+
 	private $file_path;
 
 	public function setFileName($file_name) {
@@ -61,6 +63,13 @@ class Export extends BaseControl {
 		$this->template->render();
 	}
 
+	public function hasExport($column) {
+		return ($column instanceof Column\Text || $column instanceof Column\Number
+		|| $column instanceof Column\Date || $column instanceof Column\Container
+		    || $column instanceof Column\Template)
+			&& (!$column instanceof Column\Container || ($column instanceof Column\Container && $column->hasExportableColumns()));
+	}
+
 	public function handleExport() {
 		$header_arr = array();
 		$export_columns = array();
@@ -71,7 +80,8 @@ class Export extends BaseControl {
 
 		if (empty($this->export_columns)) {
 			foreach ($this->parent->getColumns() as $column) {
-				if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
+				$column->setGridComponent($this->parent);
+				if ($this->hasExport($column)) {
 					$export_columns[] = $column;
 				}
 			}
@@ -79,7 +89,7 @@ class Export extends BaseControl {
 			foreach ($this->export_columns as $column_val) {
 				$used_in_columns = FALSE;
 				foreach ($this->parent->getColumns() as $column) {
-					if ($column instanceof Column\Text || $column instanceof Column\Number || $column instanceof Column\Date) {
+					if ($this->hasExport($column)) {
 						if (is_array($column_val)) {
 							$column_name = key($column_val);
 						} else {
@@ -96,8 +106,6 @@ class Export extends BaseControl {
 				}
 			}
 		}
-
-
 		$this->file_path = $this->cache_dir . "/" . Strings::webalize($this->parent->getGridName()) . time() . ".csv";
 		$file = fopen($this->file_path, "w");
 		foreach ($export_columns as $column) {
@@ -121,7 +129,7 @@ class Export extends BaseControl {
 			$line_data = array();
 			foreach ($export_columns as $column) {
 				if ($column instanceof Column\IColumn) {
-					$line_data[] = $column->getBodyContent($data);
+					$line_data[] = $column->getBodyContent($data, TRUE);
 				} else {
 					if (is_array($column)) {
 						$column_name = key($column);

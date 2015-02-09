@@ -40,11 +40,15 @@ class BaseControl extends Control {
 				$params['settings'][$key] = $val;
 			}
 		}
+		if($this->getName() === 'ordering') {
+			//echo $this->parent->getGridName() . $this->getName();
+			//print_r($params);
+		}
 		parent::loadState($params);
 	}
 
-	protected function createTemplate() {
-		$template = parent::createTemplate();
+	protected function createTemplate($class = NULL) {
+		$template = parent::createTemplate($class);
 		$template->setTranslator($this->parent["translator"]);
 		return $template;
 	}

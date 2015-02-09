@@ -2,7 +2,8 @@
 
 namespace Mesour\DataGrid\Components;
 
-use Mesour\DataGrid\Setting;
+use Mesour\DataGrid\Setting,
+	Mesour\DataGrid\Grid_Exception;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -25,6 +26,16 @@ class Link extends Setting {
 	 * @var Mixed
 	 */
 	static public $checkPermissionCallback;
+
+	public function __construct($destination = array(), $args = array()) {
+		if(is_array($destination)) {
+			parent::__construct($destination);
+		} else if(is_string($destination)) {
+			parent::__construct();
+			$this->option[self::HREF] = $destination;
+			$this->option[self::PARAMS] = $args;
+		}
+	}
 
 	public function setName($name) {
 		$this->option[self::NAME] = $name;
@@ -78,12 +89,11 @@ class Link extends Setting {
 	 * @return array|bool
 	 */
 	static public function getLink($link, array $arguments = array(), $data = NULL) {
+		$params = array();
 		if (!empty($arguments)) {
 			foreach ($arguments as $key => $value) {
 				$params[$key] = self::parseValue($value, is_null($data) ? array() : $data);
 			}
-		} else {
-			$params = array();
 		}
 		$to_href = self::checkLinkPermission($link);
 		if ($to_href === FALSE) {

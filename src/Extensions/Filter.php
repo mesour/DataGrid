@@ -114,9 +114,7 @@ class Filter extends BaseControl {
 
 	public function handleSubmitForm() {
 		$this->fixSettingsForForm();
-		if (isset($this->parent['pager'])) {
-			$this->parent['pager']->reset(0);
-		}
+		$this->parent->reset();
 		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
@@ -135,9 +133,7 @@ class Filter extends BaseControl {
 	}
 
 	public function handleApplyDefaultFilter() {
-		if (isset($this->parent['pager'])) {
-			$this->parent['pager']->reset(0);
-		}
+		$this->parent->reset();
 		$this->parent->onFilter($this->settings);
 		$this->parent->redrawControl();
 		$this->presenter->redrawControl();
@@ -149,6 +145,7 @@ class Filter extends BaseControl {
 				continue;
 			}
 			foreach ($values as $key => $value) {
+				$value = is_numeric($value) ? (float) $value : $value;
 				switch ($key) {
 					case 'priority':
 						continue;
