@@ -3,9 +3,9 @@
 namespace Mesour\DataGrid\Extensions;
 
 use Mesour\DataGrid\Column,
-    Mesour\DataGrid\Grid_Exception,
-    Nette\Application\Responses\FileResponse,
-    Nette\Utils\Strings;
+	Mesour\DataGrid\Grid_Exception,
+	Nette\Application\Responses\FileResponse,
+	Nette\Utils\Strings;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -65,9 +65,13 @@ class Export extends BaseControl {
 
 	public function hasExport($column) {
 		return ($column instanceof Column\Text || $column instanceof Column\Number
-		|| $column instanceof Column\Date || $column instanceof Column\Container
-		    || $column instanceof Column\Template)
-			&& (!$column instanceof Column\Container || ($column instanceof Column\Container && $column->hasExportableColumns()));
+			|| $column instanceof Column\Date || $column instanceof Column\Container
+			|| $column instanceof Column\Template)
+		&& (!$column instanceof Column\Container || ($column instanceof Column\Container && $column->hasExportableColumns()));
+	}
+
+	private function fixEncoding($data) {
+		return mb_convert_encoding($data, "ISO-8859-2", "UTF-8");
 	}
 
 	public function handleExport() {
@@ -113,12 +117,12 @@ class Export extends BaseControl {
 				if ($this->parent->getTranslator()) {
 					$column->setTranslator($this->parent->getTranslator());
 				}
-				$header_arr[] = $column->getHeader();
+				$header_arr[] = $this->fixEncoding($column->getHeader());
 			} else {
-				if (is_array($column)) {
-					$header_arr[] = reset($column);
+				if(is_array($column)) {
+					$header_arr[] = $this->fixEncoding(reset($column));
 				} else {
-					$header_arr[] = $column;
+					$header_arr[] = $this->fixEncoding($column);
 				}
 			}
 		}
@@ -127,14 +131,14 @@ class Export extends BaseControl {
 		$first = TRUE;
 		foreach ($this->parent->getDataSource()->fetchAllForExport() as $data) {
 			$line_data = array();
-			foreach ($export_columns as $column) {
-				if ($column instanceof Column\IColumn) {
-					$line_data[] = $column->getBodyContent($data, TRUE);
+			foreach($export_columns as $column) {
+				if($column instanceof Column\IColumn) {
+					$line_data[] = $this->fixEncoding($column->getBodyContent($data, TRUE));
 				} else {
-					if (is_array($column)) {
-						$column_name = key($column);
+					if(is_array($column)) {
+						$column_name = $this->fixEncoding(key($column));
 					} else {
-						$column_name = $column;
+						$column_name = $this->fixEncoding($column);
 					}
 					if ($first && !isset($data[$column_name]) && !is_null($data[$column_name])) {
 						throw new Grid_Exception('Column "' . $column_name . '" does not exist in data.');
