@@ -13,6 +13,7 @@ use Mesour\DataGrid\Column,
 class Cell extends Render\Cell {
 
 	public function create() {
+		$this->column->onRender($this->rowData, $this->column);
 		$attributes = $this->column->getBodyAttributes($this->rowData);
 		if ($attributes === FALSE) {
 			return '';

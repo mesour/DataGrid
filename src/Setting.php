@@ -2,13 +2,14 @@
 
 namespace Mesour\DataGrid;
 
-use Nette\Localization\ITranslator;
+use Nette\Localization\ITranslator,
+    Nette\Object;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Setting {
+abstract class Setting extends Object {
 
 	/**
 	 * @var \Nette\Localization\ITranslator

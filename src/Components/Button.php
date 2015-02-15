@@ -110,8 +110,27 @@ class Button extends Setting {
 		return $this;
 	}
 
-	public function addAttribute($name, $value) {
-		$this->option[self::ATTRIBUTES][$name] = $value;
+	/**
+	 * Use setAttribute instead
+	 *
+	 * @deprecated
+	 */
+	public function addAttribute($key, $value, $append = FALSE) {
+		return $this->setAttribute($key, $value, $append);
+	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 * @param bool $append
+	 * @return $this
+	 */
+	public function setAttribute($key, $value, $append = FALSE) {
+		if($append && isset($this->option[self::ATTRIBUTES][$key])) {
+			$this->option[self::ATTRIBUTES][$key] = $this->option[self::ATTRIBUTES][$key] . ' ' . $value;
+		} else {
+			$this->option[self::ATTRIBUTES][$key] = $value;
+		}
 		return $this;
 	}
 
