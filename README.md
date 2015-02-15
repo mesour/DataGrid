@@ -1,5 +1,8 @@
 # Mesour DataGrid
 
+[![Total Downloads](https://img.shields.io/packagist/dt/mesour/datagrid.svg "Total Downloads")](https://packagist.org/packages/mesour/datagrid)
+[![Latest Stable Version](https://img.shields.io/github/release/mesour/datagrid.svg)](https://github.com/mesour/DataGrid/releases "Latest Stable Version")
+
 Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.
 
 - [Documentation/Demo](http://grid.mesour.com)
