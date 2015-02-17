@@ -108,6 +108,7 @@ class Export extends BaseControl {
 		}
 		$this->file_path = $this->cache_dir . "/" . Strings::webalize($this->parent->getGridName()) . time() . ".csv";
 		$file = fopen($this->file_path, "w");
+		fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // add BOM to fix UTF-8 in Excel
 		foreach ($export_columns as $column) {
 			if ($column instanceof Column\IColumn) {
 				if ($this->parent->getTranslator()) {
