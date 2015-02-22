@@ -2,7 +2,6 @@
 
 namespace Mesour\DataGrid\Column;
 
-use Mesour\DataGrid\Components\NewDropDown;
 use \Nette\Utils\Html,
     Mesour\DataGrid\Grid_Exception,
     Mesour\DataGrid\Components\DropDown,
@@ -33,12 +32,6 @@ class Actions extends Base {
 
 	public function addDropDown() {
 		$button = new DropDown;
-		$this->option[self::ACTIONS][] = $button;
-		return $button;
-	}
-
-	public function addNewDropDown() {
-		$button = new NewDropDown;
 		$this->option[self::ACTIONS][] = $button;
 		return $button;
 	}

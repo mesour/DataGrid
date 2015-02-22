@@ -60,39 +60,34 @@ class DropDown extends Setting {
 		return $this;
 	}
 
+	public function addLink($name, Link $link) {
+		$link->setName($name);
+		$drop_down_link = new DropDownLink;
+		$drop_down_link->setLink($link);
+		$this->option[self::LINKS][] = $drop_down_link;
+		return $drop_down_link;
+	}
+
+	public function addHeader($name) {
+		$header = new DropDownHeader;
+		$header->setName($name);
+		$this->option[self::LINKS][] = $header;
+		return $header;
+	}
+
+	public function addSeparator() {
+		$separator = new DropDownSeparator;
+		$this->option[self::LINKS][] = $separator;
+		return $separator;
+	}
+
 	public function setButtonClassName($class_name) {
 		$this->option[self::BUTTON_CLASS_NAME] = $class_name;
 		return $this;
 	}
 
-	public function setLinks(array $links) {
-		$this->option[self::LINKS] = $links;
-		return $this;
-	}
-
 	public function setSizeClass($size_class) {
 		$this->option[self::SIZE_CLASS] = $size_class;
-		return $this;
-	}
-
-	public function addGroup($name) {
-		$this->option[self::LINKS][] = array('dropdown-header', $name);
-		return $this;
-	}
-
-	public function addLink($href, $name, array $parameters = array(), $is_nette_link = TRUE, $component = NULL) {
-		$this->option[self::LINKS][] = new Link(array(
-		    Link::HREF => $href,
-		    Link::PARAMS => $parameters,
-		    Link::NAME => $name,
-		    Link::COMPONENT => $component,
-		    Link::USE_NETTE_LINK => $is_nette_link
-		));
-		return $this;
-	}
-
-	public function addSeparator() {
-		$this->option[self::LINKS][] = 'divider';
 		return $this;
 	}
 
@@ -131,10 +126,17 @@ class DropDown extends Setting {
 
 		$has_links = FALSE;
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
+
 		foreach ($this->option[self::LINKS] as $link) {
-			if ($link instanceof Link) {
+			if($link instanceof DropDownLink) {
+				$link->setPresenter($this->presenter);
+				if($this->getTranslator()) {
+					$link->setTranslator($this->getTranslator());
+				}
+				$link->onRender($this->data, $link);
+
 				$href = $link->create($this->data);
-				if (!$href) {
+				if($href === FALSE) {
 					continue;
 				}
 				if (isset($separator)) {
@@ -145,41 +147,16 @@ class DropDown extends Setting {
 					$ul->add($header);
 					unset($header);
 				}
-				list($to_href, $params, $name) = $href;
 
-				if ($link->hasUseNetteLink()) {
-					$used_component = $link->getUsedComponent();
-					if (!is_null($used_component)) {
-						if (is_string($used_component)) {
-							$href_param = $this->presenter[$used_component]->link($to_href, $params);
-						} elseif (is_array($used_component)) {
-							$component = $this->presenter;
-							foreach ($used_component as $component_name) {
-								$component = $component[$component_name];
-							}
-							$href_param = $component->link($to_href, $params);
-						} else {
-							throw new Grid_Exception('Link::COMPONENT must be string or array, ' . gettype($used_component) . ' given.');
-						}
-					} else {
-						$href_param = $this->presenter->link($to_href, $params);
-					}
-				} else {
-					$href_param = $to_href;
-				}
-
-				$li = Html::el('li', array('role' => 'presentation'));
-				$a = Html::el('a', array('role' => 'menuitem', 'tabindex' => '-1', 'href' => $href_param));
-				$a->setText($name);
-
-				$li->add($a);
-				$ul->add($li);
+				$ul->add($href);
 				$has_links = TRUE;
-			} elseif (is_string($link)) {
-				$separator = Html::el('li', array('role' => 'presentation', 'class' => $link));
-			} elseif (is_array($link) && isset($link[0]) && isset($link[1])) {
-				$header = Html::el('li', array('role' => 'presentation', 'class' => $link[0]));
-				$header->setText($this->getTranslator() ? $this->getTranslator()->translate($link[1]) : $link[1]);
+			} elseif($link instanceof DropDownSeparator) {
+				$separator = $link->create($this->data);
+			} elseif($link instanceof DropDownHeader) {
+				if($this->getTranslator()) {
+					$link->setTranslator($this->getTranslator());
+				}
+				$header = $link->create($this->data);
 			}
 		}
 		if ($has_links) {
