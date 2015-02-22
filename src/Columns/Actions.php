@@ -25,13 +25,13 @@ class Actions extends Base {
 	}
 
 	public function addButton() {
-		$button = new Button();
+		$button = new Button;
 		$this->option[self::ACTIONS][] = $button;
 		return $button;
 	}
 
 	public function addDropDown() {
-		$button = new DropDown();
+		$button = new DropDown;
 		$this->option[self::ACTIONS][] = $button;
 		return $button;
 	}

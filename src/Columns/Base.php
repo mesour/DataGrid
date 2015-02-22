@@ -22,18 +22,34 @@ abstract class Base extends Setting implements IColumn {
 	protected $grid;
 
 	/**
+	 * Triggered before render column cell
+	 *
+	 * @var array
+	 */
+	public $onRender = array();
+
+	/**
 	 * @param string $key
 	 * @param string $value
 	 * @param bool $append
 	 * @return $this
 	 */
-	public function addAttribute($key, $value, $append = FALSE) {
+	public function setAttribute($key, $value, $append = FALSE) {
 		if($append && isset($this->option[self::ATTRIBUTES][$key])) {
 			$this->option[self::ATTRIBUTES][$key] = $this->option[self::ATTRIBUTES][$key] . ' ' . $value;
 		} else {
 			$this->option[self::ATTRIBUTES][$key] = $value;
 		}
 		return $this;
+	}
+
+	/**
+	 * Use setAttribute instead
+	 *
+	 * @deprecated
+	 */
+	public function addAttribute($key, $value, $append = FALSE) {
+		return $this->setAttribute($key, $value, $append);
 	}
 
 	/**
