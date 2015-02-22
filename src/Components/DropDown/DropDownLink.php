@@ -40,7 +40,7 @@ class DropDownLink extends DropDownItem {
 	}
 
 	public function setConfirm($text) {
-		$this->addAttribute('onclick', "return confirm('" . $text . "');");
+		$this->setAttribute('onclick', "return confirm('" . $text . "');");
 		return $this;
 	}
 
