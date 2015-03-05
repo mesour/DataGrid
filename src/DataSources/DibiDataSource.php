@@ -106,7 +106,7 @@ class DibiDataSource implements IDataSource {
 	}
 
 	public function fetchAllForExport() {
-		return $this->getDataSource(FALSE, FALSE)->fetchAll();
+		return $this->getDataSource(FALSE)->fetchAll();
 	}
 
 	private function customFilter($column_name, $how, $type) {

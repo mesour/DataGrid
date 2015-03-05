@@ -1,75 +1,74 @@
 <?php
 
-use Tester\Assert,
-    \DataGrid\NetteDbDataSource;
+use Mesour\DataGrid\NetteDbDataSource;
 
 $container = require_once __DIR__ . '/../bootstrap.php';
 
-class NetteDataSource extends \Tester\TestCase {
+class NetteDataSource extends \Test\DataSourceTestCase {
 
 	CONST FULL_USER_COUNT = 20;
 
-	private $database;
+	/**
+	 * @var \Nette\Database\Context
+	 */
+	private $db;
 
-	public function __construct(Nette\Database\Context $database) {
-		$this->database = $database;
+	public function __construct(Nette\DI\Container $container) {
+		parent::__construct($container);
+		$this->db = $this->getByType('Nette\Database\Context');
 	}
 
 	public function testTotalCount() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
-		Assert::same(self::FULL_USER_COUNT, $source->getTotalCount());
+		$this->matchTotalCount($source);
 	}
 
 	public function testLimit() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
-		$source->applyLimit(5);
-
-		Assert::count(5, $source->fetchAll());
-		Assert::count(self::FULL_USER_COUNT, $source->fetchFullData());
-		Assert::count(self::FULL_USER_COUNT, $source->fetchAllForExport());
-		Assert::same(self::FULL_USER_COUNT, $source->getTotalCount());
-		Assert::same(self::FULL_USER_COUNT, $source->count());
+		$this->matchLimit($source);
 	}
 
 	public function testOffset() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
-		$source->applyLimit(5, 2);
-
-		$all_data = $source->fetchAll();
-		$first_user = reset($all_data);
-
-		Assert::count(5, $all_data);
-		Assert::count(self::FULL_USER_COUNT, $source->fetchFullData());
-		Assert::count(self::FULL_USER_COUNT, $source->fetchAllForExport());
-		Assert::equal('3', (string) $first_user['user_id']);
-		Assert::same(self::FULL_USER_COUNT, $source->getTotalCount());
-		Assert::same(self::FULL_USER_COUNT, $source->count());
+		$this->matchOffset($source);
 	}
 
 	public function testWhere() {
-		$source = new NetteDbDataSource($this->database->table('user'));
+		$source = new NetteDbDataSource($this->db->table('user'));
 
 		$source->where('action = ?', 1);
 
-		Assert::count(10, $source->fetchAll());
-		Assert::count(self::FULL_USER_COUNT, $source->fetchFullData());
-		Assert::count(10, $source->fetchAllForExport());
-		Assert::same(self::FULL_USER_COUNT, $source->getTotalCount());
-		Assert::same(10, $source->count());
+		$this->matchWhere($source);
 	}
 
-	public function testWhereAssoc() {
-		$source = new NetteDbDataSource($this->database->table('page'));
+	public function testEmpty() {
+		$source = new NetteDbDataSource($this->db->table('empty'));
 
-		$source->where('action = ?', 1);
+		$this->matchEmpty($source);
+	}
 
+	public function testCheckers() {
+		$source = new NetteDbDataSource($this->db->table('user'));
 
+		$this->matchCheckers($source);
+	}
+
+	public function testCustom() {
+		$source = new NetteDbDataSource($this->db->table('user'));
+
+		$this->matchCustom($source);
+	}
+
+	public function testCustomOr() {
+		$source = new NetteDbDataSource($this->db->table('user'));
+
+		$this->matchCustomOr($source);
 	}
 
 }
 
-$test = new NetteDataSource($container->getByType('Nette\Database\Context'));
+$test = new NetteDataSource($container);
 $test->run();

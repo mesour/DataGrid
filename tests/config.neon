@@ -9,9 +9,8 @@ parameters:
 
 nette:
 	database:
-		sqlite:
+		pdo:
 			dsn: sqlite:%database.sqlite.file%
 
 services:
-	ndb_sqlite: @nette.database.sqlite
 	dibi_sqlite: DibiConnection(%database.sqlite%)

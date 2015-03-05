@@ -2,6 +2,9 @@
 
 namespace Mesour\DataGrid;
 
+use \Nette\Database\Table\Selection,
+    \Nette\Utils;
+
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
@@ -30,7 +33,7 @@ class NetteDbDataSource implements IDataSource {
 	/**
 	 * @var integer
 	 */
-	private $offset;
+	private $offset = 0;
 
 	private $total_count = 0;
 
@@ -39,7 +42,7 @@ class NetteDbDataSource implements IDataSource {
 	 *
 	 * @param \Nette\Database\Table\Selection $nette_table
 	 */
-	public function __construct(\Nette\Database\Table\Selection $nette_table) {
+	public function __construct(Selection $nette_table) {
 		$this->nette_table = $nette_table;
 		$this->total_count = $nette_table->count('*');
 	}
@@ -86,7 +89,9 @@ class NetteDbDataSource implements IDataSource {
 	 * @return Integer
 	 */
 	public function count() {
-		return $this->getSelection()->count('*');
+		$count = $this->getSelection()->count('*');
+		$to_end = $count - ($this->offset + $this->limit);
+		return !is_null($this->limit) && $this->limit < $count ? ($to_end < $this->limit ? $to_end : $this->limit) : $count;
 	}
 
 	private function getSelection($limit = TRUE, $where = TRUE) {
@@ -239,7 +244,7 @@ class NetteDbDataSource implements IDataSource {
 		foreach ($selection as $data) {
 			$current_data = $data->toArray();
 			foreach ($current_data as $key => $val) {
-				if ($val instanceof \Nette\Utils\DateTime) {
+				if ($val instanceof Utils\DateTime) {
 					$current_data[$key] = $val->format($date_format);
 				}
 			}
@@ -268,7 +273,7 @@ class NetteDbDataSource implements IDataSource {
 	 */
 	public function fetch() {
 		if ($this->total_count > 0) {
-			return $this->getSelection()->limit(1, 0)->fetch()->toArray();
+			return $this->getSelection(FALSE, FALSE)->limit(1, 0)->fetch()->toArray();
 		} else {
 			return array();
 		}
