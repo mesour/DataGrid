@@ -63,6 +63,8 @@ class BasicGrid extends BaseGrid {
 
 	public $onRenderHeader = array();
 
+	public $onRenderBody = array();
+
 	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 		new Extensions\Ordering($this, 'ordering');
@@ -304,7 +306,7 @@ class BasicGrid extends BaseGrid {
 		}
 
 		$header = $this->rendererFactory->createHeader();
-		$header->setTBodyAttributes(array('class' => 'grid-header'));
+		$header->setTHeadAttributes(array('class' => 'grid-header'));
 		foreach ($this->getColumns() as $column) {
 			$header->addCell($this->rendererFactory->createHeaderCell($column));
 		}
@@ -334,6 +336,7 @@ class BasicGrid extends BaseGrid {
 				}
 			}
 		}
+		$this->onRenderBody($body);
 		$table->setBody($body);
 		return $table;
 	}

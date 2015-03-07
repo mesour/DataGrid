@@ -41,7 +41,7 @@ class GridTree extends ExtendedGrid {
 		$table = parent::createBody($table_class);
 
 		$header = $this->rendererFactory->createHeader();
-		$header->setAttributes(array('class' => 'grid-header'));
+		$header->setTHeadAttributes(array('class' => 'grid-header'));
 		foreach ($this->getColumns() as $column) {
 			$header->addCell($this->rendererFactory->createHeaderCell($column));
 		}
@@ -66,6 +66,7 @@ class GridTree extends ExtendedGrid {
 				$this->addTreeRow($body, $rowData, $data);
 			}
 		}
+		$this->onRenderBody($body);
 		$table->setBody($body);
 		return $table;
 	}

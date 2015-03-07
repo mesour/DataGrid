@@ -19,7 +19,7 @@ abstract class Header extends Attributes {
 		$this->cells[] = $cell;
 	}
 
-	public function setTBodyAttributes(array $header_attributes) {
+	public function setTHeadAttributes(array $header_attributes) {
 		$this->header_attributes = $header_attributes;
 	}
 
