@@ -2,6 +2,7 @@
 
 namespace Mesour\DataGrid\Extensions;
 
+use Mesour\DataGrid\Grid_Exception;
 use \Nette\Application\UI\Form,
     \Nette\Forms\Controls\SubmitButton,
     \Nette\Forms\Rendering\DefaultFormRenderer,
@@ -26,6 +27,12 @@ class Filter extends BaseControl {
 	private $date_format = 'Y-m-d';
 
 	private $js_date_format = 'YYYY-MM-DD';
+
+	/**
+	 * @var array
+	 * @persistent
+	 */
+	public $dropdown = array();
 
 	public function setDateFormat($format) {
 		$this->date_format = $format;
@@ -100,6 +107,11 @@ class Filter extends BaseControl {
 			$this->template->js_date = $this->js_date_format;
 			$this->template->settings = $this->settings;
 
+			if(!isset($this->getSession()->dropdown)) {
+				$this->getSession()->dropdown = FALSE;
+			}
+			$this->template->opened_dropdown = $this->presenter->isAjax() ? $this->getSession()->dropdown : FALSE;
+
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/Filter.latte');
 		} else {
 			$this->template->filter_form = $this->filter_form;
@@ -129,6 +141,18 @@ class Filter extends BaseControl {
 				$this->settings = array();
 				$this->getSession()->settings = array();
 			}
+		}
+	}
+
+	public function handleDropDown() {
+		if(!isset($this->getSession()->dropdown)) {
+			$this->getSession()->dropdown = FALSE;
+		}
+
+		if($this->dropdown['opened']) {
+			$this->getSession()->dropdown = $this->dropdown['id'];
+		} else {
+			$this->getSession()->dropdown = FALSE;
 		}
 	}
 

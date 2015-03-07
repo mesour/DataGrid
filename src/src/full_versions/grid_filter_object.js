@@ -447,6 +447,11 @@
                 .trigger('change', true);
         };
     };
+    var applyDropDown = function(gridName, href, filterData) {
+        if(filterData !== '') {
+            $.get(mesour.getUrlWithParam(gridName, href, 'filter', 'dropdown', filterData));
+        }
+    };
     var Dropdown = function (element, name, filter) {
         var _this = this;
 
@@ -468,6 +473,10 @@
 
         this.create = function(gridData, isAgain) {
             create(gridData, isAgain);
+        };
+
+        var apply = function(open) {
+            applyDropDown(filter.getName(), filter.getDropDownLink(), open);
         };
 
         create = function(gridData, isAgain) {
@@ -643,15 +652,35 @@
             }
         };
 
+        this.toggle = function() {
+            if(element.hasClass('open')) {
+                _this.close();
+            } else {
+                _this.open();
+            }
+        };
+
+        this.open = function() {
+            element.addClass('open');
+            apply({
+                id: _this.getName(),
+                opened: 1
+            });
+        };
+
+        this.close = function() {
+            _this.update();
+            element.removeClass('open');
+            apply({
+                id: _this.getName(),
+                opened: 0
+            });
+        };
+
         element.children('button').on('click', function(e) {
             e.preventDefault();
             filter.closeAll(element);
-            if(element.hasClass('open')) {
-                _this.update();
-                element.removeClass('open');
-            } else {
-                element.addClass('open');
-            }
+            _this.toggle(element);
         });
 
         element.find('.reset-filter').on({
@@ -672,7 +701,7 @@
         element.find('.close-filter').on('click', function(e) {
             e.preventDefault();
             _this.update();
-            element.removeClass('open');
+            _this.close();
         });
 
         this.save = function() {
@@ -686,7 +715,7 @@
                 _this.unsetValues('checkers');
             }
             //_this.getFilter().filterCheckers();
-            element.removeClass('open');
+            //_this.close();
         };
 
         this.update();
@@ -704,6 +733,7 @@
         var valuesInput = element.find('[data-filter-values]');
         var modal = element.find('.grid-filter');
         var applyButton = element.find('.apply-filter');
+        var dropDownLink = element.attr('data-dropdown-link');
 
         this.apply = function() {
             applyFilter(gridName, applyButton.attr("data-href"), valuesInput.val());
@@ -715,6 +745,10 @@
 
         this.getName = function () {
             return gridName;
+        };
+
+        this.getDropDownLink = function() {
+            return dropDownLink;
         };
 
         this.getFilterModal = function() {
