@@ -916,4 +916,17 @@
     $(document).on('ready', function () {
         init();
     });
+    $(window).on('ajaxComplete', function () {
+        $('.data-grid-filter').each(function () {
+            var $this = $(this),
+                name = $this.closest('.panel').attr('data-grid');
+            var filter = $this.data('grid-filter');
+            $.each(filter.getDropdowns(), function(key,dropdown) {
+                dropdown.destroy();
+                dropdown.create();
+                dropdown.update();
+                dropdown.getFilter().filterCheckers()
+            });
+        });
+    });
 })(jQuery);
