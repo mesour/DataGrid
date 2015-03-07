@@ -2,7 +2,8 @@
 
 namespace Mesour\DataGrid;
 
-use \Mesour\ArrayManage\Searcher\Select;
+use \Mesour\ArrayManage\Searcher\Select,
+    \Mesour\ArrayManage\Searcher\Condition;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -29,12 +30,15 @@ class ArrayDataSource implements IDataSource {
 	 */
 	private $full_select;
 
+	private $data_arr = array();
+
 	/**
 	 * Create instance
 	 *
 	 * @param Array $data
 	 */
 	public function __construct(array $data) {
+		$this->data_arr = $data;
 		$this->select = new Select($data);
 		$this->export_select = clone $this->select;
 		$this->full_select = clone $this->select;
@@ -98,29 +102,29 @@ class ArrayDataSource implements IDataSource {
 	private function customFilter($how) {
 		switch ($how) {
 			case 'equal_to';
-				return \Mesour\ArrayManage\Searcher\Condition::EQUAL;
+				return Condition::EQUAL;
 			case 'not_equal_to';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_EQUAL;
+				return Condition::NOT_EQUAL;
 			case 'bigger';
-				return \Mesour\ArrayManage\Searcher\Condition::BIGGER;
+				return Condition::BIGGER;
 			case 'not_bigger';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_BIGGER;
+				return Condition::NOT_BIGGER;
 			case 'smaller';
-				return \Mesour\ArrayManage\Searcher\Condition::SMALLER;
+				return Condition::SMALLER;
 			case 'not_smaller';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_SMALLER;
+				return Condition::NOT_SMALLER;
 			case 'start_with';
-				return \Mesour\ArrayManage\Searcher\Condition::STARTS_WITH;
+				return Condition::STARTS_WITH;
 			case 'not_start_with';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_STARTS_WITH;
+				return Condition::NOT_STARTS_WITH;
 			case 'end_with';
-				return \Mesour\ArrayManage\Searcher\Condition::ENDS_WITH;
+				return Condition::ENDS_WITH;
 			case 'not_end_with';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_ENDS_WITH;
+				return Condition::NOT_ENDS_WITH;
 			case 'equal';
-				return \Mesour\ArrayManage\Searcher\Condition::CONTAINS;
+				return Condition::CONTAINS;
 			case 'not_equal';
-				return \Mesour\ArrayManage\Searcher\Condition::NOT_CONTAINS;
+				return Condition::NOT_CONTAINS;
 			default:
 				throw new Grid_Exception('Unexpected key for custom filtering.');
 		}
@@ -149,13 +153,13 @@ class ArrayDataSource implements IDataSource {
 
 	public function applyCheckers($column_name, array $value, $type) {
 		foreach ($value as $val) {
-			$this->where($column_name, $val, \Mesour\ArrayManage\Searcher\Condition::EQUAL, 'or');
+			$this->where($column_name, $val, Condition::EQUAL, 'or');
 		}
 	}
 
 	public function fetchFullData($date_format = 'Y-m-d') {
 		$output = array();
-		foreach ($this->full_select->fetchAll() as $data) {
+		foreach ($this->data_arr as $data) {
 			foreach ($data as $key => $val) {
 				if ($val instanceof \DateTime) {
 					$data[$key] = $val->format($date_format);
@@ -177,7 +181,8 @@ class ArrayDataSource implements IDataSource {
 	 * @return Array
 	 */
 	public function fetch() {
-		return $this->select->fetch();
+		$data = $this->select->fetch();
+		return !$data ? array() : $data;
 	}
 
 	public function getPrimaryKey() {

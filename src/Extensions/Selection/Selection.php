@@ -26,6 +26,11 @@ class Selection extends BaseControl {
 
 	private $enabled = FALSE;
 
+	/**
+	 * @var Column\Selection
+	 */
+	private $selection;
+
 	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 		$this->links = new SelectionLinks($this);
@@ -48,12 +53,13 @@ class Selection extends BaseControl {
 
 	public function setPrimaryKey($primary_key) {
 		$this->primary_key = $primary_key;
+		$this->selection = new Column\Selection(array(
+		    Column\Selection::ID => $this->primary_key
+		));
 	}
 
 	public function getSelectionColumn() {
-		return new Column\Selection(array(
-		    Column\Selection::ID => $this->primary_key
-		));
+		return $this->selection;
 	}
 
 	public function getTranslator() {

@@ -2,6 +2,7 @@
 
 namespace Mesour\DataGrid\Column;
 
+use Mesour\DataGrid\Extensions\SelectionHelper;
 use \Nette\Utils\Html;
 
 /**
@@ -13,11 +14,34 @@ class Selection extends Base {
 	/**
 	 * Possible option key
 	 */
-	const ID = 'id';
+	const ID = 'id',
+	    HELPERS = 'helpers';
 
 	public function setId($id) {
 		$this->option[self::ID] = $id;
 		return $this;
+	}
+
+	/**
+	 * @param $name
+	 * @param $value
+	 * @return $this
+	 */
+	public function addHelper($name, $value) {
+		$helper = new SelectionHelper($name, $value);
+		$this->option[self::HELPERS][] = $helper;
+		return $this;
+	}
+
+	public function addDivider() {
+		$this->option[self::HELPERS][] = 'divider';
+		return $this;
+	}
+
+	protected function setDefaults() {
+		return array_merge(parent::setDefaults(), array(
+		    self::HELPERS => array()
+		));
 	}
 
 	public function getHeaderAttributes() {
@@ -38,8 +62,21 @@ class Selection extends Base {
 		$button->add(Html::el('span', array('class' => 'caret')));
 
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'role' => 'menu'));
-		//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'active'))->setText('Select active pages')));
-		//$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'unactive'))->setText('Select unactive pages')));
+		foreach ($this->option[self::HELPERS] as $i => $helper) {
+			if($helper instanceof SelectionHelper) {
+				if(!is_null($this->getTranslator())) {
+					$helper->setTranslator($this->getTranslator());
+				}
+				$a = Html::el('a', array('href' => '#', 'data-select' => $helper->getValue()));
+				$a->setText($helper->getName());
+				$ul->add(Html::el('li')->add($a));
+			} else {
+				$ul->add(Html::el('li', array('class' => 'divider')));
+			}
+			if($i === count($this->option[self::HELPERS])-1) {
+				$ul->add(Html::el('li', array('class' => 'divider')));
+			}
+		}
 		$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText($this->grid['translator']->translate('Inverse selection'))));
 		$div->add($ul);
 

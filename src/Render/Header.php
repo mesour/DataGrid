@@ -6,24 +6,21 @@ namespace Mesour\DataGrid\Render;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Header {
+abstract class Header extends Attributes {
 
-	/**
-	 * @var array
-	 */
-	protected $attributes = array();
+	protected $header_attributes = array();
 
 	/**
 	 * @var array
 	 */
 	protected $cells = array();
 
-	public function setAttributes(array $attributes = array()) {
-		$this->attributes = $attributes;
-	}
-
 	public function addCell(HeaderCell $cell) {
 		$this->cells[] = $cell;
+	}
+
+	public function setTHeadAttributes(array $header_attributes) {
+		$this->header_attributes = $header_attributes;
 	}
 
 	abstract public function create();

@@ -59,6 +59,12 @@ class BasicGrid extends BaseGrid {
 	 */
 	public $onSort = array();
 
+	public $onRenderRow = array();
+
+	public $onRenderHeader = array();
+
+	public $onRenderBody = array();
+
 	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
 		new Extensions\Ordering($this, 'ordering');
@@ -232,11 +238,20 @@ class BasicGrid extends BaseGrid {
 	}
 
 	/**
+	 * @return Column\Selection
+	 */
+	public function getSelectionColumn() {
+		if ($this['selection']->isEnabled()) {
+			return $this['selection']->getSelectionColumn();
+		}
+	}
+
+	/**
 	 * Must called before create body
 	 */
 	protected function beforeCreate() {
 		if ($this['selection']->isEnabled()) {
-			$this->column_arr[-1] = $this['selection']->getSelectionColumn();
+			$this->column_arr[-1] = $this->getSelectionColumn();
 		}
 		if (isset($this['sortable'])) {
 			$this->column_arr[-2] = new Column\Sortable();
@@ -300,10 +315,11 @@ class BasicGrid extends BaseGrid {
 		}
 
 		$header = $this->rendererFactory->createHeader();
-		$header->setAttributes(array('class' => 'grid-header'));
+		$header->setTHeadAttributes(array('class' => 'grid-header'));
 		foreach ($this->getColumns() as $column) {
 			$header->addCell($this->rendererFactory->createHeaderCell($column));
 		}
+		$this->onRenderHeader($header);
 		$table->setHeader($header);
 
 		$body = $this->rendererFactory->createBody();
@@ -329,6 +345,7 @@ class BasicGrid extends BaseGrid {
 				}
 			}
 		}
+		$this->onRenderBody($body);
 		$table->setBody($body);
 		return $table;
 	}
@@ -347,7 +364,7 @@ class BasicGrid extends BaseGrid {
 		$cell = $this->rendererFactory->createCell($columns_count, new Column\SubItem(array(
 		    Column\SubItem::TEXT => $this['subitem']->getItem($name)->getDescription()
 		)));
-		$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+		$row->setAttribute('class', 'no-sort ' . count($this->getColumns()));
 		$row->addCell($cell);
 		$body->addRow($row);
 	}
@@ -367,7 +384,7 @@ class BasicGrid extends BaseGrid {
 		    Column\SubItem::TEXT => $content
 		)));
 		$row = $this->rendererFactory->createRow($rowData);
-		$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+		$row->setAttribute('class', 'no-sort ' . count($this->getColumns()));
 		$row->addCell($cell);
 
 		$_row = $this->rendererFactory->createRow($rowData);
@@ -377,7 +394,7 @@ class BasicGrid extends BaseGrid {
 		$_cell = $this->rendererFactory->createCell($columns_count, $description);
 		$_row->addCell($this->rendererFactory->createCell(1, $column));
 		$_row->addCell($_cell);
-		$_row->addAttribute('class', 'no-sort');
+		$_row->setAttribute('class', 'no-sort');
 		$body->addRow($_row);
 		$body->addRow($row);
 	}
@@ -403,7 +420,7 @@ class BasicGrid extends BaseGrid {
 			}
 
 			$cell = $this->rendererFactory->createCell($columns_count, $empty_column);
-			$row->addAttribute('class', 'no-sort ' . count($this->getColumns()));
+			$row->setAttribute('class', 'no-sort ' . count($this->getColumns()));
 			$row->addCell($cell);
 		} else {
 			foreach ($this->getColumns() as $column) {
@@ -411,6 +428,7 @@ class BasicGrid extends BaseGrid {
 			}
 
 		}
+		$this->onRenderRow($row, $rowData);
 		$body->addRow($row);
 		return $row;
 	}

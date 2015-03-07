@@ -8,12 +8,7 @@ use Mesour\DataGrid\Column;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Row {
-
-	/**
-	 * @var array
-	 */
-	protected $attributes = array();
+abstract class Row extends Attributes {
 
 	/**
 	 * @var array
@@ -29,14 +24,6 @@ abstract class Row {
 
 	public function __construct($rowData) {
 		$this->rowData = $rowData;
-	}
-
-	public function setAttributes(array $attributes = array()) {
-		$this->attributes = $attributes;
-	}
-
-	public function addAttribute($key, $value) {
-		$this->attributes[$key] = $value;
 	}
 
 	public function addCell(Cell $cell) {
