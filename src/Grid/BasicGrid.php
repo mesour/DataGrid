@@ -238,11 +238,20 @@ class BasicGrid extends BaseGrid {
 	}
 
 	/**
+	 * @return Column\Selection
+	 */
+	public function getSelectionColumn() {
+		if ($this['selection']->isEnabled()) {
+			return $this['selection']->getSelectionColumn();
+		}
+	}
+
+	/**
 	 * Must called before create body
 	 */
 	protected function beforeCreate() {
 		if ($this['selection']->isEnabled()) {
-			$this->column_arr[-1] = $this['selection']->getSelectionColumn();
+			$this->column_arr[-1] = $this->getSelectionColumn();
 		}
 		if (isset($this['sortable'])) {
 			$this->column_arr[-2] = new Column\Sortable();
