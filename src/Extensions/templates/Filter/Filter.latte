@@ -1,7 +1,7 @@
 {snippet filter}
 <div class="panel panel-default" data-grid="{$control->parent->getName()}">
 	<div class="panel-heading">{_('Filter')}</div>
-	<div class="panel-body data-grid-filter">
+	<div class="panel-body data-grid-filter" data-dropdown-link="{link dropDown!}">
 		<script>
 			mesour.dataGrid[{$control->parent->getName()}].gridValues = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
 			mesour.dataGrid[{$control->parent->getName()}].phpFilterDate = {$php_date};

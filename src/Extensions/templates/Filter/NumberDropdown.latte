@@ -1,4 +1,4 @@
-<div class="dropdown" data-filter="{$column->getId()}">
+<div class="dropdown{if $opened_dropdown === $column->getId()} open{/if}" data-filter="{$column->getId()}">
 	<button class="btn btn-default dropdown-toggle" type="button">
 		<span class="glyphicon glyphicon-ok"></span>
 		{$column->getHeader()}

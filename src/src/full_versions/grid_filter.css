@@ -120,9 +120,7 @@
 .toggle-sub-ul{
     font-size: 10px;
     border: 1px solid #ccc;
-    padding-bottom: 3px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding: 2px 2px 3px 4px;
     cursor: pointer;
 }
 .toggle-sub-ul:hover{
