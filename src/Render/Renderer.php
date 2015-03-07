@@ -8,12 +8,7 @@ use Mesour\DataGrid\Column;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-abstract class Renderer {
-
-	/**
-	 * @var array
-	 */
-	protected $attributes = array();
+abstract class Renderer extends Attributes {
 
 	/**
 	 * @var Header
@@ -24,10 +19,6 @@ abstract class Renderer {
 	 * @var Body
 	 */
 	protected $body;
-
-	public function setAttributes(array $attributes = array()) {
-		$this->attributes = $attributes;
-	}
 
 	public function setBody(Body $body) {
 		$this->body = $body;

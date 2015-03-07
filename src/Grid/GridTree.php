@@ -45,6 +45,7 @@ class GridTree extends ExtendedGrid {
 		foreach ($this->getColumns() as $column) {
 			$header->addCell($this->rendererFactory->createHeaderCell($column));
 		}
+		$this->onRenderHeader($header);
 		$table->setHeader($header);
 
 		$data = $this->getDataSource()->fetchAssoc();
