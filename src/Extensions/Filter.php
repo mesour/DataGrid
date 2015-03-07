@@ -64,7 +64,7 @@ class Filter extends BaseControl {
 	 * @return NULL|Array
 	 */
 	public function getFilterValues() {
-		if (!$this->filter_form) {
+		if (!$this->isAdvanced()) {
 			return NULL;
 		}
 		$this->fixSettingsForForm();
@@ -102,7 +102,7 @@ class Filter extends BaseControl {
 			}
 		}
 
-		if (!$this->filter_form) {
+		if (!$this->isAdvanced()) {
 			$this->template->php_date = $this->date_format;
 			$this->template->js_date = $this->js_date_format;
 			$this->template->settings = $this->settings;
@@ -122,6 +122,10 @@ class Filter extends BaseControl {
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/FilterForm.latte');
 		}
 		$this->template->render();
+	}
+
+	public function isAdvanced() {
+		return !$this->filter_form ? FALSE : TRUE;
 	}
 
 	public function handleSubmitForm() {
