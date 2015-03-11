@@ -43,7 +43,7 @@ class Filter extends BaseControl {
 		if (!isset($filter_form['reset']) || !isset($filter_form['filter'])) {
 			throw new Grid_Exception('Filter form component have required submit buttons with names "reset" and "filter".');
 		}
-		if (!$filter_form['reset'] instanceof SubmitButton || !$filter_form['reset'] instanceof SubmitButton) {
+		if (!$filter_form['reset'] instanceof SubmitButton || !$filter_form['filter'] instanceof SubmitButton) {
 			throw new Grid_Exception('Filter form\'s components "reset" and "filter" must be instanceof \Nette\Forms\Controls\SubmitButton.');
 		}
 		if (is_null($template) && $filter_form->getRenderer() instanceof DefaultFormRenderer) {
