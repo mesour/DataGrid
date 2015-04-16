@@ -91,6 +91,7 @@ abstract class BaseGrid extends Control {
 	public function setName($name) {
 		$this->name = $name;
 		$this->grid_name = NULL;
+		return $this;
 	}
 
 	static public function disableJsDraw() {
@@ -148,6 +149,7 @@ abstract class BaseGrid extends Control {
 	 */
 	public function setLocale($languageFile, $customDir = null) {
 		$this["translator"]->setLocale($languageFile, $customDir);
+		return $this;
 	}
 
 	public function fetchAll() {
@@ -189,6 +191,7 @@ abstract class BaseGrid extends Control {
 		} else {
 			$this->dataSource->setPrimaryKey($this->primary_key);
 		}
+		return $this;
 	}
 
 	public function setPrimaryKey($primary_key) {
@@ -196,6 +199,7 @@ abstract class BaseGrid extends Control {
 		if($this->dataSource) {
 			$this->dataSource->setPrimaryKey($primary_key);
 		}
+		return $this;
 	}
 
 	public function getPrimaryKey() {
