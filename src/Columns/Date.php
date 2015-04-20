@@ -67,6 +67,9 @@ class Date extends Filter {
 	}
 
 	public function getBodyContent($data) {
+        if(!$data[$this->option[self::ID]]) {
+            return '-';
+        }
 		if (is_numeric($data[$this->option[self::ID]])) {
 			$date = new \DateTime();
 			$date->setTimestamp($data[$this->option[self::ID]]);
