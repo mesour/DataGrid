@@ -78,6 +78,7 @@
                                             lineId: line_id,
                                             columnName: column_name,
                                             oldValue: old_value,
+                                            dataValue: column.attr('data-value'),
                                             newValue: input.val()
                                         }
                                     })).complete(function(){

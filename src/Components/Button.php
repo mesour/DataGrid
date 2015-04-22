@@ -23,6 +23,7 @@ class Button extends Setting {
 	    ICON = 'icon',
 	    ICON_COLOR = 'icon_color',
 	    ICON_CLASSES = 'icon_classes',
+        ICON_POSITION = 'icon_position',
 	    CONFIRM = 'confirm',
 	    TEXT = 'text',
 	    TITLE = 'title',
@@ -69,6 +70,15 @@ class Button extends Setting {
 		$this->option[self::CLASS_NAME] = $class_name;
 		return $this;
 	}
+
+    /**
+     * @param $position string (left|right)
+     * @return $this
+     */
+    public function setIconPosition($position) {
+        $this->option[self::ICON_POSITION] = $position === 'right' ? 'right' : 'left';
+        return $this;
+    }
 
 	public function setButtonClasses($button_classes) {
 		$this->option[self::BUTTON_CLASSES] = $button_classes;
@@ -137,6 +147,7 @@ class Button extends Setting {
 	protected function setDefaults() {
 		return array(
 		    self::TYPE => 'btn-primary',
+		    self::ICON_POSITION => 'left',
 		    self::TEXT => ''
 		);
 	}
@@ -164,10 +175,7 @@ class Button extends Setting {
 			$class .= $this->option[self::TYPE];
 		}
 
-
 		$button = Html::el('a', array('class' => $class));
-		$button->setText($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT]);
-
 		if (array_key_exists(self::CONFIRM, $this->option)) {
 			$button->addAttributes(array(
 			    'onclick' => "return confirm('" . addslashes($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::CONFIRM]) : $this->option[self::CONFIRM]) . "');"
@@ -196,6 +204,11 @@ class Button extends Setting {
 
 		}
 
+        $translated_text = $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
+        if($this->option[self::ICON_POSITION] === 'right') {
+            $button->add($translated_text);
+        }
+
 		if ((array_key_exists(self::ICON, $this->option) && is_string($this->option[self::ICON])) || array_key_exists(self::ICON_CLASSES, $this->option)) {
 			if (isset($this->option[self::ICON_CLASSES])) {
 				$attributes = array('class' => $this->option[self::ICON_CLASSES]);
@@ -205,8 +218,14 @@ class Button extends Setting {
 					$attributes['style'] = 'color:' . $this->option[self::ICON_COLOR];
 				}
 			}
-			$button->add(Html::el('b', $attributes));
+            $button->add(Html::el('b', $attributes));
+            $button->add(' ');
 		}
+
+        if($this->option[self::ICON_POSITION] === 'left') {
+            $button->add($translated_text);
+        }
+
 		return $button;
 	}
 

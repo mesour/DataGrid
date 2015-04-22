@@ -158,6 +158,8 @@ class Filter extends BaseControl {
 		} else {
 			$this->getSession()->dropdown = FALSE;
 		}
+		$this->presenter->terminate();
+		exit();
 	}
 
 	public function handleApplyDefaultFilter() {
