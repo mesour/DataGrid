@@ -73,6 +73,8 @@ class Date extends Filter {
 		if (is_numeric($data[$this->option[self::ID]])) {
 			$date = new \DateTime();
 			$date->setTimestamp($data[$this->option[self::ID]]);
+		} elseif ($data[$this->option[self::ID]] instanceof \DateTime) {
+			$date = $data[$this->option[self::ID]];
 		} else {
 			$date = new \DateTime($data[$this->option[self::ID]]);
 		}
