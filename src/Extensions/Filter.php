@@ -110,7 +110,6 @@ class Filter extends BaseControl {
 			if(!isset($this->getSession()->dropdown)) {
 				$this->getSession()->dropdown = FALSE;
 			}
-			$this->template->opened_dropdown = $this->presenter->isAjax() ? $this->getSession()->dropdown : FALSE;
 
 			$this->template->setFile(dirname(__FILE__) . '/templates/Filter/Filter.latte');
 		} else {
@@ -146,20 +145,6 @@ class Filter extends BaseControl {
 				$this->getSession()->settings = array();
 			}
 		}
-	}
-
-	public function handleDropDown() {
-		if(!isset($this->getSession()->dropdown)) {
-			$this->getSession()->dropdown = FALSE;
-		}
-
-		if($this->dropdown['opened']) {
-			$this->getSession()->dropdown = $this->dropdown['id'];
-		} else {
-			$this->getSession()->dropdown = FALSE;
-		}
-		$this->presenter->terminate();
-		exit();
 	}
 
 	public function handleApplyDefaultFilter() {

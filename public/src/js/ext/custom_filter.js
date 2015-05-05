@@ -1,3 +1,8 @@
+/**
+ * Mesour DataGrid - ext/custom_filter.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($) {
     $(document).ready(function() {
         $('.custom-filter-form form').each(function() {

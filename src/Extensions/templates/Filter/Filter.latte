@@ -1,12 +1,12 @@
 {snippet filter}
 <div class="panel panel-default" data-grid="{$control->parent->getName()}">
 	<div class="panel-heading">{_('Filter')}</div>
-	<div class="panel-body data-grid-filter" data-dropdown-link="{link dropDown!}">
+	<div class="panel-body data-grid-filter">
 		<script>
-			mesour.dataGrid[{$control->parent->getName()}].gridValues = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
-			mesour.dataGrid[{$control->parent->getName()}].phpFilterDate = {$php_date};
-			mesour.dataGrid[{$control->parent->getName()}].jsFilterDate = {$js_date};
-			mesour.gridTranslates = {
+			mesour.dataGrid.list[{$control->parent->getName()}].gridValues = {=json_encode($control->parent->getDataSource()->fetchFullData($php_date))|noescape};
+			mesour.dataGrid.list[{$control->parent->getName()}].phpFilterDate = {$php_date};
+			mesour.dataGrid.list[{$control->parent->getName()}].jsFilterDate = {$js_date};
+			mesour.dataGrid.translates = {
 				months: {
 					1: {_('January')},
 					2: {_('February')},

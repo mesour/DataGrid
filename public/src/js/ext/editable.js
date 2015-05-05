@@ -1,3 +1,8 @@
+/**
+ * Mesour DataGrid - ext/editable.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($) {
     var isInEdit = false,
         isFloat = function (n) {
