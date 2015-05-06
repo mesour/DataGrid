@@ -34,6 +34,7 @@
 				{include DateDropdown.latte column => $column}
 			{/if}
 		{/foreach}
+		<a href="#" name="_reset" class="btn btn-danger button red float-l full-reset">{_('Reset')}</a>
 		<input type="hidden" class="apply-filter" data-href="{link applyDefaultFilter! settings => array()}">
 		<div class="grid-filter modal-dialog">
 			<div class="modal-content">

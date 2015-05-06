@@ -771,6 +771,7 @@
         var modal = element.find('.grid-filter');
         var applyButton = element.find('.apply-filter');
         var dropDownLink = element.attr('data-dropdown-link');
+        var resetButton = element.find('.full-reset');
 
         this.apply = function() {
             applyFilter(gridName, applyButton.attr("data-href"), valuesInput.val());
@@ -923,6 +924,18 @@
                 dropdowns[x].update();
             }
         };
+
+        resetButton.on('click', function(e) {
+            e.preventDefault();
+            $.each(_this.getDropdowns(), function(key, dropdown) {
+                dropdown.unsetValues('custom');
+                dropdown.unsetValues('priority');
+                dropdown.unsetValues('checkers');
+                dropdown.update();
+                dropdown.getFilter().filterCheckers();
+            });
+            _this.apply();
+        });
 
         element.find('[data-filter]').each(function () {
             var $this = $(this),
