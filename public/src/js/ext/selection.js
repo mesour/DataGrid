@@ -37,7 +37,7 @@
         button.html('<b class=\"glyphicon glyphicon-minus\"></b>');
     };
 
-    mesour.on.ready('grid-ready-selection', function() {
+    mesour.on.live('grid-ready-selection', function() {
         $('.checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid');
 
         $(options.checkboxSelectorIdent + ' ul.' + options.dropDownMenuClass + ' li a').off('click.grid');
