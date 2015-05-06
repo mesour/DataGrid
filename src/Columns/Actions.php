@@ -36,6 +36,15 @@ class Actions extends Base {
 		return $button;
 	}
 
+    /**
+     * Returns array of added dropDowns and buttons
+     *
+     * @return array
+     */
+    public function getActions() {
+        return $this->option[self::ACTIONS];
+    }
+
 	protected function setDefaults() {
 		return array(
 			self::ACTIONS => array()

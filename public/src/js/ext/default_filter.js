@@ -1,3 +1,8 @@
+/**
+ * Mesour DataGrid - ext/default_filter.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($){
     if (!Array.prototype.indexOf) {
         Array.prototype.indexOf = function(obj, start) {
@@ -449,7 +454,9 @@
     };
     var applyDropDown = function(gridName, href, filterData) {
         if(filterData !== '') {
-            $.get(mesour.getUrlWithParam(gridName, href, 'filter', 'dropdown', filterData));
+            var name = filterData.id;
+            var opened = filterData.opened;
+            mesour.cookie(gridName+'-'+name, opened);
         }
     };
     var Dropdown = function (element, name, filter) {
@@ -458,7 +465,8 @@
         var type = element.attr('data-type');
 
         var customFilter,
-            checkers;
+            checkers,
+            mouseIn = false;
 
         var create = function(){};
 
@@ -497,7 +505,7 @@
             if(!type) {
                 var ul = element.find('.box-inner').find('ul');
                 for(var y in values) {
-                    if(!values[y].val) continue;
+                    if(!values[y].val && Number(values[y].val) !== 0) continue;
 
                     var li = $('<li>'),
                         id = name+(typeof values[y].val.replace === 'function' ? values[y].val.replace(' ', '') : values[y].val);
@@ -545,7 +553,7 @@
                     year_li.append('<input type="checkbox" class="checker">');
                     year_li.append('&nbsp;');
                     year_li.append('<label>'+years[a]+'</label>');
-                    year_li.append('<span class="close-all">(<a href="#">'+mesour.gridTranslates.closeAll+'</a>)</span>');
+                    year_li.append('<span class="close-all">(<a href="#">'+mesour.dataGrid.translates.closeAll+'</a>)</span>');
                     var month_ul = $('<ul class="toggled-sub-ul">');
                     year_li.append(month_ul);
 
@@ -557,7 +565,7 @@
                         month_li.append('&nbsp;');
                         month_li.append('<input type="checkbox" class="checker">');
                         month_li.append('&nbsp;');
-                        month_li.append('<label>'+mesour.gridTranslates.months[month[b]]+'</label>');
+                        month_li.append('<label>'+mesour.dataGrid.translates.months[month[b]]+'</label>');
                         month_ul.append(month_li);
                         var days_ul = $('<ul class="toggled-sub-ul">');
                         month_li.append(days_ul);
@@ -653,14 +661,19 @@
         };
 
         this.toggle = function() {
-            if(element.hasClass('open')) {
+            if(_this.isOpened()) {
                 _this.close();
             } else {
                 _this.open();
             }
         };
 
+        this.isOpened = function() {
+            return element.hasClass('open');
+        };
+
         this.open = function() {
+            filter.closeAll(element);
             element.addClass('open');
             apply({
                 id: _this.getName(),
@@ -676,6 +689,30 @@
                 opened: 0
             });
         };
+
+        element.on({
+            mouseenter: function() {
+                mouseIn = true;
+            },
+            mouseleave: function() {
+                mouseIn = false;
+            }
+        });
+
+        $('.grid-filter.modal-dialog').on({
+            mouseenter: function() {
+                mouseIn = true;
+            },
+            mouseleave: function() {
+                mouseIn = false;
+            }
+        });
+
+        $('html').on('click.filter-el-'+name, function() {
+            if(_this.isOpened() && !mouseIn) {
+                _this.close();
+            }
+        });
 
         element.children('button').on('click', function(e) {
             e.preventDefault();
@@ -734,6 +771,7 @@
         var modal = element.find('.grid-filter');
         var applyButton = element.find('.apply-filter');
         var dropDownLink = element.attr('data-dropdown-link');
+        var resetButton = element.find('.full-reset');
 
         this.apply = function() {
             applyFilter(gridName, applyButton.attr("data-href"), valuesInput.val());
@@ -762,16 +800,17 @@
             element.find('.dropdown').each(function() {
                 if(!notThis || $(this)[0] !== notThis[0]) {
                     $(this).removeClass('open');
+                    mesour.cookie(gridName+'-'+$(this).attr('data-filter'), 0);
                 }
             });
         };
 
         this.getData = function () {
-            return mesour.dataGrid[gridName].gridValues;
+            return mesour.dataGrid.list[gridName].gridValues;
         };
 
         this.getPhpDateFormat = function () {
-            return mesour.dataGrid[gridName].phpFilterDate;
+            return mesour.dataGrid.list[gridName].phpFilterDate;
         };
 
         this.getValues = function (name) {
@@ -886,6 +925,18 @@
             }
         };
 
+        resetButton.on('click', function(e) {
+            e.preventDefault();
+            $.each(_this.getDropdowns(), function(key, dropdown) {
+                dropdown.unsetValues('custom');
+                dropdown.unsetValues('priority');
+                dropdown.unsetValues('checkers');
+                dropdown.update();
+                dropdown.getFilter().filterCheckers();
+            });
+            _this.apply();
+        });
+
         element.find('[data-filter]').each(function () {
             var $this = $(this),
                 name = $this.attr('data-filter');
@@ -933,33 +984,23 @@
             dropdowns[name].getFilter().apply();
         });
     };
-    var inited = false,
-        init = function() {
-            if(inited) return;
-            $('.data-grid-filter').each(function () {
-                var $this = $(this),
-                    name = $this.closest('.panel').attr('data-grid');
-                filters[name] = new Filter(name, $this);
-                $this.data('grid-filter', filters[name]);
-            });
-            if($('.data-grid-filter').is('*')) {
-                inited = true;
-            }
-        };
-    init();
-    $(document).on('ready', function () {
-        init();
-    });
-    $(window).on('ajaxComplete', function () {
+    mesour.on.live('grid-filter-default', function() {
         $('.data-grid-filter').each(function () {
             var $this = $(this),
                 name = $this.closest('.panel').attr('data-grid');
             var filter = $this.data('grid-filter');
+            if(!filter) {
+                filters[name] = filter = new Filter(name, $this);
+                $this.data('grid-filter', filter);
+            }
             $.each(filter.getDropdowns(), function(key,dropdown) {
                 dropdown.destroy();
                 dropdown.create();
                 dropdown.update();
-                dropdown.getFilter().filterCheckers()
+                dropdown.getFilter().filterCheckers();
+                if(mesour.cookie(name+'-'+dropdown.getName()) === '1') {
+                    dropdown.open();
+                }
             });
         });
     });

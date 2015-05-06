@@ -19,6 +19,7 @@ class DropDown extends Setting {
 	 */
 	const NAME = 'name',
 	    LINKS = 'links',
+	    DISABLED = 'disabled',
 	    TYPE = 'type',
 	    BUTTON_CLASS_NAME = 'class_name',
 	    SIZE_CLASS = 'size_class';
@@ -81,6 +82,11 @@ class DropDown extends Setting {
 		return $separator;
 	}
 
+    public function setDisabled($disabled = TRUE) {
+        $this->option[self::DISABLED] = $disabled;
+        return $this;
+    }
+
 	public function setButtonClassName($class_name) {
 		$this->option[self::BUTTON_CLASS_NAME] = $class_name;
 		return $this;
@@ -102,6 +108,7 @@ class DropDown extends Setting {
 		    self::LINKS => array(),
 		    self::NAME => 'Actions',
 		    self::BUTTON_CLASS_NAME => '',
+		    self::DISABLED => FALSE,
 		    self::SIZE_CLASS => 'btn-xs'
 		);
 	}
@@ -127,44 +134,53 @@ class DropDown extends Setting {
 		$has_links = FALSE;
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'aria-labelledby' => 'dropdownMenu', 'role' => 'menu'));
 
-		foreach ($this->option[self::LINKS] as $link) {
-			if($link instanceof DropDownLink) {
-				$link->setPresenter($this->presenter);
-				if($this->getTranslator()) {
-					$link->setTranslator($this->getTranslator());
-				}
-				$link->onRender($this->data, $link);
+        if(!$this->option[self::DISABLED]) {
+            foreach ($this->option[self::LINKS] as $link) {
+                if($link instanceof DropDownLink) {
+                    $link->setPresenter($this->presenter);
+                    if($this->getTranslator()) {
+                        $link->setTranslator($this->getTranslator());
+                    }
+                    $link->onRender($this->data, $link);
 
-				$href = $link->create($this->data);
-				if($href === FALSE) {
-					continue;
-				}
-				if (isset($separator)) {
-					$ul->add($separator);
-					unset($separator);
-				}
-				if (isset($header)) {
-					$ul->add($header);
-					unset($header);
-				}
+                    $href = $link->create($this->data);
+                    if($href === FALSE) {
+                        continue;
+                    }
+                    if (isset($separator)) {
+                        $ul->add($separator);
+                        unset($separator);
+                    }
+                    if (isset($header)) {
+                        $ul->add($header);
+                        unset($header);
+                    }
 
-				$ul->add($href);
-				$has_links = TRUE;
-			} elseif($link instanceof DropDownSeparator) {
-				$separator = $link->create($this->data);
-			} elseif($link instanceof DropDownHeader) {
-				if($this->getTranslator()) {
-					$link->setTranslator($this->getTranslator());
-				}
-				$header = $link->create($this->data);
-			}
-		}
-		if ($has_links) {
-			$button = Html::el('button', array('class' => 'btn ' . $this->option[self::TYPE] . ' dropdown-toggle ' . $this->option[self::SIZE_CLASS] . (' ' . $this->option[self::BUTTON_CLASS_NAME]), 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
-			$button->setHtml(($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::NAME]) : $this->option[self::NAME]) . ' <span class="caret"></span>');
-			$container->add($button);
-			$container->add($ul);
-		}
+                    $ul->add($href);
+                    $has_links = TRUE;
+                } elseif($link instanceof DropDownSeparator) {
+                    $separator = $link->create($this->data);
+                } elseif($link instanceof DropDownHeader) {
+                    if($this->getTranslator()) {
+                        $link->setTranslator($this->getTranslator());
+                    }
+                    $header = $link->create($this->data);
+                }
+            }
+        }
+        if(!$has_links) {
+            $this->option[self::DISABLED] = TRUE;
+        }
+
+        $class = 'btn ' . $this->option[self::TYPE] . ' dropdown-toggle ' . $this->option[self::SIZE_CLASS] . (' ' . $this->option[self::BUTTON_CLASS_NAME]);
+        if($this->option[self::DISABLED]) {
+            $class .= ' disabled';
+        }
+        $button = Html::el('button', array('class' => $class, 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
+        $button->setHtml(($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::NAME]) : $this->option[self::NAME]) . ' <span class="caret"></span>');
+        $container->add($button);
+        $container->add($ul);
+
 		return $container;
 	}
 

@@ -29,7 +29,8 @@ class Delete extends Search {
 
 	public function test() {
 		echo '<pre>';
-		echo (new Translator(Translator::DELETE))->translate() . "\n" . $this->translate();
+        $translator = new Translator(Translator::DELETE);
+		echo $translator->translate() . "\n" . $this->translate();
 		echo '</pre>';
 	}
 

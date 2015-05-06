@@ -130,7 +130,7 @@ class Export extends BaseControl {
 			$line_data = array();
 			foreach ($export_columns as $column) {
 				if ($column instanceof Column\IColumn) {
-					$line_data[] = $column->getBodyContent($data, TRUE);
+					$line_data[] =  strip_tags($column->getBodyContent($data, TRUE));
 				} else {
 					if (is_array($column)) {
 						$column_name = key($column);
@@ -140,7 +140,7 @@ class Export extends BaseControl {
 					if ($first && !isset($data[$column_name]) && !is_null($data[$column_name])) {
 						throw new Grid_Exception('Column "' . $column_name . '" does not exist in data.');
 					}
-					$line_data[] = $data[$column_name];
+					$line_data[] = strip_tags($data[$column_name]);
 				}
 			}
 			fputcsv($file, $line_data, $this->delimiter);

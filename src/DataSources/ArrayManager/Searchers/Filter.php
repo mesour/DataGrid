@@ -36,7 +36,8 @@ class Filter extends \FilterIterator {
 	}
 
 	public function translate() {
-		return (new Translator(Translator::WHERE, $this->conditions_and, $this->conditions_or))->translate();
+        $translator = new Translator(Translator::WHERE, $this->conditions_and, $this->conditions_or);
+		return $translator->translate();
 	}
 
 	private function applyConditions($current, $filter) {

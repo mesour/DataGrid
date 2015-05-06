@@ -61,7 +61,8 @@ class Condition {
 	}
 
 	public function translate() {
-		return (new Translator(Translator::CONDITION, $this->matcher))->translate();
+        $translator = new Translator(Translator::CONDITION, $this->matcher);
+		return $translator->translate();
 	}
 
 	private function matchEqual($value, $searched_value) {
