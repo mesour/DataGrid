@@ -36,7 +36,8 @@ class Update extends Search {
 
 	public function test() {
 		echo '<pre>';
-		echo (new Translator(Translator::UPDATE, $this->update_array))->translate() . "\n" . $this->translate();
+        $translator = new Translator(Translator::UPDATE, $this->update_array);
+		echo $translator->translate() . "\n" . $this->translate();
 		echo '</pre>';
 	}
 

@@ -97,7 +97,8 @@ class Select extends Search {
 
 	public function test() {
 		echo '<pre>';
-		$select = (new Translator(Translator::SELECT, $this->column_array, $this->limit, $this->offset, $this->ordering))->translate();
+        $translator = new Translator(Translator::SELECT, $this->column_array, $this->limit, $this->offset, $this->ordering);
+		$select = $translator->translate();
 		echo str_replace('{WHERE}', $this->translate(), $select);
 		echo '</pre>';
 	}
