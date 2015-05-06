@@ -505,7 +505,7 @@
             if(!type) {
                 var ul = element.find('.box-inner').find('ul');
                 for(var y in values) {
-                    if(!values[y].val) continue;
+                    if(!values[y].val && Number(values[y].val) !== 0) continue;
 
                     var li = $('<li>'),
                         id = name+(typeof values[y].val.replace === 'function' ? values[y].val.replace(' ', '') : values[y].val);

@@ -6,7 +6,7 @@
 
 return array(
     'Date filters'  =>  'Date filters',
-    'Reset filter'  =>  'Reset filter',
+    'Reset'         =>  'Reset',
     'Edit filter'   =>  'Edit filter',
     'Equal to'      =>  'Equal to',
     'Time period'   =>  'Time period',
