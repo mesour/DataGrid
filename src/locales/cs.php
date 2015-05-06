@@ -6,7 +6,7 @@
 
 return array(
     'Date filters'  =>  'Filtry datumu',
-    'Reset filter'  =>  'Vymazat filtr',
+    'Reset'         =>  'Vymazat',
     'Edit filter'   =>  'Upravit filtr',
     'Equal to'      =>  'Rovná se',
     'Time period'   =>  'Časový úsek',

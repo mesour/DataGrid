@@ -1,3 +1,8 @@
+/**
+ * Mesour DataGrid - ext/editable.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($) {
     var isInEdit = false,
         isFloat = function (n) {
@@ -119,13 +124,15 @@
                             input.val($.trim(old_value.replace(separator, '').replace(unit, '')));
                             break;
                         case 'date' :
-                            input.val(old_value);
+                            input.val(!old_value || old_value === '-'?'':old_value);
                             input.bootstrapDatetimepicker({
                                 format: date_format,
                                 useSeconds: true,
+                                focusOnShow: false,
                                 hide: function() {
                                     input.focus();
-                                }
+                                },
+                                useCurrent: false
                             });
                             break;
                         default :

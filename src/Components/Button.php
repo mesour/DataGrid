@@ -27,6 +27,7 @@ class Button extends Setting {
 	    CONFIRM = 'confirm',
 	    TEXT = 'text',
 	    TITLE = 'title',
+        DISABLED = 'disabled',
 	    ATTRIBUTES = 'attributes';
 
 	/**
@@ -115,6 +116,11 @@ class Button extends Setting {
 		return $this;
 	}
 
+    public function setDisabled($disabled = TRUE) {
+        $this->option[self::DISABLED] = $disabled;
+        return $this;
+    }
+
 	public function setAttributes(array $attributes) {
 		$this->option[self::ATTRIBUTES] = $attributes;
 		return $this;
@@ -148,6 +154,7 @@ class Button extends Setting {
 		return array(
 		    self::TYPE => 'btn-primary',
 		    self::ICON_POSITION => 'left',
+		    self::DISABLED => FALSE,
 		    self::TEXT => ''
 		);
 	}
@@ -175,7 +182,7 @@ class Button extends Setting {
 			$class .= $this->option[self::TYPE];
 		}
 
-		$button = Html::el('a', array('class' => $class));
+		$button = Html::el('a');
 		if (array_key_exists(self::CONFIRM, $this->option)) {
 			$button->addAttributes(array(
 			    'onclick' => "return confirm('" . addslashes($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::CONFIRM]) : $this->option[self::CONFIRM]) . "');"
@@ -191,10 +198,12 @@ class Button extends Setting {
 		if (array_key_exists(self::ATTRIBUTES, $this->option) && is_array($this->option[self::ATTRIBUTES])) {
 			foreach ($this->option[self::ATTRIBUTES] as $name => $value) {
 				if ($value instanceof Link) {
-					$output = $this->addLinkAttr($button, $name, $value);
-					if ($output === FALSE) {
-						return Html::el('span');
-					}
+                    if(!$this->option[self::DISABLED]) {
+                        $output = $this->addLinkAttr($button, $name, $value);
+                        if ($output === FALSE) {
+                            $this->option[self::DISABLED] = TRUE;
+                        }
+                    }
 				} else {
 					$button->addAttributes(array(
 					    $name => Link::parseValue($value, $this->data)
@@ -203,6 +212,12 @@ class Button extends Setting {
 			}
 
 		}
+
+        if($this->option[self::DISABLED]) {
+            $class .= ' disabled';
+        }
+
+        $button->addAttributes(array('class' => $class));
 
         $translated_text = $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
         if($this->option[self::ICON_POSITION] === 'right') {

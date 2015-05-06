@@ -26,4 +26,6 @@ abstract class Filter extends BaseOrdering {
 		));
 	}
 
+    abstract function getTemplateFile();
+
 }

@@ -18,6 +18,10 @@ class Text extends Filter {
 	    CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
 
+    public function getTemplateFile() {
+        return 'TextDropdown.latte';
+    }
+
 	public function setCallback($callback) {
 		Callback::check($callback);
 		$this->option[self::CALLBACK] = $callback;

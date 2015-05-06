@@ -1,5 +1,10 @@
+/**
+ * Mesour DataGrid - ext/sortable.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($) {
-    $(document).ready(function() {
+    mesour.on.ready('grid-sortable', function() {
         $('tbody.sortable').sortable({
             disableNesting: 'no-child',
             forcePlaceholderSize: true,

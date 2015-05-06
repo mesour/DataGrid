@@ -1,3 +1,8 @@
+/**
+ * Mesour DataGrid - ext/selection.js
+ *
+ * @author Matous Nemec (mesour.com)
+ */
 (function($) {
     var native_confirm = true;
     var gridConfirm = function(message) {
@@ -32,7 +37,7 @@
         button.html('<b class=\"glyphicon glyphicon-minus\"></b>');
     };
 
-    $(document).ready(function() {
+    mesour.on.live('grid-ready-selection', function() {
         $('.checkbox-selector .dropdown-toggle').find('a.btn').off('click.grid');
 
         $(options.checkboxSelectorIdent + ' ul.' + options.dropDownMenuClass + ' li a').off('click.grid');
