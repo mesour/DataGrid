@@ -19,6 +19,10 @@ class Number extends Filter {
 	    THOUSANDS_SEP = 'thousands_sep',
 	    EDITABLE = 'editable';
 
+    public function getTemplateFile() {
+        return 'NumberDropdown.latte';
+    }
+
 	public function setDecimals($decimals) {
 		$this->option[self::DECIMALS] = $decimals;
 		return $this;

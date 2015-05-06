@@ -16,6 +16,10 @@ class Date extends Filter {
 	const FORMAT = 'format',
 	    EDITABLE = 'editable';
 
+    public function getTemplateFile() {
+        return 'DateDropdown.latte';
+    }
+
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
 		return $this;

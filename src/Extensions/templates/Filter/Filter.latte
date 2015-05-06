@@ -26,12 +26,9 @@
 		</script>
 		{foreach $control->parent->getColumns() as $column}
 			{continueIf $column->hasFiltering() === FALSE}
-			{if $column instanceof \Mesour\DataGrid\Column\Text}
-				{include TextDropdown.latte column => $column}
-			{elseif $column instanceof \Mesour\DataGrid\Column\Number}
-				{include NumberDropdown.latte column => $column}
-			{elseif $column instanceof \Mesour\DataGrid\Column\Date && !$control->parent->getDataSource() instanceof \Mesour\DataGrid\ArrayDataSource}
-				{include DateDropdown.latte column => $column}
+			{if $column instanceof \Mesour\DataGrid\Column\Filter}
+			    {continueIf $column instanceof \Mesour\DataGrid\Column\Date && $control->parent->getDataSource() instanceof \Mesour\DataGrid\ArrayDataSource}
+				{include $column->getTemplateFile() column => $column}
 			{/if}
 		{/foreach}
 		<a href="#" name="_reset" class="btn btn-danger button red float-l full-reset">{_('Reset')}</a>
