@@ -32,7 +32,7 @@ mesour.on._apply = mesour.on._apply ? mesour.on._apply : function(obj) {
     obj.fn = obj.fn ? obj.fn : function() {
         for(var i in obj.arr) {
             if(typeof obj.arr[i] === 'function') {
-                obj.arr[i].call(window);
+                obj.arr[i].apply(this, arguments);
             }
         }
     };
