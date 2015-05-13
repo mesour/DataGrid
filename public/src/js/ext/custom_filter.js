@@ -8,7 +8,7 @@
         $('.custom-filter-form form').each(function() {
             var $form = $(this);
             var gridName = $form.closest('[data-mesour-grid]').attr('data-mesour-grid');
-            var filterValues = mesour.dataGrid[gridName].filterValues;
+            var filterValues = mesour.dataGrid.list[gridName].filterValues;
             for(var x in filterValues) {
                 if(x.indexOf('[') !== -1) {
                     filterValues[x+']'] = filterValues[x];
