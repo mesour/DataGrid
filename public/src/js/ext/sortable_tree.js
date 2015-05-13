@@ -4,7 +4,7 @@
  * @author Matous Nemec (mesour.com)
  */
 (function($) {
-    mesour.on.ready('grid-sortable-tree', function() {
+    mesour.on.live('grid-sortable-tree', function() {
         $('ul.sortable').nestedSortable({
             disableNesting: 'no-nest',
             forcePlaceholderSize: true,
