@@ -5,7 +5,7 @@
  */
 var mesour = !mesour ? {dataGrid: {}} : mesour;
 mesour.dataGrid = !mesour.dataGrid ? {} : mesour.dataGrid;
-mesour.dataGrid.jsVersion = '2.1.0';
+mesour.dataGrid.jsVersion = '2.0.6';
 
 mesour.on = mesour.on ? mesour.on : {
     live: function(name, callback) {
