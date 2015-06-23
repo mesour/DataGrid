@@ -4,6 +4,7 @@ namespace Mesour\DataGrid;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
@@ -13,41 +14,114 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 class DoctrineDataSource implements IDataSource
 {
     /**
+     * Doctrine QueryBuilder instance.
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
+     * Mapping of columns to QueryBuilder
+     * @var array
+     */
+    protected $columnMapping;
+
+    /**
+     * Count of all items.
+     * @var int
+     */
+    protected $itemsTotalCount = 0;
+
+    /**
+     * Count of filtered items.
+     * @var int
+     */
+    protected $itemsCount = 0;
+
+    /**
      * Name of primary column name.
-     * @return string
+     * @var string
      */
     protected $primary_key = 'id';
 
     /**
      * Name of parent column name.
-     * @return string
+     * @var string
      */
     protected $parent_key = 'parent_id';
-
-    /**
-     * QueryBuilder instance.
-     * @var QueryBuilder
-     */
-    protected $qb;
 
 
     /**
      * Initialize Doctrine data source with QueryBuilder instance.
-     * @param QueryBuilder  $qb  Source of data
+     * @param QueryBuilder  $queryBuilder   Source of data
+     * @param array         $columnMapping  Column name mapper
      */
-    public function __construct(QueryBuilder $qb)
+    public function __construct(QueryBuilder $queryBuilder, array $columnMapping = array())
     {
-        $this->qb = clone $qb;
+        // Save copy of provided QueryBuilder
+        $this->queryBuilder = clone $queryBuilder;
+        $this->columnMapping = $columnMapping;
     }
 
 
     /**
-     * Get total count without applied where and limit.
+     * Get instance of the QueryBuilder.
+     * @return QueryBuilder
+     */
+    public function getQueryBuilder()
+    {
+        return $this->queryBuilder;
+    }
+
+
+    /**
+     * Get copy of the QueryBuilder.
+     * @return QueryBuilder
+     */
+    public function cloneQueryBuilder()
+    {
+        return clone $this->queryBuilder;
+    }
+
+
+    /**
+     * Get Query instance from QueryBuilder.
+     * @return Query
+     */
+    public function getQuery()
+    {
+        return $this->queryBuilder->getQuery();
+    }
+
+
+    /**
+     * Get current column mapping list.
+     * @return array
+     */
+    public function getColumnMapping()
+    {
+        return $this->columnMapping;
+    }
+
+
+    /**
+     * Get total count without applied WHERE and LIMIT.
      * @return int
      */
     public function getTotalCount()
     {
-        return 0;
+        if ($this->itemsTotalCount) {
+            return $this->itemsTotalCount;
+        }
+
+        // Remove WHERE confition from QueryBuilder
+        $query = $this->cloneQueryBuilder()
+            ->resetDQLPart('where')
+            ->setParameters([])         // May cause problems?
+            ->getQuery();
+
+        // Get total count without WHERE and LIMIT applied
+        $this->itemsTotalCount = (new Paginator($query))->count();
+        return $this->itemsTotalCount;
     }
 
 
@@ -57,9 +131,13 @@ class DoctrineDataSource implements IDataSource
      */
     public function fetchFullData()
     {
-        $qb = clone $this->qb;
-        return $qb->where([])->setMaxResults(null)->setFirstResult(null)->getQuery()->getResult(Query::HYDRATE_ARRAY);
-        return [];
+        return $this->cloneQueryBuilder()
+            ->resetDQLPart('where')
+            ->setParameters([])         // May cause problems?
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->getQuery()
+            ->getResult(Query::HYDRATE_ARRAY);
     }
 
 
@@ -71,7 +149,7 @@ class DoctrineDataSource implements IDataSource
      */
     public function applyLimit($limit, $offset = 0)
     {
-        $this->qb->setMaxResults($limit)->setFirstResult($offset);
+        $this->getQueryBuilder()->setMaxResults($limit)->setFirstResult($offset);
         return $this;
     }
 
@@ -120,7 +198,7 @@ class DoctrineDataSource implements IDataSource
      */
     public function orderBy($column, $sorting = 'ASC')
     {
-        $this->qb->autoJoinOrderBy($column, $sorting);
+        $this->getQueryBuilder()->addOrderBy($this->prefixColumn($column), $sorting);
         return $this;
     }
 
@@ -131,7 +209,11 @@ class DoctrineDataSource implements IDataSource
      */
     public function count()
     {
-        return (new Paginator($this->qb))->count();
+        if (!$this->itemsCount) {
+            $this->itemsCount = (new Paginator($this->getQuery()))->count();
+        }
+
+        return $this->itemsCount;
     }
 
 
@@ -141,8 +223,15 @@ class DoctrineDataSource implements IDataSource
      */
     public function fetch()
     {
-        $qb = clone $this->qb;
-        return $qb->setMaxResults(1)->getQuery()->getSingleResult(Query::HYDRATE_ARRAY);
+        try {
+            return $this->cloneQueryBuilder()
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult(Query::HYDRATE_ARRAY);
+
+        } catch (NoResultException $e) {
+            return [];
+        }
     }
 
 
@@ -152,7 +241,13 @@ class DoctrineDataSource implements IDataSource
      */
     public function fetchAll()
     {
-        return $this->qb->getQuery()->getResult(Query::HYDRATE_ARRAY);
+        try {
+            return $this->getQuery()
+                ->getResult(Query::HYDRATE_ARRAY);
+
+        } catch (NoResultException $e) {
+            return [];
+        }
     }
 
 
@@ -217,5 +312,24 @@ class DoctrineDataSource implements IDataSource
     {
         $this->parent_key = $parent_key;
         return $this;
+    }
+
+
+    /**
+     * Add prefix to the column name.
+     * @param  string  $column  Column name
+     * @return string
+     */
+    protected function prefixColumn($column)
+    {
+        if (isset($this->columnMapping[$column])) {
+            return $this->columnMapping[$column];
+        }
+
+        if (strpos($column, '.') !== false) {
+            return $column;
+        }
+
+        return current($this->getQueryBuilder()->getRootAliases()).'.'.$column;
     }
 }
