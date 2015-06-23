@@ -57,6 +57,8 @@ class DoctrineDataSource implements IDataSource
      */
     public function fetchFullData()
     {
+        $qb = clone $this->qb;
+        return $qb->where([])->setMaxResults(null)->setFirstResult(null)->getQuery()->getResult(Query::HYDRATE_ARRAY);
         return [];
     }
 
@@ -94,6 +96,17 @@ class DoctrineDataSource implements IDataSource
      * @return static
      */
     public function applyCheckers($column, array $value, $type)
+    {
+        return $this;
+    }
+
+
+    /**
+     * Add where condition.
+     * @param  mixed  $args
+     * @return static
+     */
+    public function where($args)
     {
         return $this;
     }
