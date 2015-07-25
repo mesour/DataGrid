@@ -47,6 +47,8 @@ class BasicGrid extends BaseGrid {
 	 */
 	private $called_before_render = FALSE;
 
+	private $templateFile;
+
 	/**
 	 * Event which is triggered when column was edit
 	 *
@@ -233,11 +235,20 @@ class BasicGrid extends BaseGrid {
 		$this->template->script = $this->getMainScript();
 		$this->template->content = $this->createBody('table table-striped table-condensed table-hover');
 
-		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
+		$this->template->setFile($this->getTemplateFile());
 		if ($return) {
 			return $this->template;
 		}
 		$this->template->render();
+	}
+
+	protected function getTemplateFile() {
+		return $this->templateFile ? $this->templateFile : (dirname(__FILE__) . '/Grid.latte');
+	}
+
+	public function setTemplateFile($templateFile) {
+		$this->templateFile = $templateFile;
+		return $this;
 	}
 
 	protected function getMainScript() {

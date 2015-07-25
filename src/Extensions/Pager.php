@@ -49,8 +49,8 @@ class Pager extends BaseControl {
 	}
 
 	/**
-	 * @param numeric $total_count
-	 * @param numeric $limit
+	 * @param int $total_count
+	 * @param int $limit
 	 */
 	public function setCounts($total_count, $limit) {
 		$this->paginator->setItemCount($total_count);

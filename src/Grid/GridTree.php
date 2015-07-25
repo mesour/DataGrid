@@ -27,8 +27,9 @@ class GridTree extends ExtendedGrid {
 			$this->setRendererFactory(new RendererFactory);
 		}
 		$this->template->content = $this->createBody();
+		$this->template->script = $this->getMainScript();
 
-		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
+		$this->template->setFile($this->getTemplateFile());
 		$this->template->render();
 	}
 

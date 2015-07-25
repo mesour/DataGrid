@@ -211,6 +211,7 @@ class NetteDbDataSource implements IDataSource
 
     public function applyCustom($column_name, array $custom, $type)
     {
+        $column_name = $this->getRealColumnName($column_name);
         $values = array();
         if (!empty($custom['how1']) && !empty($custom['val1'])) {
             $values[] = $this->customFilter($column_name, $custom['how1'], $custom['val1'], $type);
@@ -231,8 +232,19 @@ class NetteDbDataSource implements IDataSource
         call_user_func_array(array($this, 'where'), $parameters);
     }
 
+    private function getRealColumnName($column_name)
+    {
+        foreach ($this->related as $name => $options) {
+            if ($column_name === $options[3]) {
+                return $options[0] . '.' . $options[2];
+            }
+        }
+        return $column_name;
+    }
+
     public function applyCheckers($column_name, array $value, $type)
     {
+        $column_name = $this->getRealColumnName($column_name);
         if ($type === 'date') {
             $is_timestamp = TRUE;
             foreach ($value as $val) {

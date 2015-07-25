@@ -155,10 +155,12 @@ class Filter extends BaseControl {
 	}
 
 	private function applyAutoFiltering() {
+		$realColumnNames = $this->parent->getRealColumnNamesForFilter();
 		foreach ($this->settings as $column_name => $values) {
 			if (empty($values)) {
 				continue;
 			}
+			$column_name = isset($realColumnNames[$column_name]) ? $realColumnNames[$column_name] : $column_name;
 			foreach ($values as $key => $value) {
 				$value = is_numeric($value) ? (float) $value : $value;
 				switch ($key) {

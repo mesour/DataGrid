@@ -71,9 +71,10 @@
                                             dataValue: column.attr('data-value'),
                                             newValue: input.val()
                                         }
-                                    })).complete(function(){
+                                    })).complete(function(r){
                                         column.html(input.is('select') ? input.find('option:selected').text() : input.val());
                                         isInEdit = false;
+                                        mesour.snippets.callback(r);
                                     }).error(function(){
                                         closeAllEditables();
                                     });
