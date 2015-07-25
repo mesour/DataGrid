@@ -69,6 +69,8 @@ interface IDataSource {
 	 */
 	public function fetchAssoc();
 
+	public function fetchPairs($key, $value);
+
 	/**
 	 * Selects columns to order by.
 	 *

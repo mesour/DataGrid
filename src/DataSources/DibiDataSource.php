@@ -235,6 +235,11 @@ class DibiDataSource implements IDataSource
         }
     }
 
+    public function fetchPairs($key, $value)
+    {
+        return $this->getDataSource()->fetchPairs($key, $value);
+    }
+
     public function getPrimaryKey()
     {
         return $this->primary_key;
