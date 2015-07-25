@@ -277,6 +277,11 @@ class NetteDbDataSource implements IDataSource
         return $output;
     }
 
+    public function fetchPairs($key, $value)
+    {
+        return $this->getSelection()->fetchPairs($key, $value);
+    }
+
     public function fetchAssoc()
     {
         $data = $this->fetchAll();

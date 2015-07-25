@@ -19,8 +19,8 @@
                     mouse_in = false,
                     closeAllEditables = function() {
                         $('[data-editable]').each(function(){
-                            if($(this).find('input').is('*')) {
-                                var old_value = $(this).find('input').attr('data-old-value');
+                            if($(this).find('input,select').is('*')) {
+                                var old_value = $(this).find('input,select').attr('data-old-value');
                                 $(this).html(old_value);
                             }
                         });
@@ -49,29 +49,14 @@
                     var line_splited = line.attr('id').split('-'),
                         line_id = line_splited[line_splited.length-1],
                         column_name = column.attr('data-editable'),
+                        related = column.attr('data-editable-related'),
                         type = column.attr('data-editable-type'),
                         separator = column.attr('data-separator'),
                         unit = column.attr('data-unit'),
                         date_format = column.attr('data-date-format'),
                         mouse_in = true,
-                        old_value = column.html();
-
-                    var input = $('<input class="editable-input" type="text" data-old-value="'+old_value+'">'),
-                        getValidValue = function() {
-                            if(type === 'number') {
-                                var num = Number(input.val().replace(',', '.'));
-                                if(isInteger(num) || isFloat(num)) {
-                                    return input.val();
-                                } else {
-                                    alert('Value of this column must be a number.');
-                                    return false;
-                                }
-                            }
-                            return input.val();
-                        };
-                    input.width(column.innerWidth());
-                    input.on({
-                        'keyup': function(e, fromJs) {
+                        old_value = column.html(),
+                        keyUpCallback = function(e, fromJs) {
                             if(e.keyCode === 13 || fromJs) {
                                 var value = getValidValue();
                                 if(type === 'date') {
@@ -87,7 +72,7 @@
                                             newValue: input.val()
                                         }
                                     })).complete(function(){
-                                        column.html(input.val());
+                                        column.html(input.is('select') ? input.find('option:selected').text() : input.val());
                                         isInEdit = false;
                                     }).error(function(){
                                         closeAllEditables();
@@ -96,7 +81,49 @@
                             } else if(e.keyCode === 27) {
                                 closeAllEditables();
                             }
-                        },
+                        };
+
+                    var html = '<input class="editable-input" type="text" data-old-value="' + old_value + '">';
+                    if (related) {
+                        html = '<select class="editable-input" data-old-value="' + old_value + '">';
+                        if (mesour.dataGrid.list[gridName] && mesour.dataGrid.list[gridName].relations[related]) {
+                            var _related = mesour.dataGrid.list[gridName].relations[related];
+                            for (var i in _related) {
+                                var option;
+                                if (_related[i] === old_value) {
+                                    html += '<option value="' + i + '" selected="selected">' + _related[i] + '</option>';
+                                } else {
+                                    html += '<option value="' + i + '">' + _related[i] + '</option>';
+                                }
+                            }
+                        }
+                        html += '</select>';
+                        html = $(html);
+                        var sel = html.find(':selected');
+                        setTimeout(function() {
+                            sel.prop('selected', false).prop('selected', true);
+                        }, 200);
+                        html.on('change', function () {
+                            keyUpCallback.call(html, {keyCode: 13});
+                        });
+                    }
+
+                    var input = $(html),
+                        getValidValue = function() {
+                            if(type === 'number') {
+                                var num = Number(input.val().replace(',', '.'));
+                                if(isInteger(num) || isFloat(num)) {
+                                    return input.val();
+                                } else {
+                                    alert('Value of this column must be a number.');
+                                    return false;
+                                }
+                            }
+                            return input.val();
+                        };
+                    input.width(column.innerWidth());
+                    input.on({
+                        'keyup': keyUpCallback,
                         'mouseenter': function() {
                             mouse_in = true;
                         },
@@ -144,8 +171,9 @@
                 $this.find('>table>tbody>tr>td[data-editable], >table>tbody>tr>td>span>span[data-editable], >.tree-grid>ul li>div>span[data-editable], >.tree-grid>ul li>div>span>span>span[data-editable]').off('dblclick.grid-editable', onEdit);
                 $this.find('>table>tbody>tr>td[data-editable], >table>tbody>tr>td>span>span[data-editable], >.tree-grid>ul li>div>span[data-editable], >.tree-grid>ul li>div>span>span>span[data-editable]').on('dblclick.grid-editable', onEdit);
 
-                $('html').off('click.grid-editable');
-                $('html').on('click.grid-editable', function() {
+                var _html = $('html');
+                _html.off('click.grid-editable');
+                _html.on('click.grid-editable', function() {
                     if(isMouseIn()) {
                         return;
                     } else {

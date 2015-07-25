@@ -14,6 +14,8 @@ use Mesour\DataGrid\Column\IColumn,
     \Nette\ComponentModel\IContainer,
     \Nette\Localization\ITranslator,
     Mesour\DataGrid\Render\Table\RendererFactory;
+use Mesour\DataGrid\Column\InlineEdit;
+use Nette\Utils\Html;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
@@ -228,6 +230,7 @@ class BasicGrid extends BaseGrid {
 			$this->setRendererFactory(new RendererFactory);
 		}
 
+		$this->template->script = $this->getMainScript();
 		$this->template->content = $this->createBody('table table-striped table-condensed table-hover');
 
 		$this->template->setFile(dirname(__FILE__) . '/Grid.latte');
@@ -235,6 +238,38 @@ class BasicGrid extends BaseGrid {
 			return $this->template;
 		}
 		$this->template->render();
+	}
+
+	protected function getMainScript() {
+		$script = Html::el('script');
+		$outScript = '(function(){';
+		$outScript .= 'mesour.dataGrid.list["' . $this->getName() . '"] = {relations: {}};';
+
+		$relations = array();
+		$allRelated = $this->getDataSource()->getAllRelated();
+		foreach ($allRelated as $related) {
+			list($table, $key, $column, $as) = $related;
+
+			$columnName = is_null($as) ? $column : $as;
+
+			foreach ($this->getColumns() as $column) {
+				if ($column instanceof InlineEdit && $column->getId() === $columnName && $column->isEditable()) {
+					$column->setRelated($table);
+					$relations[$table] = $table;
+				} else {
+					continue;
+				}
+			}
+		}
+
+		foreach ($relations as $table) {
+			$related = $this->getDataSource()->related($table);
+			$outScript .= 'mesour.dataGrid.list["' . $this->getName() . '"].relations["' . $table . '"] = ' . json_encode($related->fetchPairs($related->getPrimaryKey(), $allRelated[$table][2])) . ';';
+		}
+
+		$outScript .= '})(jQuery)';
+		$script->setHtml($outScript);
+		return $script;
 	}
 
 	/**

@@ -2,8 +2,6 @@
 
 namespace Mesour\DataGrid\Column;
 
-use \Nette\Utils\Html;
-
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
