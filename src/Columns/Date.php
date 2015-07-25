@@ -8,13 +8,12 @@ use Mesour\DataGrid\Grid_Exception;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Date extends Filter {
+class Date extends InlineEdit {
 
 	/**
 	 * Possible option key
 	 */
-	const FORMAT = 'format',
-	    EDITABLE = 'editable';
+	const FORMAT = 'format';
 
     public function getTemplateFile() {
         return 'DateDropdown.latte';
@@ -23,17 +22,6 @@ class Date extends Filter {
 	public function setFormat($format) {
 		$this->option[self::FORMAT] = $format;
 		return $this;
-	}
-
-	public function setEditable($editable) {
-		$this->option[self::EDITABLE] = (bool)$editable;
-		return $this;
-	}
-
-	protected function setDefaults() {
-		return array_merge(parent::setDefaults(), array(
-		    self::EDITABLE => TRUE
-		));
 	}
 
 	public function getHeaderAttributes() {
@@ -58,8 +46,8 @@ class Date extends Filter {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
-		$attributes = array();
-		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
+		$attributes = parent::getBodyAttributes($data);
+		if (isset($this->grid['editable']) && $this->isEditable()) {
 			$attributes = array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'date',

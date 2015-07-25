@@ -115,7 +115,7 @@
                     if(native_confirm && isConfirm) {
                         if(gridConfirm(isConfirm)) {
                             if(isAjax) {
-                                $.get(href);
+                                $.get(href).complete(mesour.snippets.callback);
                             } else {
                                 location.href = href;
                             }
@@ -125,7 +125,7 @@
                         gridCustomSend(href, {selected: data});
                     } else {
                         if(isAjax) {
-                            $.get(href);
+                            $.get(href).complete(mesour.snippets.callback);
                         } else {
                             location.href = href;
                         }

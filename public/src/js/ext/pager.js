@@ -11,7 +11,8 @@
             var number = $this.find('.number').val();
             var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
             if(!number) return;
-            $.get(mesour.getUrlWithParam(gridName, $this.attr('action'), 'pager', 'number', number));
+            $.get(mesour.getUrlWithParam(gridName, $this.attr('action'), 'pager', 'number', number))
+                .complete(mesour.snippets.callback);
         });
     });
 })(jQuery);

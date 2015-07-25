@@ -8,7 +8,7 @@ use Mesour\DataGrid\Grid_Exception;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Number extends Filter {
+class Number extends InlineEdit {
 
 	/**
 	 * Possible option key
@@ -16,8 +16,7 @@ class Number extends Filter {
 	const DECIMALS = 'decimals',
 	    DEC_POINT = 'dec_point',
 	    UNIT = 'unit',
-	    THOUSANDS_SEP = 'thousands_sep',
-	    EDITABLE = 'editable';
+	    THOUSANDS_SEP = 'thousands_sep';
 
     public function getTemplateFile() {
         return 'NumberDropdown.latte';
@@ -43,18 +42,12 @@ class Number extends Filter {
 		return $this;
 	}
 
-	public function setEditable($editable) {
-		$this->option[self::EDITABLE] = (bool)$editable;
-		return $this;
-	}
-
 	protected function setDefaults() {
 		return array_merge(parent::setDefaults(), array(
 		    self::DECIMALS => 0,
 		    self::UNIT => NULL,
 		    self::DEC_POINT => '.',
-		    self::THOUSANDS_SEP => ',',
-		    self::EDITABLE => TRUE
+		    self::THOUSANDS_SEP => ','
 		));
 	}
 
@@ -77,8 +70,8 @@ class Number extends Filter {
 			throw new Grid_Exception('Column ' . $this->option[self::ID] . ' does not exists in DataSource.');
 		}
 
-		$attributes = array();
-		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
+		$attributes = parent::getBodyAttributes($data);
+		if (isset($this->grid['editable']) && $this->isEditable()) {
 			$attributes = array(
 			    'data-editable' => $this->option[self::ID],
 			    'data-editable-type' => 'number',

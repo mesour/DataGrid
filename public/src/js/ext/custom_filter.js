@@ -93,7 +93,8 @@
                     }
                 }
                 delete sendValues.do;
-                $.get(mesour.getUrlWithParam(gridName, form.attr("action"), 'filter', 'settings', sendValues));
+                $.get(mesour.getUrlWithParam(gridName, form.attr("action"), 'filter', 'settings', sendValues))
+                    .complete(mesour.snippets.callback);
             });
         });
     });

@@ -230,7 +230,11 @@ abstract class BaseGrid extends Control {
 
 	protected function getLineId($data) {
 		if(!isset($data[$this->getPrimaryKey()])) {
-			throw new Grid_Exception('Primary key "' . $this->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.');
+			$text = '';
+			if(count($this->getDataSource()->getAllRelated()) > 0) {
+				$text = ' Maybe must specify your columns for select if use relations.';
+			}
+			throw new Grid_Exception('Primary key "' . $this->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.' . $text);
 		}
 		return $this->getName() . '-' . $data[$this->getPrimaryKey()];
 	}

@@ -9,13 +9,12 @@ use Nette\Utils\Callback;
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class Text extends Filter {
+class Text extends InlineEdit {
 
 	/**
 	 * Possible option key
 	 */
-	const EDITABLE = 'editable',
-	    CALLBACK = 'function',
+	const CALLBACK = 'function',
 	    CALLBACK_ARGS = 'func_args';
 
     public function getTemplateFile() {
@@ -33,17 +32,6 @@ class Text extends Filter {
 		return $this;
 	}
 
-	public function setEditable($editable) {
-		$this->option[self::EDITABLE] = (bool)$editable;
-		return $this;
-	}
-
-	protected function setDefaults() {
-		return array_merge(parent::setDefaults(), array(
-		    self::EDITABLE => TRUE
-		));
-	}
-
 	public function getHeaderAttributes() {
 		$this->fixOption();
 		if (array_key_exists(self::HEADER, $this->option) === FALSE) {
@@ -59,13 +47,13 @@ class Text extends Filter {
 	}
 
 	public function getBodyAttributes($data) {
-		$attributes = array();
-		if (isset($this->grid['editable']) && $this->option[self::EDITABLE]) {
+		$attributes = parent::getBodyAttributes($data);
+		if (isset($this->grid['editable']) && $this->isEditable()) {
 			$this->checkColumnId($data);
-			$attributes = array(
-			    'data-editable' => $this->option[self::ID],
-			    'data-editable-type' => 'text'
-			);
+			$attributes = array_merge($attributes, array(
+				'data-editable' => $this->option[self::ID],
+				'data-editable-type' => 'text'
+			));
 		}
 		$attributes['class'] = 'type-text';
 		return parent::mergeAttributes($data, $attributes);

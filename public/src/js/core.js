@@ -5,7 +5,7 @@
  */
 var mesour = !mesour ? {dataGrid: {}} : mesour;
 mesour.dataGrid = !mesour.dataGrid ? {} : mesour.dataGrid;
-mesour.dataGrid.jsVersion = '2.0.6';
+mesour.dataGrid.jsVersion = '2.0.7';
 
 mesour.on = mesour.on ? mesour.on : {
     live: function(name, callback) {
@@ -93,6 +93,31 @@ mesour.getUrlWithParam = function(name, url, component, parameterName, value) {
     }
     return url + character + this.createGetUrl(name, component, parameterName, value);
 };
+mesour.snippets = {
+    updateSnippet: function (id, html, top) {
+        jQuery(document.getElementById(id)).html(html);
+        $(window).scrollTop(top);
+    },
+    callback: function (response) {
+        var payload = response.responseJSON,
+            top = $(window).scrollTop();
+
+        if (!payload) {
+            return;
+        }
+
+        if (payload.redirect) {
+            window.location.href = payload.redirect;
+            return;
+        }
+
+        if (payload.snippets) {
+            for (var i in payload.snippets) {
+                mesour.snippets.updateSnippet(i, payload.snippets[i], top);
+            }
+        }
+    }
+};
 
 (function($) {
     $(document).off('ready.mesour-ready');
@@ -105,7 +130,7 @@ mesour.getUrlWithParam = function(name, url, component, parameterName, value) {
     $(document).off('click.mesour-ajax');
     $(document).on('click.mesour-ajax', '.mesour-ajax:not(form)', function(e) {
         e.preventDefault();
-        $.get($(this).attr('href'));
+        $.get($(this).attr('href')).complete(mesour.snippets.callback);
     });
 })(jQuery);
 
