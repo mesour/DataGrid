@@ -86,4 +86,22 @@ interface IDataSource {
 
 	public function setParentKey($parent_key);
 
+	public function setRelated($table, $key, $column, $as = NULL, $primary = 'id');
+
+	/**
+	 * @param $table
+	 * @return static
+	 * @throws Grid_Exception
+	 */
+	public function related($table);
+
+	/**
+	 * @param $table
+	 * @return bool
+	 */
+	public function isRelated($table);
+
+
+	public function getAllRelated();
+
 }

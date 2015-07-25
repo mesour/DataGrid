@@ -4,295 +4,372 @@ namespace Mesour\DataGrid;
 
 use \Nette\Database\Table\Selection,
     \Nette\Utils;
+use Nette\Database\Context;
 
 /**
  * @author mesour <matous.nemec@mesour.com>
  * @package Mesour DataGrid
  */
-class NetteDbDataSource implements IDataSource {
+class NetteDbDataSource implements IDataSource
+{
 
-	private $parent_key = 'parent_id';
+    private $parent_key = 'parent_id';
 
-	private $primary_key = 'id';
+    private $primary_key = 'id';
 
-	/**
-	 * @var \Nette\Database\Table\Selection
-	 */
-	private $nette_table;
+    /**
+     * @var Context|NULL
+     */
+    private $context;
 
-	/**
-	 * @var array
-	 */
-	private $where_arr = array();
+    private $related = array();
 
-	/**
-	 * @var integer
-	 */
-	private $limit;
+    private $relations = array();
 
-	/**
-	 * @var integer
-	 */
-	private $offset = 0;
+    /**
+     * @var \Nette\Database\Table\Selection
+     */
+    private $nette_table;
 
-	private $total_count = 0;
+    /**
+     * @var array
+     */
+    private $where_arr = array();
 
-	/**
-	 * Create instance
-	 *
-	 * @param \Nette\Database\Table\Selection $nette_table
-	 */
-	public function __construct(Selection $nette_table) {
-		$this->nette_table = $nette_table;
-		$this->total_count = $nette_table->count('*');
-	}
+    /**
+     * @var integer
+     */
+    private $limit;
 
-	/**
-	 * @return \Nette\Database\Table\Selection
-	 */
-	public function getTableSelection() {
-		return $this->getSelection();
-	}
+    /**
+     * @var integer
+     */
+    private $offset = 0;
 
-	/**
-	 * Get total count of source data
-	 *
-	 * @return Integer
-	 */
-	public function getTotalCount() {
-		return $this->total_count;
-	}
+    private $total_count = 0;
 
-	/**
-	 * Add where condition
-	 *
-	 * @param Mixed $args NetteDatabase args
-	 */
-	public function where($args) {
-		$this->where_arr[] = func_get_args();
-	}
+    /**
+     * @param Selection $nette_table
+     * @param Context|NULL $context
+     */
+    public function __construct(Selection $nette_table, Context $context = NULL)
+    {
+        $this->context = $context;
+        $this->nette_table = $nette_table;
+        $this->total_count = $nette_table->count('*');
+    }
 
-	/**
-	 * Apply limit and offset
-	 *
-	 * @param Integer $limit
-	 * @param Integer $offset
-	 */
-	public function applyLimit($limit, $offset = 0) {
-		$this->limit = $limit;
-		$this->offset = $offset;
-	}
+    /**
+     * @return \Nette\Database\Table\Selection
+     */
+    public function getTableSelection()
+    {
+        return $this->getSelection();
+    }
 
-	/**
-	 * Get count after applied where
-	 *
-	 * @return Integer
-	 */
-	public function count() {
-		$count = $this->getSelection()->count('*');
-		$to_end = $count - ($this->offset + $this->limit);
-		return !is_null($this->limit) && $this->limit < $count ? ($to_end < $this->limit ? $to_end : $this->limit) : $count;
-	}
+    /**
+     * Get total count of source data
+     *
+     * @return Integer
+     */
+    public function getTotalCount()
+    {
+        return $this->total_count;
+    }
 
-	private function getSelection($limit = TRUE, $where = TRUE) {
-		$selection = clone $this->nette_table;
-		if ($where) {
-			foreach ($this->where_arr as $conditions) {
-				call_user_func_array(array($selection, 'where'), $conditions);
-			}
-		}
-		if ($limit) {
-			$selection->limit($this->limit, $this->offset);
-		}
-		return $selection;
-	}
+    /**
+     * Add where condition
+     *
+     * @param Mixed $args NetteDatabase args
+     */
+    public function where($args)
+    {
+        $this->where_arr[] = func_get_args();
+    }
 
-	/**
-	 * Get searched values with applied limit, offset and where
-	 *
-	 * @return array
-	 */
-	public function fetchAll() {
-		$output = array();
-		$selection = $this->getSelection();
-		foreach ($selection as $data) {
-			$output[] = $data->toArray();
-		}
-		return $output;
-	}
+    /**
+     * Apply limit and offset
+     *
+     * @param Integer $limit
+     * @param Integer $offset
+     */
+    public function applyLimit($limit, $offset = 0)
+    {
+        $this->limit = $limit;
+        $this->offset = $offset;
+    }
 
-	public function fetchAllForExport() {
-		$output = array();
-		$selection = $this->getSelection(FALSE);
-		foreach ($selection as $data) {
-			$output[] = $data->toArray();
-		}
-		return $output;
-	}
+    /**
+     * Get count after applied where
+     *
+     * @return Integer
+     */
+    public function count()
+    {
+        $count = $this->getSelection()->count('*');
+        $to_end = $count - ($this->offset + $this->limit);
+        return !is_null($this->limit) && $this->limit < $count ? ($to_end < $this->limit ? $to_end : $this->limit) : $count;
+    }
 
-	private function customFilter($column_name, $how, $value, $type) {
-		$output = array();
-		$column_name = $type === 'date' ? ('DATE(' . $column_name . ')') : $column_name;
-		switch ($how) {
-			case 'equal_to';
-				$output[] = $column_name . ' = ?';
-				$output[] = $value;
-				break;
-			case 'not_equal_to';
-				$output[] = $column_name . ' != ?';
-				$output[] = $value;
-				break;
-			case 'bigger';
-				$output[] = $column_name . ' > ?';
-				$output[] = $value;
-				break;
-			case 'not_bigger';
-				$output[] = $column_name . ' <= ?';
-				$output[] = $value;
-				break;
-			case 'smaller';
-				$output[] = $column_name . ' < ?';
-				$output[] = $value;
-				break;
-			case 'not_smaller';
-				$output[] = $column_name . ' >= ?';
-				$output[] = $value;
-				break;
-			case 'start_with';
-				$output[] = $column_name . ' LIKE ?';
-				$output[] = $value . '%';
-				break;
-			case 'not_start_with';
-				$output[] = $column_name . ' NOT LIKE ?';
-				$output[] = $value . '%';
-				break;
-			case 'end_with';
-				$output[] = $column_name . ' LIKE ?';
-				$output[] = '%' . $value;
-				break;
-			case 'not_end_with';
-				$output[] = $column_name . ' NOT LIKE ?';
-				$output[] = '%' . $value;
-				break;
-			case 'equal';
-				$output[] = $column_name . ' LIKE ?';
-				$output[] = '%' . $value . '%';
-				break;
-			case 'not_equal';
-				$output[] = $column_name . ' NOT LIKE ?';
-				$output[] = '%' . $value . '%';
-				break;
-			default:
-				throw new Grid_Exception('Unexpected key for custom filtering.');
-		}
-		return $output;
-	}
+    private function getSelection($limit = TRUE, $where = TRUE)
+    {
+        $selection = clone $this->nette_table;
+        if ($where) {
+            foreach ($this->where_arr as $conditions) {
+                call_user_func_array(array($selection, 'where'), $conditions);
+            }
+        }
+        if ($limit) {
+            $selection->limit($this->limit, $this->offset);
+        }
+        return $selection;
+    }
 
-	public function applyCustom($column_name, array $custom, $type) {
-		$values = array();
-		if (!empty($custom['how1']) && !empty($custom['val1'])) {
-			$values[] = $this->customFilter($column_name, $custom['how1'], $custom['val1'], $type);
-		}
-		if (!empty($custom['how2']) && !empty($custom['val2'])) {
-			$values[] = $this->customFilter($column_name, $custom['how2'], $custom['val2'], $type);
-		}
-		if (count($values) === 2) {
-			if ($custom['operator'] === 'and') {
-				$operator = 'AND';
-			} else {
-				$operator = 'OR';
-			}
-			$parameters = array('(' . $values[0][0] . ' ' . $operator . ' ' . $values[1][0] . ')', $values[0][1], $values[1][1]);
-		} else {
-			$parameters = array($values[0][0], $values[0][1]);
-		}
-		call_user_func_array(array($this, 'where'), $parameters);
-	}
+    /**
+     * Get searched values with applied limit, offset and where
+     *
+     * @return array
+     */
+    public function fetchAll()
+    {
+        $output = array();
+        $selection = $this->getSelection();
+        foreach ($selection as $data) {
+            $output[] = $data->toArray();
+        }
+        return $output;
+    }
 
-	public function applyCheckers($column_name, array $value, $type) {
-		if ($type === 'date') {
-			$is_timestamp = TRUE;
-			foreach ($value as $val) {
-				if (!is_numeric($val)) {
-					$is_timestamp = FALSE;
-					break;
-				}
-			}
-			if ($is_timestamp) {
-				$where = '(';
-				$i = 1;
-				foreach ($value as $val) {
-					$where .= '(' . $column_name . ' >= ' . (int)$val . ' AND ' . $column_name . ' <= ' . (((int)$val) + 86398) . ')';
-					if ($i < count($value)) {
-						$where .= ' OR ';
-					}
-					$i++;
-				}
-				$where .= ')';
-				$this->where($where);
-			} else {
-				$this->where('DATE(' . $column_name . ')', $value);
-			}
-		} else {
-			$this->where($column_name, $value);
-		}
-	}
+    public function fetchAllForExport()
+    {
+        $output = array();
+        $selection = $this->getSelection(FALSE);
+        foreach ($selection as $data) {
+            $output[] = $data->toArray();
+        }
+        return $output;
+    }
 
-	public function fetchFullData($date_format = 'Y-m-d') {
-		$output = array();
-		$selection = $this->getSelection(FALSE, FALSE);
-		foreach ($selection as $data) {
-			$current_data = $data->toArray();
-			foreach ($current_data as $key => $val) {
-				if ($val instanceof Utils\DateTime) {
-					$current_data[$key] = $val->format($date_format);
-				}
-			}
-			$output[] = $current_data;
-		}
-		return $output;
-	}
+    private function customFilter($column_name, $how, $value, $type)
+    {
+        $output = array();
+        $column_name = $type === 'date' ? ('DATE(' . $column_name . ')') : $column_name;
+        switch ($how) {
+            case 'equal_to';
+                $output[] = $column_name . ' = ?';
+                $output[] = $value;
+                break;
+            case 'not_equal_to';
+                $output[] = $column_name . ' != ?';
+                $output[] = $value;
+                break;
+            case 'bigger';
+                $output[] = $column_name . ' > ?';
+                $output[] = $value;
+                break;
+            case 'not_bigger';
+                $output[] = $column_name . ' <= ?';
+                $output[] = $value;
+                break;
+            case 'smaller';
+                $output[] = $column_name . ' < ?';
+                $output[] = $value;
+                break;
+            case 'not_smaller';
+                $output[] = $column_name . ' >= ?';
+                $output[] = $value;
+                break;
+            case 'start_with';
+                $output[] = $column_name . ' LIKE ?';
+                $output[] = $value . '%';
+                break;
+            case 'not_start_with';
+                $output[] = $column_name . ' NOT LIKE ?';
+                $output[] = $value . '%';
+                break;
+            case 'end_with';
+                $output[] = $column_name . ' LIKE ?';
+                $output[] = '%' . $value;
+                break;
+            case 'not_end_with';
+                $output[] = $column_name . ' NOT LIKE ?';
+                $output[] = '%' . $value;
+                break;
+            case 'equal';
+                $output[] = $column_name . ' LIKE ?';
+                $output[] = '%' . $value . '%';
+                break;
+            case 'not_equal';
+                $output[] = $column_name . ' NOT LIKE ?';
+                $output[] = '%' . $value . '%';
+                break;
+            default:
+                throw new Grid_Exception('Unexpected key for custom filtering.');
+        }
+        return $output;
+    }
 
-	public function fetchAssoc() {
-		$data = $this->fetchAll();
-		$output = array();
-		foreach ($data as $row) {
-			$output[$row[$this->parent_key]][] = $row;
-		}
-		return $output;
-	}
+    public function applyCustom($column_name, array $custom, $type)
+    {
+        $values = array();
+        if (!empty($custom['how1']) && !empty($custom['val1'])) {
+            $values[] = $this->customFilter($column_name, $custom['how1'], $custom['val1'], $type);
+        }
+        if (!empty($custom['how2']) && !empty($custom['val2'])) {
+            $values[] = $this->customFilter($column_name, $custom['how2'], $custom['val2'], $type);
+        }
+        if (count($values) === 2) {
+            if ($custom['operator'] === 'and') {
+                $operator = 'AND';
+            } else {
+                $operator = 'OR';
+            }
+            $parameters = array('(' . $values[0][0] . ' ' . $operator . ' ' . $values[1][0] . ')', $values[0][1], $values[1][1]);
+        } else {
+            $parameters = array($values[0][0], $values[0][1]);
+        }
+        call_user_func_array(array($this, 'where'), $parameters);
+    }
 
-	public function orderBy($row, $sorting = 'ASC') {
-		return $this->nette_table->order($row . ' ' . $sorting);
-	}
+    public function applyCheckers($column_name, array $value, $type)
+    {
+        if ($type === 'date') {
+            $is_timestamp = TRUE;
+            foreach ($value as $val) {
+                if (!is_numeric($val)) {
+                    $is_timestamp = FALSE;
+                    break;
+                }
+            }
+            if ($is_timestamp) {
+                $where = '(';
+                $i = 1;
+                foreach ($value as $val) {
+                    $where .= '(' . $column_name . ' >= ' . (int)$val . ' AND ' . $column_name . ' <= ' . (((int)$val) + 86398) . ')';
+                    if ($i < count($value)) {
+                        $where .= ' OR ';
+                    }
+                    $i++;
+                }
+                $where .= ')';
+                $this->where($where);
+            } else {
+                $this->where('DATE(' . $column_name . ')', $value);
+            }
+        } else {
+            $this->where($column_name, $value);
+        }
+    }
 
-	/**
-	 * Return first element from data
-	 *
-	 * @return Array
-	 */
-	public function fetch() {
-		if ($this->total_count > 0) {
-			return $this->getSelection(FALSE, FALSE)->limit(1, 0)->fetch()->toArray();
-		} else {
-			return array();
-		}
-	}
+    public function fetchFullData($date_format = 'Y-m-d')
+    {
+        $output = array();
+        $selection = $this->getSelection(FALSE, FALSE);
+        foreach ($selection as $data) {
+            $current_data = $data->toArray();
+            foreach ($current_data as $key => $val) {
+                if ($val instanceof Utils\DateTime) {
+                    $current_data[$key] = $val->format($date_format);
+                }
+            }
+            $output[] = $current_data;
+        }
+        return $output;
+    }
 
-	public function getPrimaryKey() {
-		return $this->primary_key;
-	}
+    public function fetchAssoc()
+    {
+        $data = $this->fetchAll();
+        $output = array();
+        foreach ($data as $row) {
+            $output[$row[$this->parent_key]][] = $row;
+        }
+        return $output;
+    }
 
-	public function setPrimaryKey($primary_key) {
-		$this->primary_key = $primary_key;
-	}
+    public function orderBy($row, $sorting = 'ASC')
+    {
+        return $this->nette_table->order($row . ' ' . $sorting);
+    }
 
-	public function getParentKey() {
-		return $this->parent_key;
-	}
+    /**
+     * Return first element from data
+     *
+     * @return Array
+     */
+    public function fetch()
+    {
+        if ($this->total_count > 0) {
+            return $this->getSelection(FALSE, FALSE)->limit(1, 0)->fetch()->toArray();
+        } else {
+            return array();
+        }
+    }
 
-	public function setParentKey($parent_key) {
-		$this->parent_key = $parent_key;
-	}
+    public function getPrimaryKey()
+    {
+        return $this->primary_key;
+    }
+
+    public function setPrimaryKey($primary_key)
+    {
+        $this->primary_key = $primary_key;
+    }
+
+    public function getParentKey()
+    {
+        return $this->parent_key;
+    }
+
+    public function setParentKey($parent_key)
+    {
+        $this->parent_key = $parent_key;
+    }
+
+    public function setRelated($table, $key, $column, $as = NULL, $primary = 'id')
+    {
+        if (is_null($this->context)) {
+            throw new Grid_Exception('Related require set Nette database context in constructor.');
+        }
+        $this->related[$table] = array($table, $key, $column, $as, $primary);
+
+        $this->nette_table->select($table . '.' . $column . (!is_null($as) ? (' AS ' . $as) : ''));
+
+        return $this;
+    }
+
+    /**
+     * @param $table
+     * @return static
+     * @throws Grid_Exception
+     */
+    public function related($table)
+    {
+        if (!$this->isRelated($table)) {
+            throw new Grid_Exception('Relation ' . $table . ' does not exists.');
+        }
+        if (!isset($this->relations[$table])) {
+            $this->relations[$table] = new static($this->context->table($table), $this->context);
+            $this->relations[$table]->setPrimaryKey($this->related[$table][4]);
+        }
+        return $this->relations[$table];
+    }
+
+    /**
+     * @param $table
+     * @return bool
+     */
+    public function isRelated($table)
+    {
+        return isset($this->related[$table]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllRelated()
+    {
+        return $this->related;
+    }
 
 }
