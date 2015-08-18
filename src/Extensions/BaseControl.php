@@ -22,7 +22,8 @@ class BaseControl extends Control {
 
 	public function getSession() {
 		if (!$this->private_session) {
-			$this->private_session = $this->presenter->getSession()->getSection($this->parent->getGridName() . $this->getName());
+			$identifier = sprintf("datagrid-%s", $this->lookupPath());
+			$this->private_session = $this->presenter->getSession()->getSection($identifier);
 		}
 		return $this->private_session;
 	}
