@@ -136,8 +136,7 @@ class DoctrineDataSource implements IDataSource
             ->setParameters([])         // May cause problems?
             ->setMaxResults(null)
             ->setFirstResult(null)
-            ->getQuery()
-            ->getResult(Query::HYDRATE_ARRAY);
+            ->getQuery()->getArrayResult();
     }
 
 
@@ -224,10 +223,8 @@ class DoctrineDataSource implements IDataSource
     public function fetch()
     {
         try {
-            return $this->cloneQueryBuilder()
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleResult(Query::HYDRATE_ARRAY);
+            return $this->cloneQueryBuilder()->setMaxResults(1)
+                ->getQuery()->getSingleResult(Query::HYDRATE_ARRAY);
 
         } catch (NoResultException $e) {
             return [];
@@ -242,8 +239,7 @@ class DoctrineDataSource implements IDataSource
     public function fetchAll()
     {
         try {
-            return $this->getQuery()
-                ->getResult(Query::HYDRATE_ARRAY);
+            return $this->getQuery()->getArrayResult();
 
         } catch (NoResultException $e) {
             return [];
