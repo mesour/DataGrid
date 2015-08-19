@@ -759,7 +759,8 @@
     };
     var applyFilter = function(gridName, href, filterData) {
         if(filterData !== '') {
-            $.get(mesour.getUrlWithParam(gridName, href, 'filter', 'settings', $.parseJSON(filterData)));
+            $.get(mesour.getUrlWithParam(gridName, href, 'filter', 'settings', $.parseJSON(filterData)))
+                .complete(mesour.snippets.callback);
         }
     };
     var Filter = function (gridName, element) {

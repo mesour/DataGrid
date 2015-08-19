@@ -8,11 +8,12 @@ use Tester\Assert;
 abstract class DataSourceTestCase extends BaseTestCase {
 
 	CONST FULL_USER_COUNT = 20,
-	    COLUMN_COUNT = 10,
+	    COLUMN_COUNT = 11,
 	    ACTIVE_COUNT = 10,
 	    CHECKERS_COUNT = 8,
 	    CUSTOM_COUNT = 7,
 	    CUSTOM_OR_COUNT = 3,
+		GROUPS_COUNT = 3,
 	    LIMIT = 5,
 	    OFFSET = 2;
 

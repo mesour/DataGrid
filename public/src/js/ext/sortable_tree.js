@@ -28,9 +28,8 @@
                     item: item_id[item_id.length-1]
                 };
                 var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
-                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
-
-                });
+                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data))
+                    .complete(mesour.snippets.callback);
             },
             start: function(a, b) {
                 $(b.placeholder).css('height', $(a.toElement).closest('li').outerHeight());
@@ -57,9 +56,8 @@
                     item: item_id[item_id.length-1]
                 };
                 var gridName = $this.closest('[data-mesour-grid]').attr('data-mesour-grid');
-                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
-
-                });
+                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data))
+                    .complete(mesour.snippets.callback);
             },
             start: function(a, b) {
                 $(b.placeholder).css('height', $(a.toElement).closest('li').outerHeight());

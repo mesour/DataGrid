@@ -6,8 +6,9 @@
                 mesour.dataGrid = !mesour.dataGrid ? {} : mesour.dataGrid;
                 mesour.dataGrid.list = mesour.dataGrid.list ? mesour.dataGrid.list : {};
 				mesour.dataGrid.list[{$control->getName()}] = {};
-				mesour.dataGrid.version = '2.0.6';
+				mesour.dataGrid.version = '2.0.7';
 			</script>
+			{ifset $script}{$script|noescape}{/ifset}
 			<script n:if="isset($control['filter']) && $control['filter']->isAdvanced()">mesour.dataGrid.list[{$control->getName()}].filterValues = {=json_encode($control['filter']->settings)|noescape};</script>
 			<script n:if="\Mesour\DataGrid\Grid::$js_draw">{=file_get_contents($grid_dir . '/../../public/mesourGrid.js')|noescape}</script>
 			<style n:if="\Mesour\DataGrid\Grid::$css_draw">{=file_get_contents($grid_dir . '/../../public/mesourGrid.css')|noescape}</style>

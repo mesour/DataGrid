@@ -31,9 +31,8 @@
                 if($this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').is('*')) {
                     gridName = $this.closest('[data-mesour-grid]').parent().closest('[data-mesour-grid]').attr('data-mesour-grid')+'-'+gridName;
                 }
-                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data), function(data) {
-
-                });
+                $.get(mesour.getUrlWithParam(gridName, $this.attr("data-sort-href"), 'sortable', 'sortable_data', data))
+                    .complete(mesour.snippets.callback);
             },
             start: function(a, b) {
                 var sorted;
