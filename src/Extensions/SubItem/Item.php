@@ -18,9 +18,13 @@ abstract class Item extends Object {
 
 	protected $callback;
 
+	protected $checkCallback;
+
 	protected $type;
 
 	protected $name;
+
+	protected $disabled = FALSE;
 
 	protected $description;
 
@@ -40,6 +44,27 @@ abstract class Item extends Object {
 	public function setCallback($callback) {
 		Callback::check($callback);
 		$this->callback = $callback;
+		return $this;
+	}
+
+	public function setCheckCallback($callback) {
+		Callback::check($callback);
+		$this->checkCallback = $callback;
+		return $this;
+	}
+
+	public function check($rowData) {
+		if($this->checkCallback) {
+			Callback::invokeArgs($this->checkCallback, array($rowData, $this));
+		}
+	}
+
+	public function isDisabled() {
+		return $this->disabled;
+	}
+
+	public function setDisabled($disabled = TRUE) {
+		$this->disabled = $disabled;
 		return $this;
 	}
 

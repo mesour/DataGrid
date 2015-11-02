@@ -60,6 +60,9 @@ class ArrayDataSource implements IDataSource
      */
     private function getExportSelect()
     {
+        if(!$this->exportSelect) {
+            $this->getSelect();
+        }
         return $this->exportSelect;
     }
 

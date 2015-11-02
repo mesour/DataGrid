@@ -15,6 +15,7 @@ use Mesour\DataGrid\Column\IColumn,
     \Nette\Localization\ITranslator,
     Mesour\DataGrid\Render\Table\RendererFactory;
 use Mesour\DataGrid\Column\InlineEdit;
+use Mesour\DataGrid\Extensions\Item;
 use Nette\Utils\Html;
 
 /**
@@ -383,9 +384,9 @@ class BasicGrid extends BaseGrid {
 				if (isset($this['subitem'])) {
 					foreach($this['subitem']->getItems() as $name => $item) {
 						if (isset($sub_items[$key][$name])) {
-							$this->addOpenedSubItemRow($body, $rowData, $name, $key);
+							$this->addOpenedSubItemRow($body, $rowData, $name, $key, $item);
 						} else {
-							$this->addClosedSubItemRow($body, $rowData, $name, $key);
+							$this->addClosedSubItemRow($body, $rowData, $name, $key, $item);
 						}
 					}
 				}
@@ -396,7 +397,12 @@ class BasicGrid extends BaseGrid {
 		return $table;
 	}
 
-	protected function addClosedSubItemRow(Render\Body &$body, $rowData, $name, $key) {
+	protected function addClosedSubItemRow(Render\Body &$body, $rowData, $name, $key, Item $item) {
+		$item->check($rowData);
+		if($item->isDisabled()) {
+			return;
+		}
+
 		$columns_count = count($this->column_arr);
 		$name = $this['subitem']->getItem($name)->getName();
 		$column = new Column\SubItemButton();
@@ -415,7 +421,11 @@ class BasicGrid extends BaseGrid {
 		$body->addRow($row);
 	}
 
-	protected function addOpenedSubItemRow(Render\Body &$body, $rowData, $name, $key) {
+	protected function addOpenedSubItemRow(Render\Body &$body, $rowData, $name, $keyItem, Item $item) {
+		$item->check($rowData);
+		if($item->isDisabled()) {
+			return;
+		}
 		$columns_count = count($this->column_arr);
 		$columns_count--;
 		$content = $this['subitem']->getItem($name)->render($key, $rowData);
