@@ -79,5 +79,8 @@ return array(
     'close all' => 'close all',
     'Page' => 'Page',
     'Go!' => 'Go!',
-    'Inverse selection' => 'Inverse selection'
+    'Inverse selection' => 'Inverse selection',
+    'true'            =>  'true',
+    'false'             =>  'false',
+    'empty'          =>  'empty',
 );

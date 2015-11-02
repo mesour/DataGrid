@@ -15,6 +15,10 @@ use \Nette\Application\UI\Form,
  */
 class Filter extends BaseControl {
 
+	const MESOUR_TRUE = '-mesour-bool-1';
+	const MESOUR_FALSE = '-mesour-bool-0';
+	const MESOUR_NULL = '-mesour-null';
+
 	/**
 	 * @var Form
 	 */
@@ -55,6 +59,10 @@ class Filter extends BaseControl {
 		    ->action($this->link('submitForm!'));
 		$this->filter_form = $filter_form;
 		$this->form_template = $template;
+	}
+
+	public function getDefaultFilterValues() {
+		return $this->settings;
 	}
 
 	/**
@@ -154,6 +162,25 @@ class Filter extends BaseControl {
 		$this->presenter->redrawControl();
 	}
 
+    private function fixCheckers($checkerValues) {
+        if(!is_array($checkerValues)) {
+            return $checkerValues;
+        }
+        $out = array();
+        foreach ($checkerValues as $val) {
+            if($val === self::MESOUR_FALSE) {
+                $out[] = FALSE;
+            } else if($val === self::MESOUR_TRUE) {
+                $out[] = TRUE;
+            } else if($val === self::MESOUR_NULL) {
+                $out[] = NULL;
+            } else {
+                $out[] = $val;
+            }
+        }
+        return $out;
+    }
+
 	private function applyAutoFiltering() {
 		$realColumnNames = $this->parent->getRealColumnNamesForFilter();
 		foreach ($this->settings as $column_name => $values) {
@@ -167,6 +194,7 @@ class Filter extends BaseControl {
 					case 'priority':
 						continue;
 					case 'checkers':
+                        $value = $this->fixCheckers($value);
 						$this->parent->getDataSource()->applyCheckers($column_name, $value, $values['type']);
 						break;
 					case 'custom':

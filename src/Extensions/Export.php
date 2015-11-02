@@ -79,10 +79,15 @@ class Export extends BaseControl {
 		}
 
 		if (empty($this->export_columns)) {
-			foreach ($this->parent->getColumns() as $column) {
-				$column->setGridComponent($this->parent);
-				if ($this->hasExport($column)) {
-					$export_columns[] = $column;
+			$columns = $this->parent->getColumns();
+			if(count($columns) === 0) {
+				$export_columns = $this->parent->getRealColumnNames();
+			} else {
+				foreach ($columns as $column) {
+					$column->setGridComponent($this->parent);
+					if ($this->hasExport($column)) {
+						$export_columns[] = $column;
+					}
 				}
 			}
 		} else {
@@ -123,6 +128,7 @@ class Export extends BaseControl {
 				}
 			}
 		}
+
 		fputcsv($file, $header_arr, $this->delimiter);
 
 		$first = TRUE;
@@ -140,7 +146,7 @@ class Export extends BaseControl {
 					if ($first && !isset($data[$column_name]) && !is_null($data[$column_name])) {
 						throw new Grid_Exception('Column "' . $column_name . '" does not exist in data.');
 					}
-					$line_data[] = strip_tags($data[$column_name]);
+					$line_data[] = strip_tags($this->fixVariable($data[$column_name]));
 				}
 			}
 			fputcsv($file, $line_data, $this->delimiter);
@@ -149,6 +155,10 @@ class Export extends BaseControl {
 		fclose($file);
 
 		$this->presenter->sendResponse(new FileResponse($this->file_path, (is_null($this->file_name) ? $this->parent->getGridName() : $this->file_name) . '.csv'));
+	}
+
+	private function fixVariable($var) {
+		return $var === FALSE ? 0 : $var;
 	}
 
 	public function __destruct() {

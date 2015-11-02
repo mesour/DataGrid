@@ -10,6 +10,7 @@
 
 namespace Mesour\DataGrid;
 
+use Mesour\DataGrid\Extensions\Filter;
 use Nette\Application\UI\Form;
 
 /**
@@ -41,10 +42,14 @@ class ExtendedGrid extends BasicGrid
     public function enableFilter(Form $filer_form = NULL, $template = NULL, $date = 'Y-m-d')
     {
         new Extensions\Filter($this, 'filter');
+
+        /** @var Filter $filter */
+        $filter = $this['filter'];
         if (!is_null($filer_form)) {
-            $this['filter']->setFilterForm($filer_form, $template);
+            $filter->setFilterForm($filer_form, $template);
         }
-        $this['filter']->setDateFormat($date);
+        $filter->setDateFormat($date);
+        return $filter;
     }
 
     /**
