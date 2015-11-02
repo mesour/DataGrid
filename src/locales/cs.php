@@ -79,5 +79,8 @@ return array(
     'close all' => 'zavřít vše',
     'Page' => 'Strana',
     'Go!' => 'Přejít!',
-    'Inverse selection' => 'Obrátit pořadí'
+    'Inverse selection' => 'Obrátit pořadí',
+    'true'            =>  'pravda',
+    'false'             =>  'nepravda',
+    'empty'          =>  'prázdný',
 );

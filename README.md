@@ -2,10 +2,10 @@
 
 [![Latest Stable Version](https://img.shields.io/github/release/mesour/datagrid.svg)](https://github.com/mesour/DataGrid/releases "Latest Stable Version") [![Build status](https://img.shields.io/travis/mesour/DataGrid.svg)](https://travis-ci.org/mesour/DataGrid "Build status")
 
-Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.
+Mesour DataGrid is datagrid for Nette with options like to dump tree, create sub grids and sub items, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.
 
 - [Documentation/Demo](http://grid.mesour.com)
-- [API](http://apis.mesour.com/api/DataGrid2.0.6/)
+- [API](http://apis.mesour.com/api/DataGrid2.0.7/)
 - [Author](http://mesour.com)
 - [Contact](http://mesour.com/contact)
 
@@ -14,5 +14,5 @@ Mesour DataGrid is datagrid for Nette with options like to dump tree, inline edi
 - With [Composer](https://getcomposer.org)
 
         "require": {
-            "mesour/datagrid": "~2.0.6"
+            "mesour/datagrid": "~2.0.7"
         }
