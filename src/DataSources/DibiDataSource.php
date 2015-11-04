@@ -197,7 +197,7 @@ class DibiDataSource implements IDataSource
                 $this->where('DATE([' . $column_name . ']) IN %in', $value);
             }
         } else {
-            $fixedValues = [];
+            $fixedValues = array();
             $hasNull = FALSE;
             foreach ($value as $val) {
                 if(is_null($val)) {
