@@ -209,6 +209,8 @@ class DibiDataSource implements IDataSource
 
             if($hasNull) {
                 $column_name = '([' . $column_name . '] IN %in OR [' . $column_name . '] IS NULL)';
+            } else {
+                $column_name = '[' . $column_name . '] IN %in';
             }
 
             $this->where($column_name, $fixedValues);
