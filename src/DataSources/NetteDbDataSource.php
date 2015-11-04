@@ -269,7 +269,21 @@ class NetteDbDataSource implements IDataSource
                 $this->where('DATE(' . $column_name . ')', $value);
             }
         } else {
-            $this->where($column_name, $value);
+            $fixedValues = array();
+            $hasNull = FALSE;
+            foreach ($value as $val) {
+                if(is_null($val)) {
+                    $hasNull = TRUE;
+                } else {
+                    $fixedValues[] = $val;
+                }
+            }
+
+            if($hasNull) {
+                $column_name = '(' . $column_name . ' IN ? OR ' . $column_name . ' IS NULL)';
+            }
+
+            $this->where($column_name, $fixedValues);
         }
     }
 

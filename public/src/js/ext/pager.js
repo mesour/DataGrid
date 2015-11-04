@@ -4,7 +4,7 @@
  * @author Matous Nemec (mesour.com)
  */
 (function($) {
-    mesour.on.ready('grid-pager', function() {
+    mesour.on.live('grid-pager', function() {
         $('form.form-pager').on('submit', function(e) {
             e.preventDefault();
             var $this = $(this);

@@ -197,7 +197,23 @@ class DibiDataSource implements IDataSource
                 $this->where('DATE([' . $column_name . ']) IN %in', $value);
             }
         } else {
-            $this->where('[' . $column_name . '] IN %in', $value);
+            $fixedValues = array();
+            $hasNull = FALSE;
+            foreach ($value as $val) {
+                if(is_null($val)) {
+                    $hasNull = TRUE;
+                } else {
+                    $fixedValues[] = $val;
+                }
+            }
+
+            if($hasNull) {
+                $column_name = '([' . $column_name . '] IN %in OR [' . $column_name . '] IS NULL)';
+            } else {
+                $column_name = '[' . $column_name . '] IN %in';
+            }
+
+            $this->where($column_name, $fixedValues);
         }
     }
 
@@ -224,7 +240,7 @@ class DibiDataSource implements IDataSource
     /**
      * Return first element from data
      *
-     * @return Array
+     * @return array
      */
     public function fetch()
     {
