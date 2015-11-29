@@ -421,7 +421,7 @@ class BasicGrid extends BaseGrid {
 		$body->addRow($row);
 	}
 
-	protected function addOpenedSubItemRow(Render\Body &$body, $rowData, $name, $keyItem, Item $item) {
+	protected function addOpenedSubItemRow(Render\Body &$body, $rowData, $name, $key, Item $item) {
 		$item->check($rowData);
 		if($item->isDisabled()) {
 			return;
