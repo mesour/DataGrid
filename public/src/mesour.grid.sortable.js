@@ -20,7 +20,11 @@ mesour.gridSortable = !mesour.gridSortable ? {} : mesour.gridSortable;
         };
 
         this.create = function () {
-            $('[' + options.attributeName + ']').children('tbody').sortable({
+            var tbody = $('[' + options.attributeName + ']').children('tbody');
+            if(!tbody.is('*') || typeof tbody.sortable !== 'function') {
+                return;
+            }
+            tbody.sortable({
                 disableNesting: 'no-child',
                 forcePlaceholderSize: true,
                 autoScroll: true,
