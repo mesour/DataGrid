@@ -101,8 +101,9 @@ class Status extends Filtering implements IExportable
 
             $this->tryInvokeCallback([$rawData, $this, $isActive]);
 
+            $button->setOption('data', $data);
             if ($isActive && !$export) {
-                $buttons .= $button->create($data) . ' ';
+                $buttons .= $button->create() . ' ';
                 $activeCount++;
             } elseif ($isActive && $export) {
                 $buttons[] = $button->getStatusName();

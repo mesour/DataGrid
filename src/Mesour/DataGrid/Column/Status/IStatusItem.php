@@ -15,7 +15,7 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-interface IStatusItem extends Mesour\Components\Control\IControl
+interface IStatusItem extends Mesour\Components\Control\IAttributesControl
 {
 
     public function isActive($column_name, $data);
