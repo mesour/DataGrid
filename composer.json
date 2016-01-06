@@ -10,15 +10,14 @@
   }],
   "require": {
     "php": ">=5.5.0",
-    "mesour/sources": "dev-master",
-    "mesour/filter": "dev-master",
-    "mesour/components": "dev-master",
-    "mesour/selection": "dev-master",
-    "mesour/dropdown": "dev-master",
-    "mesour/button": "dev-master",
-    "mesour/pager": "dev-master",
-    "mesour/icon": "dev-master",
-    "mesour/table": "dev-master"
+    "mesour/filter": "~0.1.0",
+    "mesour/components": "~0.1.0",
+    "mesour/selection": "~0.1.0",
+    "mesour/dropdown": "~0.1.0",
+    "mesour/button": "~0.1.0",
+    "mesour/pager": "~0.1.0",
+    "mesour/icon": "~0.1.0",
+    "mesour/table": "~0.1.0"
   },
   "require-dev": {
     "tracy/tracy": "~2.3.0",
