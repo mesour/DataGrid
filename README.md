@@ -1,18 +1,17 @@
 # Mesour DataGrid
 
-[![Latest Stable Version](https://img.shields.io/github/release/mesour/datagrid.svg)](https://github.com/mesour/DataGrid/releases "Latest Stable Version") [![Build status](https://img.shields.io/travis/mesour/DataGrid.svg)](https://travis-ci.org/mesour/DataGrid "Build status")
+[![Latest Stable Version](https://img.shields.io/github/release/mesour/datagrid.svg)](https://github.com/mesour/DataGrid/releases "Latest Stable Version")
 
-Mesour DataGrid is datagrid for Nette with options like to dump tree, create sub grids and sub items, inline edit, export to csv, sort data using jQuery.ui.nestedSortable and much more.
+Mesour DataGrid is DataGrid for PHP >= 5.5 with options like to inline edit, export to csv, create sub items, sort data using jQuery.ui.nestedSortable and much more.
 
-- [Documentation/Demo](http://grid.mesour.com)
-- [API](http://apis.mesour.com/api/DataGrid2.0.7/)
+- [Documentation/Demo](http://grid.mesour.com/version3/)
+- [API](http://apis.mesour.com/api/DataGrid3.0.0/)
 - [Author](http://mesour.com)
-- [Contact](http://mesour.com/contact)
 
 # Install
 
 - With [Composer](https://getcomposer.org)
 
-        "require": {
-            "mesour/datagrid": "~2.0.7"
-        }
+        composer require mesour/datagrid
+        
+- Or download source from [GitHub](https://github.com/mesour/DataGrid/releases)

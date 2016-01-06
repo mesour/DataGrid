@@ -1,5 +1,7 @@
 .idea
 /vendor
 /composer.lock
-/tests/tmp
-/tests/log
+/demo/log
+/demo/temp
+/demo/avatar
+/demo/preview

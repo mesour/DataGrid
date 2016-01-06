@@ -1,9 +1,0 @@
-<div class="btn-group checkbox-button" style="cursor: not-allowed;">
-	<button class="btn btn-default dropdown-toggle disabled" type="button" data-toggle="dropdown">
-		{_('Selected')}
-		<span class="caret"></span>
-	</button>
-	<ul n:inner-foreach="$links as $name => $link" class="dropdown-menu" role="menu">
-		<li><a n:href="onSelect! $link->getFixedName()"{if $link->getConfirm()} data-confirm="{$link->getConfirm()}"{/if}{if $link->isAjax()} class="is-ajax"{/if}>{$link->getName()}</a></li>
-	</ul>
-</div>
