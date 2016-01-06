@@ -10,14 +10,14 @@
   }],
   "require": {
     "php": ">=5.5.0",
-    "mesour/filter": "~0.1.0",
-    "mesour/components": "~0.1.0",
-    "mesour/selection": "~0.1.0",
-    "mesour/dropdown": "~0.1.0",
-    "mesour/button": "~0.1.0",
-    "mesour/pager": "~0.1.0",
-    "mesour/icon": "~0.1.0",
-    "mesour/table": "~0.1.0"
+    "mesour/filter": "~0.1.0-beta",
+    "mesour/components": "~0.1.0-beta",
+    "mesour/selection": "~0.1.0-beta",
+    "mesour/dropdown": "~0.1.0-beta",
+    "mesour/button": "~0.1.0-beta",
+    "mesour/pager": "~0.1.0-beta",
+    "mesour/icon": "~0.1.0-beta",
+    "mesour/table": "~0.1.0-beta"
   },
   "require-dev": {
     "tracy/tracy": "~2.3.0",
@@ -27,6 +27,8 @@
     "doctrine/orm": "^2.5",
     "mesour/array-manager": "dev-master"
   },
+  "minimum-stability": "beta",
+  "prefer-stable": true,
   "suggest": {
     "latte/latte": "to use column Template or Template SubItem"
   },
