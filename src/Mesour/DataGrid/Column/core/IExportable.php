@@ -9,8 +9,6 @@
 
 namespace Mesour\DataGrid\Column;
 
-use Mesour\Table\Render\IColumn;
-
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
