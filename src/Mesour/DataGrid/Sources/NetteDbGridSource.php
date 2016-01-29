@@ -16,7 +16,7 @@ use Nette;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-class NetteDbGridSource extends Mesour\Filter\Sources\NetteDBFilterSource implements IGridSource
+class NetteDbGridSource extends Mesour\Filter\Sources\NetteDbFilterSource implements IGridSource
 {
 
     private $columnNames = [];
