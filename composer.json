@@ -30,7 +30,8 @@
   },
   "minimum-stability": "dev",
   "suggest": {
-    "latte/latte": "to use column Template or Template SubItem"
+    "latte/latte": "to use column Template or Template SubItem",
+    "ext-gd": "to use column Image"
   },
   "autoload": {
     "classmap": ["src/"]
