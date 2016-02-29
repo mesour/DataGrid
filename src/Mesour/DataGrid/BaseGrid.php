@@ -29,9 +29,9 @@ abstract class BaseGrid extends Mesour\UI\Table
         self::WRAPPER => [
             'el' => 'div',
             'attributes' => [
-                'class' => 'mesour-datagrid'
+                'class' => 'mesour-datagrid',
             ],
-        ]
+        ],
     ];
 
     /** @var Mesour\Components\Utils\Html */
@@ -49,11 +49,11 @@ abstract class BaseGrid extends Mesour\UI\Table
     /** @var Renderer\IGridRenderer */
     private $gridRenderer;
 
-    private $primaryKey = FALSE;
+    private $primaryKey = false;
 
-    protected $isCreateCalled = FALSE;
+    protected $isCreateCalled = false;
 
-    protected $isColumnsFixed = FALSE;
+    protected $isColumnsFixed = false;
 
     private $count = 0;
 
@@ -71,7 +71,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 
     public $onRenderColumnHeader = [];
 
-    public function __construct($name = NULL, Mesour\Components\ComponentModel\IContainer $parent = NULL)
+    public function __construct($name = null, Mesour\Components\ComponentModel\IContainer $parent = null)
     {
         if (is_null($name)) {
             throw new Mesour\InvalidStateException('Component name is required.');
@@ -104,7 +104,7 @@ abstract class BaseGrid extends Mesour\UI\Table
         return $this;
     }
 
-    public function reset($hard = FALSE)
+    public function reset($hard = false)
     {
         foreach ($this->extensionStorage->getActiveExtensions() as $extension) {
             $extension->reset($hard);
@@ -117,7 +117,7 @@ abstract class BaseGrid extends Mesour\UI\Table
      * @return Mesour\Components\ComponentModel\IComponent|object|null
      * @throws Mesour\InvalidArgumentException
      */
-    public function getExtension($extension, $need = TRUE)
+    public function getExtension($extension, $need = true)
     {
         return $this->extensionStorage->get($extension, $need);
     }
@@ -141,7 +141,7 @@ abstract class BaseGrid extends Mesour\UI\Table
             }
         }
         $this->source = $source;
-        if ($this->primaryKey !== FALSE) {
+        if ($this->primaryKey !== false) {
             $this->source->setPrimaryKey($this->primaryKey);
         }
         return $this;
@@ -152,7 +152,7 @@ abstract class BaseGrid extends Mesour\UI\Table
      * @param null $header
      * @return Column\Text
      */
-    public function addColumn($name, $header = NULL)
+    public function addColumn($name, $header = null)
     {
         return $this->setColumn(new Column\Text, $name, $header);
     }
@@ -162,13 +162,13 @@ abstract class BaseGrid extends Mesour\UI\Table
      * @return Sources\IGridSource
      * @throws NoDataSourceException
      */
-    public function getSource($need = TRUE)
+    public function getSource($need = true)
     {
         if ($need && !$this->source) {
             throw new NoDataSourceException('Data source is not set.');
         }
         if ($need) {
-            $this->isSourceUsed = TRUE;
+            $this->isSourceUsed = true;
         }
         return $this->source;
     }
@@ -192,7 +192,7 @@ abstract class BaseGrid extends Mesour\UI\Table
         return $this;
     }
 
-    public function disableOrdering($disabled = TRUE)
+    public function disableOrdering($disabled = true)
     {
         $this->getExtension('IOrdering')
             ->setDisabled($disabled);
@@ -244,8 +244,8 @@ abstract class BaseGrid extends Mesour\UI\Table
 
     private function getWrapperAttributes()
     {
-        $application = $this->getApplication(FALSE);
-        if(!$application) {
+        $application = $this->getApplication(false);
+        if (!$application) {
             throw new Mesour\InvalidStateException('DataGrid must be attached to application before call getWrapperAttributes.');
         }
         return ['data-mesour-grid' => $this->createLinkName()];
@@ -264,7 +264,7 @@ abstract class BaseGrid extends Mesour\UI\Table
     public function create($data = [])
     {
         /** @var Extensions\IExtension $extension */
-        $this->isCreateCalled = TRUE;
+        $this->isCreateCalled = true;
 
         $renderer = $this->getGridRenderer();
 
@@ -317,7 +317,7 @@ abstract class BaseGrid extends Mesour\UI\Table
             isset($this->option[self::WRAPPER]['attributes']['class'])
                 ? $this->option[self::WRAPPER]['attributes']['class']
                 : 'mesour-datagrid',
-            TRUE
+            true
         );
         $renderer->setComponent('wrapper', $wrapper);
 
@@ -329,26 +329,23 @@ abstract class BaseGrid extends Mesour\UI\Table
         $outScript = '(function(){';
         $outScript .= 'mesour.grid.items["' . $this->createLinkName() . '"] = {relations: {}};';
 
-        $relations = [];
-        $allRelated = $this->getSource()->getAllRelated();
-        foreach ($allRelated as $related) {
-            list($table, , $column, $as) = $related;
-
-            $columnName = is_null($as) ? $column : $as;
-
-            foreach ($this->getColumns() as $column) {
-                if ($column instanceof Column\IInlineEdit && $column->getName() === $columnName) {
-                    $column->setRelated($table);
-                    $relations[$table] = $table;
-                } else {
-                    continue;
-                }
+        $referenceSettings = $this->getSource()->getReferenceSettings();
+        foreach ($this->getColumns() as $column) {
+            if ($column instanceof Column\IInlineEdit && isset($referenceSettings[$column->getName()])) {
+                $reference = $referenceSettings[$column->getName()];
+                $column->setReference($reference['table']);
+                $referencedTables[$reference['column']] = $reference['table'];
+            } else {
+                continue;
             }
         }
 
-        foreach ($relations as $table) {
-            $related = $this->getSource()->related($table);
-            $outScript .= 'mesour.grid.items["' . $this->createLinkName() . '"].relations["' . $table . '"] = ' . json_encode($related->fetchPairs($related->getPrimaryKey(), $allRelated[$table][2])) . ';';
+        foreach ($referenceSettings as $reference) {
+            $related = $this->getSource()->getReferencedSource($reference['table']);
+            $outScript .=
+                'mesour.grid.items["' . $this->createLinkName() . '"].relations["' . $reference['table'] . '"] = '
+                . json_encode($related->fetchPairs($related->getPrimaryKey(), $reference['column']))
+                . ';';
         }
 
         $outScript .= '})(jQuery)';
@@ -384,9 +381,9 @@ abstract class BaseGrid extends Mesour\UI\Table
         $body = $renderer->createBody();
 
         if ($this->getSource()->getTotalCount() === 0) {
-            $this->addRow($body, count($columns), [], TRUE, $this->emptyText);
+            $this->addRow($body, count($columns), [], true, $this->emptyText);
         } else if ($this->count === 0) {
-            $this->addRow($body, count($columns), [], TRUE, $this->emptyFilterText);
+            $this->addRow($body, count($columns), [], true, $this->emptyFilterText);
         } else {
             foreach ($data as $key => $rowData) {
                 $this->addRow($body, $rowData, $rawData[$key]);
@@ -401,15 +398,15 @@ abstract class BaseGrid extends Mesour\UI\Table
         return $table;
     }
 
-    protected function addRow(Mesour\Table\Render\Body &$body, $data, $rawData, $empty = FALSE, $text = NULL)
+    protected function addRow(Mesour\Table\Render\Body &$body, $data, $rawData, $empty = false, $text = null)
     {
         $row = $this->getRendererFactory()->createRow($data, $rawData);
         if ($this->count > 0) {
             $row->setAttributes([
-                'id' => $this->getLineId($data)
+                'id' => $this->getLineId($data),
             ]);
         }
-        if ($empty !== FALSE) {
+        if ($empty !== false) {
             $columnsCount = $data;
 
             $column = new Column\EmptyData;
@@ -436,7 +433,7 @@ abstract class BaseGrid extends Mesour\UI\Table
         return $this->createLinkName() . '-' . $data[$this->getPrimaryKey()];
     }
 
-    protected function setColumn(Mesour\Table\Render\IColumn $column, $name, $header = NULL)
+    protected function setColumn(Mesour\Table\Render\IColumn $column, $name, $header = null)
     {
         if (!$column instanceof Column\IColumn) {
             throw new Mesour\InvalidArgumentException('Column must be instanceof \Mesour\DataGrid\Column\IColumn.');
@@ -465,11 +462,11 @@ abstract class BaseGrid extends Mesour\UI\Table
         }
 
         if (!$this->isColumnsFixed) {
-            $fixContainer = FALSE;
+            $fixContainer = false;
 
             foreach ($this->extensionStorage->getActiveExtensions() as $extension) {
                 if ($extension instanceof Extensions\IHasColumn && !$extension->isGetSpecialColumnUsed()) {
-                    $fixContainer = TRUE;
+                    $fixContainer = true;
                     $this->setColumn($extension->getSpecialColumn(), $extension->getSpecialColumnName());
                 }
             }
@@ -502,7 +499,7 @@ abstract class BaseGrid extends Mesour\UI\Table
                     $columns->addComponent($column);
                 }
             }
-            $this->isColumnsFixed = TRUE;
+            $this->isColumnsFixed = true;
             return $columns;
         }
         return parent::getColumns();
@@ -511,7 +508,7 @@ abstract class BaseGrid extends Mesour\UI\Table
     public function setPrimaryKey($primaryKey)
     {
         $this->primaryKey = $primaryKey;
-        $source = $this->getSource(FALSE);
+        $source = $this->getSource(false);
         if ($source) {
             $source->setPrimaryKey($primaryKey);
         }
@@ -520,8 +517,8 @@ abstract class BaseGrid extends Mesour\UI\Table
 
     public function getPrimaryKey()
     {
-        $source = $this->getSource(FALSE);
-        if ($this->primaryKey === FALSE && $source) {
+        $source = $this->getSource(false);
+        if ($this->primaryKey === false && $source) {
             $this->primaryKey = $source->getPrimaryKey();
         }
         return $this->primaryKey;
@@ -546,12 +543,12 @@ abstract class BaseGrid extends Mesour\UI\Table
 
     public function __clone()
     {
-        $this->isCreateCalled = FALSE;
-        $this->isRendererUsed = FALSE;
+        $this->isCreateCalled = false;
+        $this->isRendererUsed = false;
         $this->setGridRenderer(clone $this->getGridRenderer());
         try {
             $source = clone $this->getSource();
-            $this->isSourceUsed = FALSE;
+            $this->isSourceUsed = false;
             $this->setSource($source);
         } catch (NoDataSourceException $e) {
         }

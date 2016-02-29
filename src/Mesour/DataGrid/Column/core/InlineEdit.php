@@ -20,14 +20,14 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 
     private $editable = TRUE;
 
-    private $related;
+    private $reference;
 
     public function getBodyAttributes($data, $need = TRUE, $rawData = [])
     {
         $attributes = parent::getBodyAttributes($data, $need, $rawData);
-        if ($this->hasEditable() && $this->related) {
+        if ($this->hasEditable() && $this->reference) {
             $attributes = array_merge($attributes, [
-                'data-editable-related' => str_replace('\\', '', $this->related)
+                'data-editable-related' => str_replace('\\', '', $this->reference)
             ]);
         }
         return parent::mergeAttributes($data, $attributes);
@@ -50,15 +50,15 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
         && !$editable->isDisabled();
     }
 
-    public function setRelated($table)
+    public function setReference($table)
     {
-        $this->related = (string)$table;
+        $this->reference = (string)$table;
         return $this;
     }
 
-    public function getRelated()
+    public function getReference()
     {
-        return $this->related;
+        return $this->reference;
     }
 
 }

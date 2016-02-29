@@ -125,6 +125,14 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 
     public function afterFetchData($currentData, $data = [], $rawData = [])
     {
+        $referenceSettings = $this->getSource()->getReferenceSettings();
+        foreach ($this->getGrid()->getColumns() as $column) {
+            if ($column instanceof Mesour\DataGrid\Column\IFiltering && isset($referenceSettings[$column->getName()])) {
+                $this[$column->getName()]->setReferenceSettings($referenceSettings[$column->getName()]);
+            } else {
+                continue;
+            }
+        }
     }
 
     public function attachToRenderer(Mesour\DataGrid\Renderer\IGridRenderer $renderer, $data = [], $rawData = [])

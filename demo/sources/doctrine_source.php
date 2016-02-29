@@ -44,14 +44,15 @@ $helperSet = new \Symfony\Component\Console\Helper\HelperSet(array(
 ));
 
 $qb = $entityManager->createQueryBuilder();
-$qb
+$qb = $entityManager->createQueryBuilder()
     ->select('u')
-    ->from('Mesour\Sources\Tests\Entity\User', 'u')
-;
+    ->from(Mesour\Sources\Tests\Entity\User::class, 'u')
+    ->addSelect('g.name groupName')
+    ->join(\Mesour\Sources\Tests\Entity\Groups::class, 'g', \Doctrine\ORM\Query\Expr\Join::WITH, 'u.groupId = g.id');
 
 $source = new \Mesour\DataGrid\Sources\DoctrineGridSource($qb, [
     'userId' => 'u.userId',
-    'groupName' => 'gr.name',
+    'groupName' => 'g.name',
 ]);
 
 $source->setPrimaryKey('userId');

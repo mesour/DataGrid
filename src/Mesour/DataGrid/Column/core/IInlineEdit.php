@@ -29,8 +29,8 @@ interface IInlineEdit extends Mesour\Components\ComponentModel\IComponent, IColu
      */
     public function hasEditable();
 
-    public function setRelated($table);
+    public function setReference($table);
 
-    public function getRelated();
+    public function getReference();
 
 }

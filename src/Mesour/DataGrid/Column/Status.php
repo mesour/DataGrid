@@ -16,7 +16,7 @@ use Mesour;
  * @author Matouš Němec <matous.nemec@mesour.com>
  *
  * @method Mesour\DataGrid\Column\Status\IStatusItem[] getComponents()
- * @method Mesour\DataGrid\Column\Status\IStatusItem getComponent($name, $need = FALSE)
+ * @method Mesour\DataGrid\Column\Status\IStatusItem getComponent($name, $need = false)
  */
 class Status extends Filtering implements IExportable
 {
@@ -45,7 +45,7 @@ class Status extends Filtering implements IExportable
         return $dropDown;
     }
 
-    public function addComponent(Mesour\Components\ComponentModel\IComponent $component, $name = NULL)
+    public function addComponent(Mesour\Components\ComponentModel\IComponent $component, $name = null)
     {
         if (!$component instanceof Mesour\DataGrid\Column\Status\IStatusItem) {
             throw new Mesour\InvalidArgumentException('Can add children for status column only if is instance of Mesour\DataGrid\Column\Status\IStatusItem.');
@@ -53,7 +53,7 @@ class Status extends Filtering implements IExportable
         return parent::addComponent($component, $name);
     }
 
-    public function setPermission($resource = NULL, $privilege = NULL)
+    public function setPermission($resource = null, $privilege = null)
     {
         foreach ($this->getComponents() as $component) {
             $component->setPermission($resource, $privilege);
@@ -65,11 +65,11 @@ class Status extends Filtering implements IExportable
     public function getHeaderAttributes()
     {
         return array_merge([
-            'class' => 'grid-column-' . $this->getName() . ' column-status'
+            'class' => 'grid-column-' . $this->getName() . ' column-status',
         ], parent::getHeaderAttributes());
     }
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
+    public function getBodyAttributes($data, $need = true, $rawData = [])
     {
         $class = 'button-component';
         $active_count = 0;
@@ -86,17 +86,17 @@ class Status extends Filtering implements IExportable
         return parent::mergeAttributes($data, ['class' => $class]);
     }
 
-    public function getBodyContent($data, $rawData, $export = FALSE)
+    public function getBodyContent($data, $rawData, $export = false)
     {
         $buttons = $export ? [] : '';
 
         $activeCount = 0;
         foreach ($this as $button) {
             /** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
-            $isActive = FALSE;
+            $isActive = false;
 
             if ($button->isActive($this->getName(), $data)) {
-                $isActive = TRUE;
+                $isActive = true;
             }
 
             $this->tryInvokeCallback([$rawData, $this, $isActive]);
@@ -125,9 +125,12 @@ class Status extends Filtering implements IExportable
             $statuses[$component->getStatus()] = $component->getStatusName();
         }
 
+        $filter->setCustomReference($this->getName(), $statuses);
+
         $item = $filter->addTextFilter($this->getName(), $this->getHeader(), $statuses);
-        $item->setMainFilter(FALSE);
+        $item->setMainFilter(false);
         $item->setCheckers($hasCheckers);
+        $item->setReferenceSettings(Mesour\DataGrid\Extensions\Filter\FilterExtension::PREDEFINED_KEY);
     }
 
 }

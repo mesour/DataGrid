@@ -152,6 +152,8 @@ $loader->register();
     $auth->allow('registered', 'menu');
     $auth->deny('registered', 'menu', 'second');
 
+    Mesour\UI\Filter::$maxCheckboxCount = 10;
+
     $grid = new \Mesour\UI\DataGrid('extendedDataGrid', $application);
 
     $wrapper = $grid->getWrapperPrototype();
@@ -170,7 +172,7 @@ $loader->register();
         $sources[] = clone $source;
     }
 
-    $source->setRelated($relatedTable, $groupId, 'name', $groupName, 'id');
+    $source->setReference($groupName, $relatedTable, 'name');
 
     $grid->setSource($source);
 

@@ -15,7 +15,6 @@ $loader->addDirectory(__DIR__ . '/../src');
 $loader->setCacheStorage(new Nette\Caching\Storages\FileStorage(__DIR__ . '/temp'));
 $loader->register();
 
-
 ?>
 
 <!-- Latest compiled and minified CSS -->
@@ -81,6 +80,8 @@ $loader->register();
     /** @var \Mesour\DataGrid\Sources\IGridSource $source */
     $source = require_once __DIR__ . '/sources/' . $sourceFile . '.php';
 
+    $source->setReference('groupName', \Mesour\Sources\Tests\Entity\Groups::class, 'name');
+
     $grid->setSource($source);
 
     $pager = $grid->enablePager(8);
@@ -136,6 +137,8 @@ $loader->register();
     $grid->addText('name', 'Name');
 
     $grid->addText('email', 'E-mail');
+
+    $grid->addText('groupName', 'Group');
 
     $grid->addNumber('amount', 'Amount')
         ->setUnit('CZK');
