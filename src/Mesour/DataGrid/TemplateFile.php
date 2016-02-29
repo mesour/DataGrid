@@ -16,7 +16,7 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-class TemplateFile implements Mesour\Components\Utils\IString
+class TemplateFile extends \stdClass implements Mesour\Components\Utils\IString
 {
 
     /** @var Engine */
@@ -29,7 +29,7 @@ class TemplateFile implements Mesour\Components\Utils\IString
     public function __construct($tempDir)
     {
         if (!class_exists('Latte\Engine')) {
-            throw new Mesour\InvalidStateException('TemplateFile required composer package "latte/latte".');
+            throw new Mesour\InvalidStateException('TemplateFile require composer package "latte/latte".');
         }
         if (!self::$engine) {
             self::$engine = new Engine;
