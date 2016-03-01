@@ -72,6 +72,10 @@ abstract class BaseColumn extends Table\Column implements IColumn
         return $this->getTable($subControl);
     }
 
+    public function validate(array $rowData, $data = [])
+    {
+    }
+
     protected function mergeAttributes($data, array $current)
     {
         $base = self::getBodyAttributes($data, FALSE);

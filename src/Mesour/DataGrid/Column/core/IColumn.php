@@ -29,4 +29,6 @@ interface IColumn extends Render\IColumn, Mesour\Components\Control\IControl
 
     public function isDisabled();
 
+    public function validate(array $rowData, $data = []);
+
 }

@@ -198,6 +198,7 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
         }
         fputcsv($file, $header_arr, $this->delimiter);
         $first = TRUE;
+        $exportData = [];
         switch ($type) {
             case 'selected' :
                 $source = $this->getGrid()->getSource();
@@ -223,7 +224,7 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
             $line_data = [];
             foreach ($export_columns as $column) {
                 if ($column instanceof Mesour\DataGrid\Column\IColumn) {
-                    $line_data[] = strip_tags($column->getBodyContent($data, $rawData, TRUE));
+                    $line_data[] = strip_tags($column->getBodyContent($data, $rawData[$key], TRUE));
                 } else {
                     if (is_array($column)) {
                         $column_name = key($column);

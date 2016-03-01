@@ -292,6 +292,10 @@ abstract class BaseGrid extends Mesour\UI\Table
             $extension->afterFetchData($currentData, $data, $currentRawData);
         }
 
+        foreach ($this->getColumns() as $column) {
+            $column->validate($currentData, $data);
+        }
+
         $script = Mesour\Components\Utils\Html::el('script');
         $script->setHtml($this->createCoreScript());
 
@@ -327,6 +331,7 @@ abstract class BaseGrid extends Mesour\UI\Table
     protected function createCoreScript()
     {
         $outScript = '(function(){';
+        $outScript .= 'var mesour = mesour || {grid:{items:{}}};';
         $outScript .= 'mesour.grid.items["' . $this->createLinkName() . '"] = {relations: {}};';
 
         $referenceSettings = $this->getSource()->getReferenceSettings();
@@ -348,7 +353,7 @@ abstract class BaseGrid extends Mesour\UI\Table
                 . ';';
         }
 
-        $outScript .= '})(jQuery)';
+        $outScript .= '})()';
         return $outScript;
     }
 

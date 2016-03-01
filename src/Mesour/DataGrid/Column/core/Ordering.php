@@ -32,6 +32,22 @@ abstract class Ordering extends BaseColumn implements IOrdering
         return $this->ordering;
     }
 
+    public function validate(array $rowData, $data = [])
+    {
+        parent::validate($rowData, $data);
+
+        if ($this->hasOrdering()) {
+            foreach ($rowData as $item) {
+                if (!isset($item[$this->getName()])) {
+                    throw new Mesour\InvalidStateException(
+                        sprintf('If use ordering, column key "%s" must exists in data.', $this->getName())
+                    );
+                }
+                break;
+            }
+        }
+    }
+
     public function getHeaderContent()
     {
         if ($this->ordering) {
