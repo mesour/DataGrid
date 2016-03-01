@@ -2,7 +2,7 @@ Licenses
 ========
 
 Good news! You may use Mesour DataGrid under the terms of either
-the New BSD License or the GNU General Public License (GPL) version 3.
+the New BSD License or the GNU General Public License (GPL) version 2 or 3.
 
 You don't have to notify anyone which license you are using. You can freely
 use Mesour DataGrid in commercial projects as long as the copyright header
@@ -12,7 +12,7 @@ remains intact.
 New BSD License
 ---------------
 
-Copyright (c) 2015 - 2016 Matouš Němec (http://mesour.com)
+Copyright (c) 2015 Matouš Němec (http://mesour.com)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
