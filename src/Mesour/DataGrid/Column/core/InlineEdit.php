@@ -27,7 +27,7 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 		$attributes = parent::getBodyAttributes($data, $need, $rawData);
 		if ($this->hasEditable() && $this->reference) {
 			$attributes = array_merge($attributes, [
-				'data-editable-related' => str_replace('\\', '', $this->reference),
+				'data-editable-related' => $this->reference,
 			]);
 		}
 		return parent::mergeAttributes($data, $attributes);

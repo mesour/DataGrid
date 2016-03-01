@@ -11,6 +11,7 @@ namespace Mesour\DataGrid;
 
 use Mesour;
 use Mesour\DataGrid\Column;
+use Nette\Utils\Json;
 
 
 /**
@@ -330,9 +331,8 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 	protected function createCoreScript()
 	{
-		$outScript = '(function(){';
-		$outScript .= 'var mesour = mesour || {grid:{items:{}}};';
-		$outScript .= 'mesour.grid.items["' . $this->createLinkName() . '"] = {relations: {}};';
+		$outScript = 'var mesour = !mesour ? {} : mesour;';
+		$outScript .= 'mesour.grid = !mesour.grid ? [] : mesour.grid;';
 
 		$referenceSettings = $this->getSource()->getReferenceSettings();
 		foreach ($this->getColumns() as $column) {
@@ -348,12 +348,14 @@ abstract class BaseGrid extends Mesour\UI\Table
 		foreach ($referenceSettings as $reference) {
 			$related = $this->getSource()->getReferencedSource($reference['table']);
 			$outScript .=
-				'mesour.grid.items["' . $this->createLinkName() . '"].relations["' . $reference['table'] . '"] = '
-				. json_encode($related->fetchPairs($related->getPrimaryKey(), $reference['column']))
-				. ';';
+				'mesour.grid.push(['
+				. '"setRelation",'
+				. '"' . $this->createLinkName() . '",'
+				. '"' . str_replace('\\', '\\\\', $reference['table']) . '",'
+				. Json::encode($related->fetchPairs($related->getPrimaryKey(), $reference['column']))
+				. ']);';
 		}
 
-		$outScript .= '})()';
 		return $outScript;
 	}
 

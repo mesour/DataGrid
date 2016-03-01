@@ -10,11 +10,11 @@ mesour.grid = !mesour.grid ? {} : mesour.grid;
     var live = function () {
         var grids = $('.mesour-datagrid');
 
-        grids.find('.only-buttons').each(function() {
+        grids.find('.only-buttons').each(function () {
             $(this).closest('td').addClass('actions-column');
         });
 
-        grids.find('[data-mesour-enabled-filter="1"]').find('.selection-dropdown').each(function() {
+        grids.find('[data-mesour-enabled-filter="1"]').find('.selection-dropdown').each(function () {
             $(this).before('<span class="fake-header">&nbsp;</span>');
         });
 
@@ -32,6 +32,17 @@ mesour.grid = !mesour.grid ? {} : mesour.grid;
 
         this.items = {};
 
+        this.setRelation = function (gridName, tableName, data) {
+            if (!_this.items[gridName]) {
+                _this.items[gridName] = {
+                    relations: {}
+                };
+            }
+            if (!_this.items[gridName].relations[tableName]) {
+                _this.items[gridName].relations[tableName] = {};
+            }
+            _this.items[gridName].relations[tableName] = data;
+        };
 
     };
 
