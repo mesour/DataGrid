@@ -18,16 +18,16 @@ use Mesour;
 interface ISortable extends Mesour\DataGrid\Extensions\IExtension, Mesour\DataGrid\Extensions\IHasColumn
 {
 
-    /**
-     * @param $columnName
-     * @return mixed
-     */
-    public function setColumnName($columnName);
+	/**
+	 * @param $columnName
+	 * @return mixed
+	 */
+	public function setColumnName($columnName);
 
-    public function setPermission($resource, $privilege);
+	public function setPermission($resource, $privilege);
 
-    public function isGetSpecialColumnUsed();
+	public function isGetSpecialColumnUsed();
 
-    public function handleSortData($data, $item);
+	public function handleSortData($data, $item);
 
 }

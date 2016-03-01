@@ -10,7 +10,6 @@
 namespace Mesour\DataGrid;
 
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */

@@ -18,8 +18,8 @@ use Mesour;
 interface IGridSource extends Mesour\Filter\Sources\IFilterSource
 {
 
-    public function fetchForExport();
+	public function fetchForExport();
 
-    public function getColumnNames();
+	public function getColumnNames();
 
 }

@@ -21,116 +21,116 @@ use Mesour;
 class Status extends Filtering implements IExportable
 {
 
-    static public $no_active_class = 'no-active-button';
+	static public $no_active_class = 'no-active-button';
 
-    /**
-     * @param $name
-     * @return Mesour\DataGrid\Column\Status\StatusButton
-     */
-    public function addButton($name)
-    {
-        $button = new Mesour\DataGrid\Column\Status\StatusButton($name);
-        $this->addComponent($button);
-        return $button;
-    }
+	/**
+	 * @param $name
+	 * @return Mesour\DataGrid\Column\Status\StatusButton
+	 */
+	public function addButton($name)
+	{
+		$button = new Mesour\DataGrid\Column\Status\StatusButton($name);
+		$this->addComponent($button);
+		return $button;
+	}
 
-    /**
-     * @param $name
-     * @return Mesour\DataGrid\Column\Status\StatusDropDown
-     */
-    public function addDropDown($name)
-    {
-        $dropDown = new Mesour\DataGrid\Column\Status\StatusDropDown($name);
-        $this->addComponent($dropDown);
-        return $dropDown;
-    }
+	/**
+	 * @param $name
+	 * @return Mesour\DataGrid\Column\Status\StatusDropDown
+	 */
+	public function addDropDown($name)
+	{
+		$dropDown = new Mesour\DataGrid\Column\Status\StatusDropDown($name);
+		$this->addComponent($dropDown);
+		return $dropDown;
+	}
 
-    public function addComponent(Mesour\Components\ComponentModel\IComponent $component, $name = null)
-    {
-        if (!$component instanceof Mesour\DataGrid\Column\Status\IStatusItem) {
-            throw new Mesour\InvalidArgumentException('Can add children for status column only if is instance of Mesour\DataGrid\Column\Status\IStatusItem.');
-        }
-        return parent::addComponent($component, $name);
-    }
+	public function addComponent(Mesour\Components\ComponentModel\IComponent $component, $name = null)
+	{
+		if (!$component instanceof Mesour\DataGrid\Column\Status\IStatusItem) {
+			throw new Mesour\InvalidArgumentException('Can add children for status column only if is instance of Mesour\DataGrid\Column\Status\IStatusItem.');
+		}
+		return parent::addComponent($component, $name);
+	}
 
-    public function setPermission($resource = null, $privilege = null)
-    {
-        foreach ($this->getComponents() as $component) {
-            $component->setPermission($resource, $privilege);
-            //todo: na dropdownu udělat také set permission aby to nastavilo práva na všech buttonech
-        }
-        return $this;
-    }
+	public function setPermission($resource = null, $privilege = null)
+	{
+		foreach ($this->getComponents() as $component) {
+			$component->setPermission($resource, $privilege);
+			//todo: na dropdownu udělat také set permission aby to nastavilo práva na všech buttonech
+		}
+		return $this;
+	}
 
-    public function getHeaderAttributes()
-    {
-        return array_merge([
-            'class' => 'grid-column-' . $this->getName() . ' column-status',
-        ], parent::getHeaderAttributes());
-    }
+	public function getHeaderAttributes()
+	{
+		return array_merge([
+			'class' => 'grid-column-' . $this->getName() . ' column-status',
+		], parent::getHeaderAttributes());
+	}
 
-    public function getBodyAttributes($data, $need = true, $rawData = [])
-    {
-        $class = 'button-component';
-        $active_count = 0;
-        foreach ($this as $button) {
-            /** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
-            if ($button->isActive($this->getName(), $data)) {
-                $class .= ' is-' . $button->getStatus();
-                $active_count++;
-            }
-        }
-        if ($active_count === 0) {
-            $class .= ' ' . self::$no_active_class;
-        }
-        return parent::mergeAttributes($data, ['class' => $class]);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		$class = 'button-component';
+		$active_count = 0;
+		foreach ($this as $button) {
+			/** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
+			if ($button->isActive($this->getName(), $data)) {
+				$class .= ' is-' . $button->getStatus();
+				$active_count++;
+			}
+		}
+		if ($active_count === 0) {
+			$class .= ' ' . self::$no_active_class;
+		}
+		return parent::mergeAttributes($data, ['class' => $class]);
+	}
 
-    public function getBodyContent($data, $rawData, $export = false)
-    {
-        $buttons = $export ? [] : '';
+	public function getBodyContent($data, $rawData, $export = false)
+	{
+		$buttons = $export ? [] : '';
 
-        $activeCount = 0;
-        foreach ($this as $button) {
-            /** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
-            $isActive = false;
+		$activeCount = 0;
+		foreach ($this as $button) {
+			/** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
+			$isActive = false;
 
-            if ($button->isActive($this->getName(), $data)) {
-                $isActive = true;
-            }
+			if ($button->isActive($this->getName(), $data)) {
+				$isActive = true;
+			}
 
-            $this->tryInvokeCallback([$rawData, $this, $isActive]);
+			$this->tryInvokeCallback([$rawData, $this, $isActive]);
 
-            $button->setOption('data', $data);
-            if ($isActive && !$export) {
-                $buttons .= $button->create() . ' ';
-                $activeCount++;
-            } elseif ($isActive && $export) {
-                $buttons[] = $button->getStatusName();
-            }
-        }
+			$button->setOption('data', $data);
+			if ($isActive && !$export) {
+				$buttons .= $button->create() . ' ';
+				$activeCount++;
+			} elseif ($isActive && $export) {
+				$buttons[] = $button->getStatusName();
+			}
+		}
 
-        $container = Mesour\Components\Utils\Html::el('div', ['class' => 'status-buttons buttons-count-' . $activeCount]);
-        $container->setHtml($export ? implode('|', $buttons) : $buttons);
+		$container = Mesour\Components\Utils\Html::el('div', ['class' => 'status-buttons buttons-count-' . $activeCount]);
+		$container->setHtml($export ? implode('|', $buttons) : $buttons);
 
-        return $export ? trim(strip_tags($container)) : $container;
-    }
+		return $export ? trim(strip_tags($container)) : $container;
+	}
 
-    public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers)
-    {
-        parent::attachToFilter($filter, $hasCheckers);
+	public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers)
+	{
+		parent::attachToFilter($filter, $hasCheckers);
 
-        $statuses = [];
-        foreach ($this->getComponents() as $component) {
-            $statuses[$component->getStatus()] = $component->getStatusName();
-        }
+		$statuses = [];
+		foreach ($this->getComponents() as $component) {
+			$statuses[$component->getStatus()] = $component->getStatusName();
+		}
 
-        $filter->setCustomReference($this->getName(), $statuses);
+		$filter->setCustomReference($this->getName(), $statuses);
 
-        $item = $filter->addTextFilter($this->getName(), $this->getHeader(), $statuses);
-        $item->setMainFilter(false);
-        $item->setCheckers($hasCheckers);
-        $item->setReferenceSettings(Mesour\DataGrid\Extensions\Filter\FilterExtension::PREDEFINED_KEY);
-    }
+		$item = $filter->addTextFilter($this->getName(), $this->getHeader(), $statuses);
+		$item->setMainFilter(false);
+		$item->setCheckers($hasCheckers);
+		$item->setReferenceSettings(Mesour\DataGrid\Extensions\Filter\FilterExtension::PREDEFINED_KEY);
+	}
 
 }

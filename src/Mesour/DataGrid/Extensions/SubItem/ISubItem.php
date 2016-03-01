@@ -12,23 +12,22 @@ namespace Mesour\DataGrid\Extensions\SubItem;
 use Mesour;
 
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 interface ISubItem extends Mesour\DataGrid\Extensions\IExtension
 {
 
-    public function getPageLimit();
+	public function getPageLimit();
 
-    public function getItems();
+	public function getItems();
 
-    public function getOpened();
+	public function getOpened();
 
-    public function hasSubItems();
+	public function hasSubItems();
 
-    public function getItem($name);
+	public function getItem($name);
 
-    public function setPermission($resource, $privilege);
+	public function setPermission($resource, $privilege);
 
 }

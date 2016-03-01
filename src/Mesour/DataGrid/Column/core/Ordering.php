@@ -19,67 +19,67 @@ use Mesour\DataGrid\Column;
 abstract class Ordering extends BaseColumn implements IOrdering
 {
 
-    private $ordering = TRUE;
+	private $ordering = true;
 
-    public function setOrdering($ordering = TRUE)
-    {
-        $this->ordering = (bool)$ordering;
-        return $this;
-    }
+	public function setOrdering($ordering = true)
+	{
+		$this->ordering = (bool)$ordering;
+		return $this;
+	}
 
-    public function hasOrdering()
-    {
-        return $this->ordering;
-    }
+	public function hasOrdering()
+	{
+		return $this->ordering;
+	}
 
-    public function validate(array $rowData, $data = [])
-    {
-        parent::validate($rowData, $data);
+	public function validate(array $rowData, $data = [])
+	{
+		parent::validate($rowData, $data);
 
-        if ($this->hasOrdering()) {
-            foreach ($rowData as $item) {
-                if (!isset($item[$this->getName()])) {
-                    throw new Mesour\InvalidStateException(
-                        sprintf('If use ordering, column key "%s" must exists in data.', $this->getName())
-                    );
-                }
-                break;
-            }
-        }
-    }
+		if ($this->hasOrdering()) {
+			foreach ($rowData as $item) {
+				if (!isset($item[$this->getName()])) {
+					throw new Mesour\InvalidStateException(
+						sprintf('If use ordering, column key "%s" must exists in data.', $this->getName())
+					);
+				}
+				break;
+			}
+		}
+	}
 
-    public function getHeaderContent()
-    {
-        if ($this->ordering) {
-            /** @var \Mesour\DataGrid\Extensions\Ordering\OrderingExtension $component */
-            $component = $this->getGrid('ordering');
-            $ordering = $component->getOrdering($this->getName());
+	public function getHeaderContent()
+	{
+		if ($this->ordering) {
+			/** @var \Mesour\DataGrid\Extensions\Ordering\OrderingExtension $component */
+			$component = $this->getGrid('ordering');
+			$ordering = $component->getOrdering($this->getName());
 
-            $link = Mesour\Components\Utils\Html::el('a', [
-                'href' => $this->getGrid('ordering')->createLink('ordering', ['key' => $this->getName()]),
-                'class' => 'ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : ''),
-                'data-mesour' => 'ajax'
-            ]);
+			$link = Mesour\Components\Utils\Html::el('a', [
+				'href' => $this->getGrid('ordering')->createLink('ordering', ['key' => $this->getName()]),
+				'class' => 'ordering' . (!is_null($ordering) ? (' ' . strtolower($ordering)) : ''),
+				'data-mesour' => 'ajax',
+			]);
 
-            $icon = $this->createNewIcon('cog');
-            $link->setText(parent::getHeaderContent());
-            if ($this instanceof Column\Number || $this instanceof Column\Date) {
-                $iconName = 'sort-numeric';
-            } else if ($this instanceof Column\Status) {
-                $iconName = 'sort-amount';
-            } else {
-                $iconName = 'sort-alpha';
-            }
+			$icon = $this->createNewIcon('cog');
+			$link->setText(parent::getHeaderContent());
+			if ($this instanceof Column\Number || $this instanceof Column\Date) {
+				$iconName = 'sort-numeric';
+			} else if ($this instanceof Column\Status) {
+				$iconName = 'sort-amount';
+			} else {
+				$iconName = 'sort-alpha';
+			}
 
-            foreach (['-asc no-sort', '-asc order-asc', '-desc order-desc'] as $suffix) {
-                $icon->setType($iconName . $suffix);
-                $link->add($icon->render());
-            }
+			foreach (['-asc no-sort', '-asc order-asc', '-desc order-desc'] as $suffix) {
+				$icon->setType($iconName . $suffix);
+				$link->add($icon->render());
+			}
 
-            return $link . $this->getFilterResetButton();
-        } else {
-            return parent::getHeaderContent() . $this->getFilterResetButton();
-        }
-    }
+			return $link . $this->getFilterResetButton();
+		} else {
+			return parent::getHeaderContent() . $this->getFilterResetButton();
+		}
+	}
 
 }

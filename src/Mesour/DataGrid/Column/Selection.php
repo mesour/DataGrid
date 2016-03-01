@@ -18,29 +18,29 @@ use Mesour\DataGrid\Extensions\Selection\ISelection;
 class Selection extends BaseColumn implements IPrependedColumn
 {
 
-    /**
-     * @var ISelection
-     */
-    protected $selection;
+	/**
+	 * @var ISelection
+	 */
+	protected $selection;
 
-    public function getHeaderAttributes()
-    {
-        $this->selection = $this->getGrid()->getExtension('ISelection');
-        return ['class' => 'act act-select'];
-    }
+	public function getHeaderAttributes()
+	{
+		$this->selection = $this->getGrid()->getExtension('ISelection');
+		return ['class' => 'act act-select'];
+	}
 
-    public function getHeaderContent()
-    {
-        return $this->selection->create()->create();
-    }
+	public function getHeaderContent()
+	{
+		return $this->selection->create()->create();
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        return parent::mergeAttributes($data, ['class' => 'grid-checkbox']);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		return parent::mergeAttributes($data, ['class' => 'grid-checkbox']);
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        return $this->selection->createItem($data[$this->getGrid()->getSource()->getPrimaryKey()]);
-    }
+	public function getBodyContent($data, $rawData)
+	{
+		return $this->selection->createItem($data[$this->getGrid()->getSource()->getPrimaryKey()]);
+	}
 }

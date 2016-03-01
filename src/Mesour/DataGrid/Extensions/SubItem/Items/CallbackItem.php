@@ -18,27 +18,27 @@ use Mesour;
 class CallbackItem extends Item
 {
 
-    public function __construct(Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name, $description = NULL)
-    {
-        parent::__construct($parent, $name, $description);
-    }
+	public function __construct(Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name, $description = null)
+	{
+		parent::__construct($parent, $name, $description);
+	}
 
-    public function render($key = NULL, $rowData = NULL, $rawData = NULL)
-    {
-        if (is_null($key) || is_null($rowData)) {
-            return '';
-        }
-        return parent::invoke([$rawData], NULL, NULL);
-    }
+	public function render($key = null, $rowData = null, $rawData = null)
+	{
+		if (is_null($key) || is_null($rowData)) {
+			return '';
+		}
+		return parent::invoke([$rawData], null, null);
+	}
 
-    public function reset()
-    {
+	public function reset()
+	{
 
-    }
+	}
 
-    public function invoke(array $args = [], $name, $key)
-    {
+	public function invoke(array $args = [], $name, $key)
+	{
 
-    }
+	}
 
 }

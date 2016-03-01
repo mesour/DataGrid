@@ -15,11 +15,11 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-interface IEditable extends  Mesour\DataGrid\Extensions\IExtension
+interface IEditable extends Mesour\DataGrid\Extensions\IExtension
 {
 
-    public function handleEditCell(array $data);
+	public function handleEditCell(array $data);
 
-    public function setPermission($resource, $privilege);
+	public function setPermission($resource, $privilege);
 
 }

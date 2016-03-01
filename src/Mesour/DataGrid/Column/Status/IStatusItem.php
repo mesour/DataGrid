@@ -18,19 +18,19 @@ use Mesour;
 interface IStatusItem extends Mesour\Components\Control\IAttributesControl
 {
 
-    public function isActive($column_name, $data);
+	public function isActive($column_name, $data);
 
-    public function setStatus($status, $statusName, $selectionTitle = NULL);
+	public function setStatus($status, $statusName, $selectionTitle = null);
 
-    /**
-     * @return array|null   [$this->status => $this->statusName]
-     */
-    public function getStatusOptions();
+	/**
+	 * @return array|null   [$this->status => $this->statusName]
+	 */
+	public function getStatusOptions();
 
-    public function getStatus();
+	public function getStatus();
 
-    public function setPermission($resource = NULL, $privilege = NULL);
+	public function setPermission($resource = null, $privilege = null);
 
-    public function getStatusName();
+	public function getStatusName();
 
 }

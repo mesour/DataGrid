@@ -18,44 +18,44 @@ use Mesour;
 class Sortable extends BaseColumn implements IPrependedColumn
 {
 
-    protected $arrowsIcon = 'arrows';
+	protected $arrowsIcon = 'arrows';
 
-    /**
-     * @return Mesour\UI\Button
-     */
-    public function getButton()
-    {
-        if (!isset($this['button'])) {
-            $this['button'] = new Mesour\UI\Button();
-            $this['button']->setSize('btn-sm')
-                ->setType('default')
-                ->setAttribute('class', 'move handler', TRUE)
-                ->setAttribute('href', '#')
-                ->setIcon($this->arrowsIcon);
-        }
-        return $this['button'];
-    }
+	/**
+	 * @return Mesour\UI\Button
+	 */
+	public function getButton()
+	{
+		if (!isset($this['button'])) {
+			$this['button'] = new Mesour\UI\Button();
+			$this['button']->setSize('btn-sm')
+				->setType('default')
+				->setAttribute('class', 'move handler', true)
+				->setAttribute('href', '#')
+				->setIcon($this->arrowsIcon);
+		}
+		return $this['button'];
+	}
 
-    public function getHeaderAttributes()
-    {
-        return ['class' => 'sortable-column'];
-    }
+	public function getHeaderAttributes()
+	{
+		return ['class' => 'sortable-column'];
+	}
 
-    public function getHeaderContent()
-    {
-        $icon = $this->createNewIcon($this->arrowsIcon . ' grid-move');
-        return $icon;
-    }
+	public function getHeaderContent()
+	{
+		$icon = $this->createNewIcon($this->arrowsIcon . ' grid-move');
+		return $icon;
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        return parent::mergeAttributes($data, ['class' => 'grid-sortable']);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		return parent::mergeAttributes($data, ['class' => 'grid-sortable']);
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        $this->getButton()->setOption('data', $data);
-        return $this->getButton()->create();
-    }
+	public function getBodyContent($data, $rawData)
+	{
+		$this->getButton()->setOption('data', $data);
+		return $this->getButton()->create();
+	}
 
 }

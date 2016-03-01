@@ -18,14 +18,14 @@ use Mesour;
 interface IFiltering extends Mesour\Components\ComponentModel\IComponent, IColumn
 {
 
-    public function setFiltering($filtering = TRUE);
+	public function setFiltering($filtering = true);
 
-    public function hasFiltering();
+	public function hasFiltering();
 
-    public function setInline($inline = TRUE);
+	public function setInline($inline = true);
 
-    public function isInline();
+	public function isInline();
 
-    public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers);
+	public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers);
 
 }

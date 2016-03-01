@@ -16,21 +16,21 @@ namespace Mesour\DataGrid\Column;
 class SubItem extends EmptyData
 {
 
-    public function setText($text)
-    {
-        $this->text = $text;
-        return $this;
-    }
+	public function setText($text)
+	{
+		$this->text = $text;
+		return $this;
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        return parent::mergeAttributes([], ['colspan' => $data]);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		return parent::mergeAttributes([], ['colspan' => $data]);
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        $this->tryInvokeCallback([$rawData, $this, $this->text]);
-        return $this->text;
-    }
+	public function getBodyContent($data, $rawData)
+	{
+		$this->tryInvokeCallback([$rawData, $this, $this->text]);
+		return $this->text;
+	}
 
 }

@@ -18,19 +18,19 @@ use Mesour;
 interface IHasColumn
 {
 
-    /**
-     * @return Mesour\DataGrid\Column\IColumn
-     */
-    public function getSpecialColumn();
+	/**
+	 * @return Mesour\DataGrid\Column\IColumn
+	 */
+	public function getSpecialColumn();
 
-    /**
-     * @return string
-     */
-    public function getSpecialColumnName();
+	/**
+	 * @return string
+	 */
+	public function getSpecialColumnName();
 
-    /**
-     * @return bool
-     */
-    public function isGetSpecialColumnUsed();
+	/**
+	 * @return bool
+	 */
+	public function isGetSpecialColumnUsed();
 
 }

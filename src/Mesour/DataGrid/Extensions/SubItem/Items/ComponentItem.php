@@ -18,41 +18,41 @@ use Mesour;
 class ComponentItem extends Item
 {
 
-    public function __construct(Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name, $description = NULL, $component = NULL)
-    {
-        parent::__construct($parent, $name, $description);
-        $i = 0;
-        while ($i < (is_null($this->pageLimit) ? self::DEFAULT_COUNT : $this->pageLimit)) {
-            if (!$component instanceof Mesour\Components\Control\IControl) {
-                Mesour\Components\Utils\Helpers::invokeArgs($component, [$this->getParent()->getParent(), $name . $i]);
-            } else {
-                $this->getGrid()->addComponent($component, $name . $i);
-            }
-            $this->keys[] = $i;
-            $i++;
-        }
-    }
+	public function __construct(Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name, $description = null, $component = null)
+	{
+		parent::__construct($parent, $name, $description);
+		$i = 0;
+		while ($i < (is_null($this->pageLimit) ? self::DEFAULT_COUNT : $this->pageLimit)) {
+			if (!$component instanceof Mesour\Components\Control\IControl) {
+				Mesour\Components\Utils\Helpers::invokeArgs($component, [$this->getParent()->getParent(), $name . $i]);
+			} else {
+				$this->getGrid()->addComponent($component, $name . $i);
+			}
+			$this->keys[] = $i;
+			$i++;
+		}
+	}
 
-    public function render($key = NULL)
-    {
-        if (is_null($key)) {
-            return '';
-        }
-        /** @var Mesour\Components\Control\IControl $component */
-        $component = $this->getGrid()->getComponent($this->name . $this->getTranslatedKey($key));
-        return $component->create();
-    }
+	public function render($key = null)
+	{
+		if (is_null($key)) {
+			return '';
+		}
+		/** @var Mesour\Components\Control\IControl $component */
+		$component = $this->getGrid()->getComponent($this->name . $this->getTranslatedKey($key));
+		return $component->create();
+	}
 
-    public function invoke(array $args = [], $name, $key)
-    {
-        $arguments = [$this->getGrid()->getComponent($name . $key)];
-        $arguments = array_merge($arguments, $args);
-        return parent::invoke($arguments, $name, $key);
-    }
+	public function invoke(array $args = [], $name, $key)
+	{
+		$arguments = [$this->getGrid()->getComponent($name . $key)];
+		$arguments = array_merge($arguments, $args);
+		return parent::invoke($arguments, $name, $key);
+	}
 
-    public function reset()
-    {
+	public function reset()
+	{
 
-    }
+	}
 
 }

@@ -18,30 +18,30 @@ use Mesour;
 interface IExtension extends Mesour\Components\Control\IControl
 {
 
-    /**
-     * @return bool
-     */
-    public function isDisabled();
+	/**
+	 * @return bool
+	 */
+	public function isDisabled();
 
-    public function setDisabled($disabled = TRUE);
+	public function setDisabled($disabled = true);
 
-    /**
-     * @param IExtension $extension
-     * @param null $name
-     * @return mixed
-     */
-    public function createInstance(IExtension $extension, $name = NULL);
+	/**
+	 * @param IExtension $extension
+	 * @param null $name
+	 * @return mixed
+	 */
+	public function createInstance(IExtension $extension, $name = null);
 
-    public function gridCreate($data = []);
+	public function gridCreate($data = []);
 
-    public function afterGetCount($count);
+	public function afterGetCount($count);
 
-    public function beforeFetchData($data = []);
+	public function beforeFetchData($data = []);
 
-    public function afterFetchData($currentData, $data = [], $rawData = []);
+	public function afterFetchData($currentData, $data = [], $rawData = []);
 
-    public function attachToRenderer(Mesour\DataGrid\Renderer\IGridRenderer $renderer, $data = [], $rawData = []);
+	public function attachToRenderer(Mesour\DataGrid\Renderer\IGridRenderer $renderer, $data = [], $rawData = []);
 
-    public function reset($hard = FALSE);
+	public function reset($hard = false);
 
 }

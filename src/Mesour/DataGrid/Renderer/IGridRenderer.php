@@ -18,25 +18,25 @@ use Mesour;
 interface IGridRenderer extends Mesour\Components\Utils\IString
 {
 
-    public function getComponent($type);
+	public function getComponent($type);
 
-    public function setComponent($type, $component);
+	public function setComponent($type, $component);
 
-    /**
-     * @return Mesour\Components\Utils\Html
-     */
-    public function getWrapper();
+	/**
+	 * @return Mesour\Components\Utils\Html
+	 */
+	public function getWrapper();
 
-    public function renderGrid();
+	public function renderGrid();
 
-    public function renderPager();
+	public function renderPager();
 
-    public function renderSelection();
+	public function renderSelection();
 
-    public function renderFilter();
+	public function renderFilter();
 
-    public function renderExport();
+	public function renderExport();
 
-    public function render();
+	public function render();
 
 }

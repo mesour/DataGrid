@@ -18,74 +18,74 @@ use Mesour;
 class StatusDropDown extends Mesour\UI\DropDown implements IStatusItem
 {
 
-    private $status;
+	private $status;
 
-    private $selectionTitle = NULL;
+	private $selectionTitle = null;
 
-    private $statusName;
+	private $statusName;
 
-    private $callback;
+	private $callback;
 
-    private $callbackArgs = [];
+	private $callbackArgs = [];
 
-    public function __construct($name = NULL, Mesour\Components\ComponentModel\IContainer $parent = NULL)
-    {
-        parent::__construct($name, $parent);
+	public function __construct($name = null, Mesour\Components\ComponentModel\IContainer $parent = null)
+	{
+		parent::__construct($name, $parent);
 
-        $this->getMainButton()
-            ->setSize('btn-sm');
-    }
+		$this->getMainButton()
+			->setSize('btn-sm');
+	}
 
-    public function setStatus($status, $statusName, $selectionTitle = NULL)
-    {
-        $this->status = $status;
-        $this->statusName = $this->getTranslator()->translate($statusName);
-        $this->selectionTitle = !is_null($selectionTitle) ? $this->getTranslator()->translate($selectionTitle) : NULL;
-        return $this;
-    }
+	public function setStatus($status, $statusName, $selectionTitle = null)
+	{
+		$this->status = $status;
+		$this->statusName = $this->getTranslator()->translate($statusName);
+		$this->selectionTitle = !is_null($selectionTitle) ? $this->getTranslator()->translate($selectionTitle) : null;
+		return $this;
+	}
 
-    /**
-     * @return array   [$this->status => $this->statusName]
-     */
-    public function getStatusOptions()
-    {
-        return is_null($this->selectionTitle) ? NULL : [$this->status => $this->selectionTitle];
-    }
+	/**
+	 * @return array   [$this->status => $this->statusName]
+	 */
+	public function getStatusOptions()
+	{
+		return is_null($this->selectionTitle) ? null : [$this->status => $this->selectionTitle];
+	}
 
-    public function getStatusName()
-    {
-        return $this->statusName;
-    }
+	public function getStatusName()
+	{
+		return $this->statusName;
+	}
 
-    public function setCallback($callback)
-    {
-        Mesour\Components\Utils\Helpers::checkCallback($callback);
-        $this->callback = $callback;
-        return $this;
-    }
+	public function setCallback($callback)
+	{
+		Mesour\Components\Utils\Helpers::checkCallback($callback);
+		$this->callback = $callback;
+		return $this;
+	}
 
-    public function setCallbackArguments(array $arguments)
-    {
-        $this->callbackArgs = $arguments;
-        return $this;
-    }
+	public function setCallbackArguments(array $arguments)
+	{
+		$this->callbackArgs = $arguments;
+		return $this;
+	}
 
-    public function getStatus()
-    {
-        return $this->status;
-    }
+	public function getStatus()
+	{
+		return $this->status;
+	}
 
-    public function isActive($column_name, $data)
-    {
-        if (!$this->callback) {
-            return $data[$column_name] == $this->status ? TRUE : FALSE;
-        } else {
-            $args = [$data];
-            if (count($this->callbackArgs) > 0) {
-                $args = array_merge($args, $this->callbackArgs);
-            }
-            return Mesour\Components\Utils\Helpers::invokeArgs($this->callback, $args);
-        }
-    }
+	public function isActive($column_name, $data)
+	{
+		if (!$this->callback) {
+			return $data[$column_name] == $this->status ? true : false;
+		} else {
+			$args = [$data];
+			if (count($this->callbackArgs) > 0) {
+				$args = array_merge($args, $this->callbackArgs);
+			}
+			return Mesour\Components\Utils\Helpers::invokeArgs($this->callback, $args);
+		}
+	}
 
 }

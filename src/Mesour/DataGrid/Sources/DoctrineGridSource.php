@@ -20,35 +20,35 @@ use Doctrine;
 class DoctrineGridSource extends Mesour\Filter\Sources\DoctrineFilterSource implements IGridSource
 {
 
-    private $columnNames = [];
+	private $columnNames = [];
 
-    public function fetchForExport()
-    {
-        try {
-            $this->lastFetchAllResult = $this->cloneQueryBuilder()
-                ->setMaxResults(null)
-                ->setFirstResult(null)
-                ->getQuery()
-                ->getResult();
+	public function fetchForExport()
+	{
+		try {
+			$this->lastFetchAllResult = $this->cloneQueryBuilder()
+				->setMaxResults(null)
+				->setFirstResult(null)
+				->getQuery()
+				->getResult();
 
-            return $this->fixResult(
-                $this->getEntityArrayAsArrays($this->lastFetchAllResult)
-            );
-        } catch (Doctrine\ORM\NoResultException $e) {
-            return [];
-        }
-    }
+			return $this->fixResult(
+				$this->getEntityArrayAsArrays($this->lastFetchAllResult)
+			);
+		} catch (Doctrine\ORM\NoResultException $e) {
+			return [];
+		}
+	}
 
-    public function getColumnNames()
-    {
-        if (!count($this->columnNames)) {
-            $data = $this->fetch();
-            if (!$data) {
-                return [];
-            }
-            $this->columnNames = array_keys((array)$data);
-        }
-        return $this->columnNames;
-    }
+	public function getColumnNames()
+	{
+		if (!count($this->columnNames)) {
+			$data = $this->fetch();
+			if (!$data) {
+				return [];
+			}
+			$this->columnNames = array_keys((array)$data);
+		}
+		return $this->columnNames;
+	}
 
 }

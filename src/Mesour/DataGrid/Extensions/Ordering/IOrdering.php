@@ -18,8 +18,8 @@ use Mesour;
 interface IOrdering extends Mesour\DataGrid\Extensions\IExtension
 {
 
-    public function setDefaultOrder($key, $sorting = 'ASC');
+	public function setDefaultOrder($key, $sorting = 'ASC');
 
-    public function enableMulti();
+	public function enableMulti();
 
 }

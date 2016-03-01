@@ -18,44 +18,44 @@ use Mesour;
 class TemplateItem extends Item
 {
 
-    private $template_path;
+	private $template_path;
 
-    private $block = NULL;
+	private $block = null;
 
-    private $template;
+	private $template;
 
-    public function __construct(
-        Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name,
-        $description = NULL, Mesour\DataGrid\TemplateFile $template = NULL,
-        $template_path = NULL, $block = NULL
-    )
-    {
-        parent::__construct($parent, $name, $description);
-        $this->template = $template;
-        $this->template_path = $template_path;
-        $this->block = $block;
-    }
+	public function __construct(
+		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name,
+		$description = null, Mesour\DataGrid\TemplateFile $template = null,
+		$template_path = null, $block = null
+	)
+	{
+		parent::__construct($parent, $name, $description);
+		$this->template = $template;
+		$this->template_path = $template_path;
+		$this->block = $block;
+	}
 
-    public function render()
-    {
-        $this->template->_template_path = $this->template_path;
-        $this->template->_block = FALSE;
-        if (!is_null($this->block) && is_string($this->block)) {
-            $this->template->_block = $this->block;
-        }
-        return $this->template;
-    }
+	public function render()
+	{
+		$this->template->_template_path = $this->template_path;
+		$this->template->_block = false;
+		if (!is_null($this->block) && is_string($this->block)) {
+			$this->template->_block = $this->block;
+		}
+		return $this->template;
+	}
 
-    public function reset()
-    {
+	public function reset()
+	{
 
-    }
+	}
 
-    public function invoke(array $args = [], $name, $key)
-    {
-        $arguments = [$this->render()];
-        $arguments = array_merge($arguments, $args);
-        return parent::invoke($arguments, $name, $key);
-    }
+	public function invoke(array $args = [], $name, $key)
+	{
+		$arguments = [$this->render()];
+		$arguments = array_merge($arguments, $args);
+		return parent::invoke($arguments, $name, $key);
+	}
 
 }

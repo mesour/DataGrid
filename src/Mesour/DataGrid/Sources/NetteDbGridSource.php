@@ -19,31 +19,31 @@ use Nette;
 class NetteDbGridSource extends Mesour\Filter\Sources\NetteDbFilterSource implements IGridSource
 {
 
-    private $columnNames = [];
+	private $columnNames = [];
 
-    public function fetchForExport()
-    {
-        $selection = $this->getSelection(FALSE);
-        $this->lastFetchAllResult = [];
-        $out = [];
-        foreach ($selection->fetchAll() as $row) {
-            /** @var Nette\Database\Table\ActiveRow $row */
-            $this->lastFetchAllResult[] = $row;
-            $out[] = $this->makeArrayHash($row->toArray());
-        }
-        return $out;
-    }
+	public function fetchForExport()
+	{
+		$selection = $this->getSelection(false);
+		$this->lastFetchAllResult = [];
+		$out = [];
+		foreach ($selection->fetchAll() as $row) {
+			/** @var Nette\Database\Table\ActiveRow $row */
+			$this->lastFetchAllResult[] = $row;
+			$out[] = $this->makeArrayHash($row->toArray());
+		}
+		return $out;
+	}
 
-    public function getColumnNames()
-    {
-        if (!count($this->columnNames)) {
-            $data = $this->fetch();
-            if (!$data) {
-                return [];
-            }
-            $this->columnNames = array_keys((array)$data);
-        }
-        return $this->columnNames;
-    }
+	public function getColumnNames()
+	{
+		if (!count($this->columnNames)) {
+			$data = $this->fetch();
+			if (!$data) {
+				return [];
+			}
+			$this->columnNames = array_keys((array)$data);
+		}
+		return $this->columnNames;
+	}
 
 }

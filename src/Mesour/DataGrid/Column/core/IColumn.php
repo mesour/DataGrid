@@ -19,16 +19,16 @@ use Mesour\Table\Render;
 interface IColumn extends Render\IColumn, Mesour\Components\Control\IControl
 {
 
-    /**
-     * @param Mesour\DataGrid\Extensions\Filter\IFilter $filter
-     * @internal
-     */
-    public function setFilterReset(Mesour\DataGrid\Extensions\Filter\IFilter $filter);
+	/**
+	 * @param Mesour\DataGrid\Extensions\Filter\IFilter $filter
+	 * @internal
+	 */
+	public function setFilterReset(Mesour\DataGrid\Extensions\Filter\IFilter $filter);
 
-    public function setDisabled($disabled = TRUE);
+	public function setDisabled($disabled = true);
 
-    public function isDisabled();
+	public function isDisabled();
 
-    public function validate(array $rowData, $data = []);
+	public function validate(array $rowData, $data = []);
 
 }

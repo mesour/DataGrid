@@ -19,9 +19,9 @@ use Mesour\Selection;
 interface ISelection extends Selection\ISelection, Mesour\DataGrid\Extensions\IHasColumn, Mesour\DataGrid\Extensions\IExtension
 {
 
-    /**
-     * @return Links
-     */
-    public function getLinks();
+	/**
+	 * @return Links
+	 */
+	public function getLinks();
 
 }

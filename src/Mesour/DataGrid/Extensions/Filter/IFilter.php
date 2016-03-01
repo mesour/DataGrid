@@ -18,10 +18,10 @@ use Mesour;
 interface IFilter extends Mesour\Filter\IFilter, Mesour\DataGrid\Extensions\IExtension
 {
 
-    public function setInline($inline = TRUE);
+	public function setInline($inline = true);
 
-    public function isInline();
+	public function isInline();
 
-    public function beforeCreate();
+	public function beforeCreate();
 
 }

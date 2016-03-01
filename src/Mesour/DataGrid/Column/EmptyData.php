@@ -18,33 +18,33 @@ use Mesour;
 class EmptyData extends BaseColumn
 {
 
-    protected $text;
+	protected $text;
 
-    public function setText($text)
-    {
-        $this->text = $this->getTranslator()->translate($text);
-        return $this;
-    }
+	public function setText($text)
+	{
+		$this->text = $this->getTranslator()->translate($text);
+		return $this;
+	}
 
-    public function getHeaderAttributes()
-    {
-        return [];
-    }
+	public function getHeaderAttributes()
+	{
+		return [];
+	}
 
-    public function getHeaderContent()
-    {
-        return NULL;
-    }
+	public function getHeaderContent()
+	{
+		return null;
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        return ['colspan' => $data];
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		return ['colspan' => $data];
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        $text = Mesour\Components\Utils\Html::el('p', ['class' => 'empty-data']);
-        $text->setText($this->text);
-        return $text;
-    }
+	public function getBodyContent($data, $rawData)
+	{
+		$text = Mesour\Components\Utils\Html::el('p', ['class' => 'empty-data']);
+		$text->setText($this->text);
+		return $text;
+	}
 }

@@ -18,8 +18,8 @@ use Mesour;
 interface IOrdering extends Mesour\Components\ComponentModel\IComponent, IColumn
 {
 
-    public function setOrdering($ordering = TRUE);
+	public function setOrdering($ordering = true);
 
-    public function hasOrdering();
+	public function hasOrdering();
 
 }

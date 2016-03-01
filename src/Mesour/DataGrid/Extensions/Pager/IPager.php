@@ -18,10 +18,10 @@ use Mesour;
 interface IPager extends Mesour\Pager\IPager, Mesour\DataGrid\Extensions\IExtension
 {
 
-    public function beforeRender();
+	public function beforeRender();
 
-    public function reset($hard = false);
+	public function reset($hard = false);
 
-    public function handleSetPage($page = NULL);
+	public function handleSetPage($page = null);
 
 }

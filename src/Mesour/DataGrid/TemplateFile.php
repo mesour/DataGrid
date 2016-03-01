@@ -19,70 +19,70 @@ use Mesour;
 class TemplateFile extends \stdClass implements Mesour\Components\Utils\IString
 {
 
-    /** @var Engine */
-    static private $engine;
+	/** @var Engine */
+	static private $engine;
 
-    private $file;
+	private $file;
 
-    private $parameters = [];
+	private $parameters = [];
 
-    public function __construct($tempDir)
-    {
-        if (!class_exists('Latte\Engine')) {
-            throw new Mesour\InvalidStateException('TemplateFile required composer package "latte/latte".');
-        }
-        if (!self::$engine) {
-            self::$engine = new Engine;
-        }
-        self::$engine->setTempDirectory($tempDir);
-    }
+	public function __construct($tempDir)
+	{
+		if (!class_exists('Latte\Engine')) {
+			throw new Mesour\InvalidStateException('TemplateFile required composer package "latte/latte".');
+		}
+		if (!self::$engine) {
+			self::$engine = new Engine;
+		}
+		self::$engine->setTempDirectory($tempDir);
+	}
 
-    public function setFile($file)
-    {
-        $this->file = $file;
-    }
+	public function setFile($file)
+	{
+		$this->file = $file;
+	}
 
-    public function render($toString = FALSE)
-    {
-        if (!$toString) {
-            self::$engine->render($this->file, $this->parameters);
-        } else {
-            return self::$engine->renderToString($this->file, $this->parameters);
-        }
-        return '';
-    }
+	public function render($toString = false)
+	{
+		if (!$toString) {
+			self::$engine->render($this->file, $this->parameters);
+		} else {
+			return self::$engine->renderToString($this->file, $this->parameters);
+		}
+		return '';
+	}
 
-    public function __toString()
-    {
-        try {
-            return $this->render(TRUE);
-        } catch (\Exception $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-            return '';
-        }
-    }
+	public function __toString()
+	{
+		try {
+			return $this->render(true);
+		} catch (\Exception $e) {
+			trigger_error($e->getMessage(), E_USER_WARNING);
+			return '';
+		}
+	}
 
-    public function __set($name, $value)
-    {
-        $this->parameters[$name] = $value;
-    }
+	public function __set($name, $value)
+	{
+		$this->parameters[$name] = $value;
+	}
 
-    public function __get($name)
-    {
-        if (!isset($this->parameters[$name])) {
-            throw new Mesour\OutOfRangeException('Parameter with name ' . $name . ' does not exist.');
-        }
-        return $this->parameters[$name];
-    }
+	public function __get($name)
+	{
+		if (!isset($this->parameters[$name])) {
+			throw new Mesour\OutOfRangeException('Parameter with name ' . $name . ' does not exist.');
+		}
+		return $this->parameters[$name];
+	}
 
-    public function __isset($name)
-    {
-        return isset($this->parameters[$name]);
-    }
+	public function __isset($name)
+	{
+		return isset($this->parameters[$name]);
+	}
 
-    public function __unset($name)
-    {
-        unset($this->parameters[$name]);
-    }
+	public function __unset($name)
+	{
+		unset($this->parameters[$name]);
+	}
 
 }

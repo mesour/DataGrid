@@ -18,19 +18,19 @@ use Mesour;
 interface IInlineEdit extends Mesour\Components\ComponentModel\IComponent, IColumn
 {
 
-    /**
-     * @param bool $editable
-     * @return mixed
-     */
-    public function setEditable($editable = TRUE);
+	/**
+	 * @param bool $editable
+	 * @return mixed
+	 */
+	public function setEditable($editable = true);
 
-    /**
-     * @return bool
-     */
-    public function hasEditable();
+	/**
+	 * @return bool
+	 */
+	public function hasEditable();
 
-    public function setReference($table);
+	public function setReference($table);
 
-    public function getReference();
+	public function getReference();
 
 }

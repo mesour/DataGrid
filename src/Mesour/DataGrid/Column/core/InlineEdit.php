@@ -18,47 +18,47 @@ use Mesour;
 abstract class InlineEdit extends Filtering implements IInlineEdit
 {
 
-    private $editable = TRUE;
+	private $editable = true;
 
-    private $reference;
+	private $reference;
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        $attributes = parent::getBodyAttributes($data, $need, $rawData);
-        if ($this->hasEditable() && $this->reference) {
-            $attributes = array_merge($attributes, [
-                'data-editable-related' => str_replace('\\', '', $this->reference)
-            ]);
-        }
-        return parent::mergeAttributes($data, $attributes);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		$attributes = parent::getBodyAttributes($data, $need, $rawData);
+		if ($this->hasEditable() && $this->reference) {
+			$attributes = array_merge($attributes, [
+				'data-editable-related' => str_replace('\\', '', $this->reference),
+			]);
+		}
+		return parent::mergeAttributes($data, $attributes);
+	}
 
-    public function setEditable($editable = TRUE)
-    {
-        $this->editable = (bool)$editable;
-        return $this;
-    }
+	public function setEditable($editable = true)
+	{
+		$this->editable = (bool)$editable;
+		return $this;
+	}
 
-    public function hasEditable()
-    {
-        if (!$this->editable) {
-            return FALSE;
-        }
-        $editable = $this->getGrid()->getExtension('IEditable', FALSE);
-        return $editable instanceof Mesour\DataGrid\Extensions\Editable\IEditable
-        && $editable->isAllowed()
-        && !$editable->isDisabled();
-    }
+	public function hasEditable()
+	{
+		if (!$this->editable) {
+			return false;
+		}
+		$editable = $this->getGrid()->getExtension('IEditable', false);
+		return $editable instanceof Mesour\DataGrid\Extensions\Editable\IEditable
+		&& $editable->isAllowed()
+		&& !$editable->isDisabled();
+	}
 
-    public function setReference($table)
-    {
-        $this->reference = (string)$table;
-        return $this;
-    }
+	public function setReference($table)
+	{
+		$this->reference = (string)$table;
+		return $this;
+	}
 
-    public function getReference()
-    {
-        return $this->reference;
-    }
+	public function getReference()
+	{
+		return $this->reference;
+	}
 
 }

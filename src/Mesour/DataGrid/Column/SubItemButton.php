@@ -18,74 +18,74 @@ use Mesour\UI\Button;
 class SubItemButton extends BaseColumn
 {
 
-    private $columnName;
+	private $columnName;
 
-    private $key = -1;
+	private $key = -1;
 
-    private $opened = FALSE;
+	private $opened = false;
 
-    private $twoRows = FALSE;
+	private $twoRows = false;
 
-    public function setColumnName($name)
-    {
-        $this->columnName = $name;
-        return $this;
-    }
+	public function setColumnName($name)
+	{
+		$this->columnName = $name;
+		return $this;
+	}
 
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
-    }
+	public function setKey($key)
+	{
+		$this->key = $key;
+		return $this;
+	}
 
-    public function setOpened($opened = TRUE)
-    {
-        $this->opened = (bool)$opened;
-        return $this;
-    }
+	public function setOpened($opened = true)
+	{
+		$this->opened = (bool)$opened;
+		return $this;
+	}
 
-    public function setTwoRows($twoRows = TRUE)
-    {
-        $this->twoRows = (bool)$twoRows;
-        return $this;
-    }
+	public function setTwoRows($twoRows = true)
+	{
+		$this->twoRows = (bool)$twoRows;
+		return $this;
+	}
 
-    public function getHeaderAttributes()
-    {
-        return [];
-    }
+	public function getHeaderAttributes()
+	{
+		return [];
+	}
 
-    public function getHeaderContent()
-    {
-        return NULL;
-    }
+	public function getHeaderContent()
+	{
+		return null;
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        $attributes = ['colspan' => $data, 'class' => 'subgrid-button'];
-        if ($this->twoRows) {
-            $attributes['rowspan'] = 2;
-        }
-        return parent::mergeAttributes([], $attributes);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		$attributes = ['colspan' => $data, 'class' => 'subgrid-button'];
+		if ($this->twoRows) {
+			$attributes['rowspan'] = 2;
+		}
+		return parent::mergeAttributes([], $attributes);
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        $button = $this['currentButton'] = new Button;
+	public function getBodyContent($data, $rawData)
+	{
+		$button = $this['currentButton'] = new Button;
 
-        $button->setType('info')
-            ->setSize('btn-sm btn-sm-grid')
-            ->setAttribute('data-mesour', 'ajax')
-            ->setAttribute('href', $this->getGrid()->getExtension('ISubItem')->createLink('toggleItem', ['key' => $this->key, 'name' => $this->columnName]));
-        if ($this->opened) {
-            $button->setIcon('minus');
-        } else {
-            $button->setIcon('plus');
-        }
+		$button->setType('info')
+			->setSize('btn-sm btn-sm-grid')
+			->setAttribute('data-mesour', 'ajax')
+			->setAttribute('href', $this->getGrid()->getExtension('ISubItem')->createLink('toggleItem', ['key' => $this->key, 'name' => $this->columnName]));
+		if ($this->opened) {
+			$button->setIcon('minus');
+		} else {
+			$button->setIcon('plus');
+		}
 
-        $this->tryInvokeCallback([$rawData, $this, $button]);
+		$this->tryInvokeCallback([$rawData, $this, $button]);
 
-        return $button->create();
-    }
+		return $button->create();
+	}
 
 }

@@ -18,40 +18,40 @@ use Mesour;
 class Text extends InlineEdit implements IExportable
 {
 
-    public function getHeaderAttributes()
-    {
-        return array_merge([
-            'class' => 'grid-column-' . $this->getName()
-        ], parent::getHeaderAttributes());
-    }
+	public function getHeaderAttributes()
+	{
+		return array_merge([
+			'class' => 'grid-column-' . $this->getName(),
+		], parent::getHeaderAttributes());
+	}
 
-    public function getBodyAttributes($data, $need = TRUE, $rawData = [])
-    {
-        $attributes = parent::getBodyAttributes($data);
-        if ($this->hasEditable()) {
-            $attributes = array_merge($attributes, [
-                'data-editable' => $this->getName(),
-                'data-editable-type' => 'text'
-            ]);
-        }
-        $attributes['class'] = 'type-text';
-        return parent::mergeAttributes($data, $attributes);
-    }
+	public function getBodyAttributes($data, $need = true, $rawData = [])
+	{
+		$attributes = parent::getBodyAttributes($data);
+		if ($this->hasEditable()) {
+			$attributes = array_merge($attributes, [
+				'data-editable' => $this->getName(),
+				'data-editable-type' => 'text',
+			]);
+		}
+		$attributes['class'] = 'type-text';
+		return parent::mergeAttributes($data, $attributes);
+	}
 
-    public function getBodyContent($data, $rawData)
-    {
-        $fromCallback = $this->tryInvokeCallback([$this, $rawData]);
-        if ($fromCallback !== self::NO_CALLBACK) {
-            return $fromCallback;
-        }
-        return parent::getBodyContent($data, $rawData);
-    }
+	public function getBodyContent($data, $rawData)
+	{
+		$fromCallback = $this->tryInvokeCallback([$this, $rawData]);
+		if ($fromCallback !== self::NO_CALLBACK) {
+			return $fromCallback;
+		}
+		return parent::getBodyContent($data, $rawData);
+	}
 
-    public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers)
-    {
-        parent::attachToFilter($filter, $hasCheckers);
-        $item = $filter->addTextFilter($this->getName(), $this->getHeader());
-        $item->setCheckers($hasCheckers);
-    }
+	public function attachToFilter(Mesour\DataGrid\Extensions\Filter\IFilter $filter, $hasCheckers)
+	{
+		parent::attachToFilter($filter, $hasCheckers);
+		$item = $filter->addTextFilter($this->getName(), $this->getHeader());
+		$item->setCheckers($hasCheckers);
+	}
 
 }
