@@ -1,6 +1,6 @@
 ### Translation keys
 
-This component also used this next translation keys:
+This component also uses this next translation keys:
 
 - [mesour/filter](https://github.com/mesour/filter/blob/master/docs/localisation.md)
 - [mesour/pager](https://github.com/mesour/pager/blob/master/docs/localisation.md)
