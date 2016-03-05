@@ -104,7 +104,7 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 					->setAttribute('href', $this->createLink('export'));
 			}
 			$button->setType('primary')
-				->setText('Export to csv');
+				->setText('Export');
 
 		}
 		return $this['button'];

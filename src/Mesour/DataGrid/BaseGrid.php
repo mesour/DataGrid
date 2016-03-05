@@ -19,7 +19,6 @@ use Nette\Utils\Json;
  *
  * @method null onRenderColumnHeader($column, $i, $columnCount)
  * @method null onAfterRenderRow($body, $key, $rawData, $data)
- * @method null onRenderRow($row, $rawData, $data)
  */
 abstract class BaseGrid extends Mesour\UI\Table
 {
@@ -67,8 +66,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 	protected $emptyFilterText = 'Nothing found. Please change the filter criteria.';
 
 	public $onAfterRenderRow = [];
-
-	public $onRenderRow = [];
 
 	public $onRenderColumnHeader = [];
 

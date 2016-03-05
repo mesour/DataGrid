@@ -114,7 +114,7 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 				&& isset($this[$column->getName()])
 			) {
 				$column->setInline();
-				$this[$column->getName()]->setText($this->createNewIcon($this->filterIcon));
+				$this[$column->getName()]->setText($this->createNewIcon($this->filterIcon), false);
 			}
 		}
 	}

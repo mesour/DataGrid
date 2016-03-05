@@ -1,7 +1,7 @@
 .idea
 /vendor
 /composer.lock
-/demo/log
-/demo/temp
-/demo/avatar
-/demo/preview
+/examples/log
+/examples/temp
+/examples/avatar
+/examples/preview
