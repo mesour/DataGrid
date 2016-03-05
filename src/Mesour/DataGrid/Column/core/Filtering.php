@@ -78,14 +78,12 @@ abstract class Filtering extends Ordering implements IFiltering
 	{
 		parent::validate($rowData, $data);
 
-		if ($this->hasFiltering()) {
-			foreach ($rowData as $item) {
-				if (!isset($item[$this->getName()])) {
-					throw new Mesour\InvalidStateException(
-						sprintf('If use filtering, column key "%s" must exists in data.', $this->getName())
-					);
-				}
-				break;
+		if ($this->hasFiltering() && count($rowData) > 0) {
+			$item = reset($rowData);
+			if (!array_key_exists($this->getName(), $item)) {
+				throw new Mesour\InvalidStateException(
+					sprintf('If use filtering, column key "%s" must exists in data.', $this->getName())
+				);
 			}
 		}
 	}
