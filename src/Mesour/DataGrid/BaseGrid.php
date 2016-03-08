@@ -385,9 +385,9 @@ abstract class BaseGrid extends Mesour\UI\Table
 		$body = $renderer->createBody();
 
 		if ($this->getSource()->getTotalCount() === 0) {
-			$this->addRow($body, count($columns), [], true, $this->emptyText);
+			$this->addRow($body, count($columns), [], true, $this->getTranslator()->translate($this->emptyText));
 		} else if ($this->count === 0) {
-			$this->addRow($body, count($columns), [], true, $this->emptyFilterText);
+			$this->addRow($body, count($columns), [], true, $this->getTranslator()->translate($this->emptyFilterText));
 		} else {
 			foreach ($data as $key => $rowData) {
 				$this->addRow($body, $rowData, $rawData[$key]);
