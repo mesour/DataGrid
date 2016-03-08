@@ -36,7 +36,7 @@ abstract class Ordering extends BaseColumn implements IOrdering
 	{
 		parent::validate($rowData, $data);
 
-		if ($this->hasOrdering()) {
+		if ($this->hasOrdering() && count($rowData) > 0) {
 			$item = reset($rowData);
 			if (!array_key_exists($this->getName(), $item)) {
 				throw new Mesour\InvalidStateException(
