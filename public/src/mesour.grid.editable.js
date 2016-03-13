@@ -75,7 +75,7 @@ mesour.gridEditable = !mesour.gridEditable ? {} : mesour.gridEditable;
                             if (e.keyCode === 13 || fromJs) {
                                 var value = getValidValue();
                                 if (type === 'date') {
-                                    input.data('DateTimePicker').destroy();
+                                    mesour.dateTimePicker.destroy(input);
                                 }
                                 if (value !== false) {
                                     _this.sendData(editable_link, {
@@ -159,17 +159,10 @@ mesour.gridEditable = !mesour.gridEditable ? {} : mesour.gridEditable;
                             input.val($.trim(old_value.replace(separator, '').replace(unit, '')));
                             break;
                         case 'date' :
+                            input.wrap('<div style="position:relative;display:inline-block">');
                             input.val(!old_value || old_value === '-' ? '' : old_value);
-                            input.bootstrapDatetimepicker({
-                                format: date_format,
-                                useSeconds: true,
-                                pickTime: pickTime,
-                                focusOnShow: false,
-                                hide: function () {
-                                    input.focus();
-                                },
-                                useCurrent: false
-                            });
+                            mesour.dateTimePicker.create(input, date_format);
+
                             break;
                         default :
                             if (input.is('input')) {
