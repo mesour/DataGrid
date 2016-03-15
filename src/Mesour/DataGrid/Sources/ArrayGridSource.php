@@ -60,11 +60,6 @@ class ArrayGridSource extends Mesour\Filter\Sources\ArrayFilterSource implements
 		return $out;
 	}
 
-	public function xx()
-	{
-		return $this->exportSelect;
-	}
-
 	public function getColumnNames()
 	{
 		if (count($this->columnNames) === 0) {
