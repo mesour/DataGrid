@@ -538,7 +538,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 	protected function checkEmptyColumns()
 	{
-		if ($this->count === 0) {
+		if ($this->count === 0 && count($this->getColumns()) === 0) {
 			foreach ($this->getRealColumnNames() as $key) {
 				$this->setColumn(new Column\Text, $key);
 			}
