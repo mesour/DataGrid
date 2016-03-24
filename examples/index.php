@@ -4,6 +4,8 @@ define('SRC_DIR', __DIR__ . '/../src/');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Mesour\Sources\Tests\Entity\User;
+
 @mkdir(__DIR__ . '/log');
 @mkdir(__DIR__ . '/temp');
 
@@ -39,19 +41,14 @@ $loader->register();
 	$time_start = microtime(true);
 
 	$sourceFile = 'doctrine_source';
-	$primaryKey = 'userId';
-	$relatedTable = 'Mesour\Sources\Tests\Entity\Groups';
-	$groupName = 'groupName';
-	$groupId = 'groupId';
-	$lastLogin = 'lastLogin';
+	$relatedTable = \Mesour\Sources\Tests\Entity\Group::class;
+	$groupName = 'group_name';
+	$lastLogin = 'last_login';
 
 	function getSubGrid()
 	{
-		global $primaryKey;
 
 		$_sub_grid = new \Mesour\UI\DataGrid('subGrid');
-
-		$_sub_grid->setPrimaryKey($primaryKey);
 
 		$_sub_grid->enablePager(5);
 
@@ -136,16 +133,12 @@ $loader->register();
 	// TRUE = append
 	$wrapper->class('my-next-class', true);
 
-	$grid->setPrimaryKey($primaryKey);
-
 	/** @var \Mesour\DataGrid\Sources\IGridSource $source */
 	$source = require_once __DIR__ . '/sources/' . $sourceFile . '.php';
 
 	for ($x = 0; $x < 8; $x++) {
 		$sources[] = clone $source;
 	}
-
-	$source->setReference($groupName, $relatedTable, 'name');
 
 	$grid->setSource($source);
 
@@ -165,22 +158,16 @@ $loader->register();
 
 	$subItems->addCallbackItem('test', 'Test callback item')
 		//->setPermission('menu', 'second')
-		->setCallback(function ($rowData) {
-			/** @var \Mesour\Sources\Tests\Entity\User $user */
-			$user = reset($rowData);
-			$groupName = $rowData['groupName'];
+		->setCallback(function (User $user) {
 			return $user->getName() . ' ' . $user->getSurname();
 		});
 
 	$i = 0;
 	$subItems->addGridItem('groups', 'User groups', getSubGrid())
 		//->setPermission('menu', 'second')
-		->setCheckCallback(function ($rowData, \Mesour\DataGrid\Extensions\SubItem\Items\Item $item) {
+		->setCheckCallback(function (User $user, \Mesour\DataGrid\Extensions\SubItem\Items\Item $item) {
 			/** @var \Mesour\Sources\Tests\Entity\User $user */
-			$user = reset($rowData);
-			$groupName = $rowData['groupName'];
-
-			if ($user->getUserId() == 1) {
+			if ($user->getId() == 1) {
 				$item->setDisabled();
 			} else {
 				$item->setDisabled(false);
@@ -194,23 +181,17 @@ $loader->register();
 
 	$subItems->addComponentItem('button', 'Component item', 'createTestButton')
 		//->setPermission('menu', 'second')
-		->setCallback(function (\Mesour\UI\Button $button, $rowData) {
-			/** @var \Mesour\Sources\Tests\Entity\User $user */
-			$user = reset($rowData);
-			$groupName = $rowData['groupName'];
+		->setCallback(function (\Mesour\UI\Button $button, User $user) {
 
 			$button->setText('Go to mesour.com from: ' . $user->getName() . ' ' . $user->getSurname() . ' >>');
 			$button->setAttribute('href', $button->link('http://mesour.com', [
-				'userId' => $user->getUserId(),
+				'userId' => $user->getId(),
 			]));
 		});
 
 	$subItems->addTemplateItem('description', 'Template item', __DIR__ . '/test.latte', __DIR__ . '/temp', 'test')
 		//->setPermission('menu', 'second')
-		->setCallback(function (\Mesour\DataGrid\TemplateFile $template, $rowData) {
-			/** @var \Mesour\Sources\Tests\Entity\User $user */
-			$user = reset($rowData);
-			$groupName = $rowData['groupName'];
+		->setCallback(function (\Mesour\DataGrid\TemplateFile $template, User $user) {
 
 			$template->name = $user->getName() . ' ' . $user->getSurname();
 		});

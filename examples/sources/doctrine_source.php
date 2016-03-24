@@ -4,7 +4,7 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Annotations\AnnotationReader;
 
-$paths = array(__DIR__ . "/../tests/Entity");
+$paths = [__DIR__ . "/../tests/Entity"];
 
 // Create a simple "default" Doctrine ORM configuration for Annotations
 $isDevMode = true;
@@ -20,41 +20,54 @@ $config->setMetadataDriverImpl($driver);
 //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
 
 // database configuration parameters
-if(!isset($conn)) {
-    $conn = array(
-        'driver'   => 'pdo_mysql',
-        'user'     => 'root',
-        'password' => 'root',
-        'dbname'   => 'sources_test',
-    );
+if (!isset($conn)) {
+	$conn = [
+		'driver' => 'pdo_mysql',
+		'user' => 'root',
+		'password' => 'root',
+		'dbname' => 'sources_test',
+	];
 }
 
 // obtaining the entity manager
 $entityManager = EntityManager::create($conn, $config);
 
 $entityManager->getConfiguration()
-    ->addCustomDatetimeFunction('DATE', \Mesour\Filter\Sources\DateFunction::class);
+	->addCustomDatetimeFunction('DATE', \Mesour\Filter\Sources\DateFunction::class);
 
-require_once '../vendor/mesour/sources/tests/Entity/User.php';
-require_once '../vendor/mesour/sources/tests/Entity/Groups.php';
+$entityManager->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+\Doctrine\DBAL\Types\Type::addType('enum', \Doctrine\DBAL\Types\StringType::class);
 
-$helperSet = new \Symfony\Component\Console\Helper\HelperSet(array(
-    'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($entityManager->getConnection()),
-    'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($entityManager)
-));
+require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/User.php';
+require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/Group.php';
+require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/UserAddress.php';
+require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/Company.php';
+
+$helperSet = new \Symfony\Component\Console\Helper\HelperSet(
+	[
+		'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($entityManager->getConnection()),
+		'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($entityManager),
+	]
+);
 
 $qb = $entityManager->createQueryBuilder();
 $qb = $entityManager->createQueryBuilder()
-    ->select('u')
-    ->from(Mesour\Sources\Tests\Entity\User::class, 'u')
-    ->addSelect('g.name groupName')
-    ->join(\Mesour\Sources\Tests\Entity\Groups::class, 'g', \Doctrine\ORM\Query\Expr\Join::WITH, 'u.groupId = g.id');
+	->select('u')
+	->from(Mesour\Sources\Tests\Entity\User::class, 'u')
+	->join(\Mesour\Sources\Tests\Entity\Group::class, 'g', \Doctrine\ORM\Query\Expr\Join::WITH, 'u.group = g.id');
 
-$source = new \Mesour\DataGrid\Sources\DoctrineGridSource($qb, [
-    'userId' => 'u.userId',
-    'groupName' => 'g.name',
-]);
-
-$source->setPrimaryKey('userId');
+$source = new \Mesour\DataGrid\Sources\DoctrineGridSource(
+	Mesour\Sources\Tests\Entity\User::class,
+	'id',
+	$qb,
+	[
+		'id' => 'u.id',
+		'group_id' => 'u.groups',
+		'last_login' => 'u.lastLogin',
+		'group_name' => 'g.name',
+		'group_type' => 'g.type',
+		'group_date' => 'g.date',
+	]
+);
 
 return $source;
