@@ -41,11 +41,7 @@ class DoctrineGridSource extends Mesour\Filter\Sources\DoctrineFilterSource impl
 	public function getColumnNames()
 	{
 		if (!count($this->columnNames)) {
-			$data = $this->fetch();
-			if (!$data) {
-				return [];
-			}
-			$this->columnNames = array_keys((array) $data);
+			$this->columnNames = array_keys($this->getTableColumns($this->getTableName()));
 		}
 		return $this->columnNames;
 	}

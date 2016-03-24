@@ -24,11 +24,6 @@ class ArrayGridSource extends Mesour\Filter\Sources\ArrayFilterSource implements
 	 */
 	private $exportSelect;
 
-	public function __construct(array $data, array $relations = [])
-	{
-		parent::__construct($data, $relations);
-	}
-
 	private function getExportSelect()
 	{
 		if (!$this->exportSelect) {
@@ -47,10 +42,8 @@ class ArrayGridSource extends Mesour\Filter\Sources\ArrayFilterSource implements
 	public function fetchForExport()
 	{
 		$out = $this->getExportSelect()->fetchAll();
-		if (count($this->structure) > 0) {
-			foreach ($out as $key => $val) {
-				$this->removeStructureDate($out[$key]);
-			}
+		foreach ($out as $key => $val) {
+			$this->removeStructureDate($out[$key]);
 		}
 		foreach ($out as $key => $val) {
 			$out[$key] = $this->makeArrayHash($val);
@@ -62,12 +55,14 @@ class ArrayGridSource extends Mesour\Filter\Sources\ArrayFilterSource implements
 	public function getColumnNames()
 	{
 		if (count($this->columnNames) === 0) {
+			$columns = $this->getTableColumns($this->getTableName());
+
 			$data = $this->fetch();
 			if (!$data) {
 				return [];
 			}
 			$item = (array) $data;
-			$this->columnNames = array_keys($item);
+			$this->columnNames = array_unique(array_merge(array_keys($item), array_keys($columns)));
 		}
 		return $this->columnNames;
 	}

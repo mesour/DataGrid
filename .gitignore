@@ -5,3 +5,7 @@
 /examples/temp
 /examples/avatar
 /examples/preview
+/tests/log
+/tests/tmp
+/tests/config.local.php
+/tests/src/Sources/output
