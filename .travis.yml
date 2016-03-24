@@ -1,0 +1,16 @@
+language: php
+
+php:
+    - 5.6
+    - 7.0
+    - hhvm
+
+matrix:
+    allow_failures:
+        - php: hhvm
+
+install:
+    - composer install --no-interaction --prefer-source
+
+script:
+    - vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp src

@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column\Status;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -42,6 +41,11 @@ class StatusDropDown extends Mesour\UI\DropDown implements IStatusItem
 		$this->statusName = $this->getTranslator()->translate($statusName);
 		$this->selectionTitle = !is_null($selectionTitle) ? $this->getTranslator()->translate($selectionTitle) : null;
 		return $this;
+	}
+
+	public function setPermission($resource = null, $privilege = null)
+	{
+		throw new Mesour\NotImplementedException('Use setPermission on links for this dropdown.');
 	}
 
 	/**
@@ -75,10 +79,10 @@ class StatusDropDown extends Mesour\UI\DropDown implements IStatusItem
 		return $this->status;
 	}
 
-	public function isActive($column_name, $data)
+	public function isActive($columnName, $data)
 	{
 		if (!$this->callback) {
-			return $data[$column_name] == $this->status ? true : false;
+			return $data[$columnName] == $this->status ? true : false;
 		} else {
 			$args = [$data];
 			if (count($this->callbackArgs) > 0) {

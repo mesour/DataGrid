@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Renderer;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -101,7 +100,7 @@ class GridRenderer implements IGridRenderer
 				$wrapper->insert(4, $this->getComponent('export'));
 			}
 			$wrapper->insert(5, '<hr class="mesour-clear">');
-			return (string)$wrapper;
+			return (string) $wrapper;
 		} catch (\Exception $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);
 			return '';

@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Export;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -28,7 +27,7 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 	 * Restriction for some columns
 	 * @var array
 	 */
-	private $export_columns = [];
+	private $exportColumns = [];
 
 	/** @var string|null */
 	private $fileName = null;
@@ -40,18 +39,18 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 	/** @var Mesour\UI\Button */
 	private $createdExport;
 
-	public function setFileName($file_name)
+	public function setFileName($fileName)
 	{
-		if (!is_string($file_name) && !is_null($file_name)) {
+		if (!is_string($fileName) && !is_null($fileName)) {
 			throw new Mesour\InvalidArgumentException(
-				sprintf('Export file name must be string, %s given.', gettype($file_name))
+				sprintf('Export file name must be string, %s given.', gettype($fileName))
 			);
 		}
-		$this->fileName = $file_name;
+		$this->fileName = $fileName;
 		return $this;
 	}
 
-	public function setDelimiter($delimiter = ",")
+	public function setDelimiter($delimiter = ',')
 	{
 		$this->delimiter = $delimiter;
 		return $this;
@@ -71,7 +70,7 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 
 	public function setColumns(array $columns = [])
 	{
-		$this->export_columns = $columns;
+		$this->exportColumns = $columns;
 		return $this;
 	}
 
@@ -127,9 +126,9 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 				->addLink('Export to CSV')
 				->setAjax(false)
 				->onCall[] = function (array $selectedItems) {
-				$ids = array_keys($selectedItems, 'true');
-				$this->handleExport('selected', $ids);
-			};
+					$ids = array_keys($selectedItems, 'true');
+					$this->handleExport('selected', $ids);
+				};
 		}
 	}
 
@@ -151,56 +150,56 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 		}
 
 		/** @var Mesour\DataGrid\Column\IColumn|array|Mesour\DataGrid\Column\BaseColumn $column */
-		$header_arr = [];
-		$export_columns = [];
+		$headerArr = [];
+		$exportColumns = [];
 
-		if (empty($this->export_columns)) {
+		if (empty($this->exportColumns)) {
 			foreach ($this->getGrid()->getColumns() as $column) {
 				if ($this->hasExport($column) && $column->isAllowed()) {
-					$export_columns[] = $column;
+					$exportColumns[] = $column;
 				}
 			}
 		} else {
-			foreach ($this->export_columns as $column_val) {
-				$used_in_columns = false;
+			foreach ($this->exportColumns as $columnVal) {
+				$usedInColumns = false;
 				foreach ($this->getGrid()->getColumns() as $column) {
 					/** @var Mesour\DataGrid\Column\BaseColumn $column */
 					if ($this->hasExport($column) && $column->isAllowed()) {
-						if (is_array($column_val)) {
-							$column_name = key($column_val);
+						if (is_array($columnVal)) {
+							$columnName = key($columnVal);
 						} else {
-							$column_name = $column_val;
+							$columnName = $columnVal;
 						}
-						if ($column_name === $column->getName()) {
-							$export_columns[] = $column;
-							$used_in_columns = true;
+						if ($columnName === $column->getName()) {
+							$exportColumns[] = $column;
+							$usedInColumns = true;
 						}
 					}
 				}
-				if ($used_in_columns === false) {
-					$export_columns[] = $column_val;
+				if ($usedInColumns === false) {
+					$exportColumns[] = $columnVal;
 				}
 			}
 		}
 		$this->file_path = $this->createFilePath();
-		$file = fopen($this->file_path, "w");
+		$file = fopen($this->file_path, 'w');
 		fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // add BOM to fix UTF-8 in Excel
-		foreach ($export_columns as $column) {
+		foreach ($exportColumns as $column) {
 			if ($column instanceof Mesour\DataGrid\Column\IColumn) {
-				$header_arr[] = $column->getHeader();
+				$headerArr[] = $column->getHeader();
 			} else {
 				if (is_array($column)) {
-					$header_arr[] = reset($column);
+					$headerArr[] = reset($column);
 				} else {
-					$header_arr[] = $column;
+					$headerArr[] = $column;
 				}
 			}
 		}
-		fputcsv($file, $header_arr, $this->delimiter);
+		fputcsv($file, $headerArr, $this->delimiter);
 		$first = true;
 		$exportData = [];
 		switch ($type) {
-			case 'selected' :
+			case 'selected':
 				$source = $this->getGrid()->getSource();
 				$allData = $source->fetchAll();
 
@@ -213,31 +212,31 @@ class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 					}
 				}
 				break;
-			case 'filtered' :
+			case 'filtered':
 				$exportData = $this->getGrid()->getSource()->fetchForExport();
 				break;
-			default :
+			default:
 				$exportData = $this->getGrid()->getSource()->fetchFullData();
 		}
 		$rawData = $this->getGrid()->getSource()->fetchLastRawRows();
 		foreach ($exportData as $key => $data) {
-			$line_data = [];
-			foreach ($export_columns as $column) {
+			$lineData = [];
+			foreach ($exportColumns as $column) {
 				if ($column instanceof Mesour\DataGrid\Column\IColumn) {
-					$line_data[] = strip_tags($column->getBodyContent($data, $rawData[$key], true));
+					$lineData[] = strip_tags($column->getBodyContent($data, $rawData[$key], true));
 				} else {
 					if (is_array($column)) {
-						$column_name = key($column);
+						$columnName = key($column);
 					} else {
-						$column_name = $column;
+						$columnName = $column;
 					}
-					if ($first && !isset($data[$column_name]) && !is_null($data[$column_name])) {
-						throw new Mesour\OutOfRangeException('Column "' . $column_name . '" does not exist in data.');
+					if ($first && !isset($data[$columnName]) && !is_null($data[$columnName])) {
+						throw new Mesour\OutOfRangeException('Column "' . $columnName . '" does not exist in data.');
 					}
-					$line_data[] = strip_tags($data[$column_name]);
+					$lineData[] = strip_tags($data[$columnName]);
 				}
 			}
-			fputcsv($file, $line_data, $this->delimiter);
+			fputcsv($file, $lineData, $this->delimiter);
 			$first = false;
 		}
 		fclose($file);

@@ -10,8 +10,6 @@
 namespace Mesour\DataGrid;
 
 use Mesour;
-use Mesour\DataGrid\Extensions;
-
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -39,13 +37,13 @@ abstract class SubItemGrid extends ExtendedGrid
 				$opened = $subItem->getOpened();
 				foreach ($fullData as $key => $rowData) {
 					foreach ($opened as $name => $item) {
-						if (in_array((string)$key, $item['keys'])) {
+						if (in_array((string) $key, $item['keys'])) {
 							/** @var Extensions\SubItem\Items\Item $instance */
 							$instance = $item['item'];
-							$t_key = $instance->getTranslatedKey($key);
-							$instance->invoke([$rawData[$key]], $name, $t_key);
-							if (isset($this[$name . $t_key])) {
-								$this->subItems[$key][$name] = $this[$name . $t_key];
+							$translatedKey = $instance->getTranslatedKey($key);
+							$instance->invoke([$rawData[$key]], $name, $translatedKey);
+							if (isset($this[$name . $translatedKey])) {
+								$this->subItems[$key][$name] = $this[$name . $translatedKey];
 							} else {
 								$this->subItems[$key][$name] = true;
 							}
@@ -149,17 +147,17 @@ abstract class SubItemGrid extends ExtendedGrid
 		$row->setAttribute('class', 'no-sort');
 		$row->addCell($cell);
 
-		$_row = $rendererFactory->createRow($rowData, $rawData);
+		$currentRow = $rendererFactory->createRow($rowData, $rawData);
 		$description = new Column\SubItem;
 		$description->setText($this->getExtension('ISubItem')->getItem($oldName)->getDescription());
 
 		$this->setSubItemColumn($description, $name . '_des');
-		$_cell = $rendererFactory->createCell($columnsCount, $description, $rawData);
+		$subItemCell = $rendererFactory->createCell($columnsCount, $description, $rawData);
 
-		$_row->addCell($rendererFactory->createCell(1, $column, $rawData));
-		$_row->addCell($_cell);
-		$_row->setAttribute('class', 'no-sort');
-		$body->addRow($_row);
+		$currentRow->addCell($rendererFactory->createCell(1, $column, $rawData));
+		$currentRow->addCell($subItemCell);
+		$currentRow->setAttribute('class', 'no-sort');
+		$body->addRow($currentRow);
 		$body->addRow($row);
 	}
 

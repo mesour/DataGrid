@@ -10,9 +10,6 @@
 namespace Mesour\DataGrid;
 
 use Mesour;
-use Mesour\DataGrid\Column;
-use Mesour\DataGrid\Extensions;
-
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -79,7 +76,7 @@ abstract class ExtendedGrid extends BaseGrid
 	}
 
 	/**
-	 * @param $cacheDir
+	 * @param string $cacheDir
 	 * @param string|null $fileName
 	 * @return Extensions\Export\IExport
 	 */
@@ -109,7 +106,7 @@ abstract class ExtendedGrid extends BaseGrid
 	}
 
 	/**
-	 * @param $columnName
+	 * @param string $columnName
 	 * @return Extensions\Sortable\ISortable
 	 * @throws Mesour\InvalidArgumentException
 	 */

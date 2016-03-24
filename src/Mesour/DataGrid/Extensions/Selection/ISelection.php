@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Extensions\Selection;
 use Mesour;
 use Mesour\Selection;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */

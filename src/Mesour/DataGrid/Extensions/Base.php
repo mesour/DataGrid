@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -38,7 +37,7 @@ abstract class Base extends Mesour\UI\Control implements IExtension
 
 	public function setDisabled($disabled = true)
 	{
-		$this->disabled = (bool)$disabled;
+		$this->disabled = (bool) $disabled;
 		return $this;
 	}
 

@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Column;
 use Mesour;
 use Mesour\DataGrid\Column;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -34,7 +33,7 @@ abstract class Filtering extends Ordering implements IFiltering
 	 */
 	public function setFiltering($filtering = true)
 	{
-		$this->filtering = (bool)$filtering;
+		$this->filtering = (bool) $filtering;
 		return $this;
 	}
 
@@ -52,7 +51,7 @@ abstract class Filtering extends Ordering implements IFiltering
 	 */
 	public function setInline($inline = true)
 	{
-		$this->inline = (bool)$inline;
+		$this->inline = (bool) $inline;
 		return $this;
 	}
 

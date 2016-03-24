@@ -9,10 +9,10 @@
 
 namespace Mesour\DataGrid\Column;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 interface IPrependedColumn
 {
+
 }

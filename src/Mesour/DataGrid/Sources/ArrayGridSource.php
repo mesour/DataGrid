@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Sources;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -67,7 +66,7 @@ class ArrayGridSource extends Mesour\Filter\Sources\ArrayFilterSource implements
 			if (!$data) {
 				return [];
 			}
-			$item = (array)$data;
+			$item = (array) $data;
 			$this->columnNames = array_keys($item);
 		}
 		return $this->columnNames;

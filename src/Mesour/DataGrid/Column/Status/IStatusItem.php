@@ -11,14 +11,13 @@ namespace Mesour\DataGrid\Column\Status;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 interface IStatusItem extends Mesour\Components\Control\IAttributesControl
 {
 
-	public function isActive($column_name, $data);
+	public function isActive($columnName, $data);
 
 	public function setStatus($status, $statusName, $selectionTitle = null);
 

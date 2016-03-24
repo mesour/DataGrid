@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Selection;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -49,7 +48,7 @@ class Links extends Mesour\Object implements Mesour\Components\Utils\IString
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return Link
 	 */
 	public function addLink($name)
@@ -72,7 +71,7 @@ class Links extends Mesour\Object implements Mesour\Components\Utils\IString
 	}
 
 	/**
-	 * @param $text
+	 * @param string $text
 	 * @param array $attributes
 	 * @return $this
 	 */
@@ -83,7 +82,7 @@ class Links extends Mesour\Object implements Mesour\Components\Utils\IString
 	}
 
 	/**
-	 * @param $fixedName
+	 * @param string $fixedName
 	 * @return Link
 	 */
 	public function getLink($fixedName)
@@ -114,7 +113,7 @@ class Links extends Mesour\Object implements Mesour\Components\Utils\IString
 
 	public function __toString()
 	{
-		return (string)$this->create();
+		return (string) $this->create();
 	}
 
 	/**

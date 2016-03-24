@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Pager;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -88,6 +87,5 @@ class PagerExtension extends Mesour\UI\AdvancedPager implements IPager
 		$pagerWrapper->add($this->createdPager);
 		$renderer->setComponent('pager', $pagerWrapper);
 	}
-
 
 }

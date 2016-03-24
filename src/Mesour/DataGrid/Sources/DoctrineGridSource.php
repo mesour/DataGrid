@@ -9,10 +9,9 @@
 
 namespace Mesour\DataGrid\Sources;
 
+use Doctrine;
 use Mesour;
 use Nette;
-use Doctrine;
-
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -46,7 +45,7 @@ class DoctrineGridSource extends Mesour\Filter\Sources\DoctrineFilterSource impl
 			if (!$data) {
 				return [];
 			}
-			$this->columnNames = array_keys((array)$data);
+			$this->columnNames = array_keys((array) $data);
 		}
 		return $this->columnNames;
 	}

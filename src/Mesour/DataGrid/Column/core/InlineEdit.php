@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -35,7 +34,7 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 
 	public function setEditable($editable = true)
 	{
-		$this->editable = (bool)$editable;
+		$this->editable = (bool) $editable;
 		return $this;
 	}
 
@@ -52,7 +51,7 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 
 	public function setReference($table)
 	{
-		$this->reference = (string)$table;
+		$this->reference = (string) $table;
 		return $this;
 	}
 

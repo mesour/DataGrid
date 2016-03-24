@@ -11,34 +11,36 @@ namespace Mesour\DataGrid\Extensions\SubItem\Items;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 class TemplateItem extends Item
 {
 
-	private $template_path;
+	private $templatePath;
 
 	private $block = null;
 
 	private $template;
 
 	public function __construct(
-		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name,
-		$description = null, Mesour\DataGrid\TemplateFile $template = null,
-		$template_path = null, $block = null
+		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent,
+		$name,
+		$description = null,
+		Mesour\DataGrid\TemplateFile $template = null,
+		$templatePath = null,
+		$block = null
 	)
 	{
 		parent::__construct($parent, $name, $description);
 		$this->template = $template;
-		$this->template_path = $template_path;
+		$this->templatePath = $templatePath;
 		$this->block = $block;
 	}
 
 	public function render()
 	{
-		$this->template->_template_path = $this->template_path;
+		$this->template->_template_path = $this->templatePath;
 		$this->template->_block = false;
 		if (!is_null($this->block) && is_string($this->block)) {
 			$this->template->_block = $this->block;

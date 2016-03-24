@@ -11,14 +11,13 @@ namespace Mesour\DataGrid\Extensions\Ordering;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 class OrderingExtension extends Mesour\DataGrid\Extensions\Base implements IOrdering
 {
 
-	private $default_order = [];
+	private $defaultOrder = [];
 
 	private $disabled = false;
 
@@ -39,7 +38,7 @@ class OrderingExtension extends Mesour\DataGrid\Extensions\Base implements IOrde
 
 	public function setDefaultOrder($key, $sorting = 'ASC')
 	{
-		$this->default_order = [$key, $sorting];
+		$this->defaultOrder = [$key, $sorting];
 	}
 
 	public function setDisabled($disabled = true)
@@ -59,22 +58,21 @@ class OrderingExtension extends Mesour\DataGrid\Extensions\Base implements IOrde
 
 	/**
 	 * Get ordering for column by column ID
-	 *
-	 * @param $column_id
+	 * @param int $columnId
 	 * @return NULL|string(ASC|DESC)
 	 */
-	public function getOrdering($column_id)
+	public function getOrdering($columnId)
 	{
-		if (count($this->default_order) > 0
+		if (count($this->defaultOrder) > 0
 			&& $this->ordering === 0
-			&& $this->default_order[0] === $column_id
+			&& $this->defaultOrder[0] === $columnId
 		) {
-			return $this->default_order[1];
+			return $this->defaultOrder[1];
 		}
-		if (!isset($this->ordering[$column_id])) {
+		if (!isset($this->ordering[$columnId])) {
 			return null;
 		} else {
-			return $this->ordering[$column_id];
+			return $this->ordering[$columnId];
 		}
 	}
 
@@ -90,17 +88,17 @@ class OrderingExtension extends Mesour\DataGrid\Extensions\Base implements IOrde
 	{
 		$c = count($this->ordering);
 		if ($c > 0) {
-			foreach ($this->ordering as $key => $how_to_order) {
+			foreach ($this->ordering as $key => $howToOrder) {
 				if (!in_array($key, $this->getGrid()->getRealColumnNames())) {
 					unset($this->ordering[$key]);
 				} else {
-					$this->getGrid()->getSource()->orderBy($key, $how_to_order);
+					$this->getGrid()->getSource()->orderBy($key, $howToOrder);
 				}
 			}
 		}
-		if ($c === 0 && count($this->default_order) > 0) {
+		if ($c === 0 && count($this->defaultOrder) > 0) {
 			$this->getGrid()->getSource()
-				->orderBy($this->default_order[0], $this->default_order[1]);
+				->orderBy($this->defaultOrder[0], $this->defaultOrder[1]);
 		}
 	}
 

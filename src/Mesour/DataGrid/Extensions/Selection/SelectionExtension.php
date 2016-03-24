@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Selection;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -65,7 +64,7 @@ class SelectionExtension extends Mesour\UI\Selection implements ISelection
 
 	public function setDisabled($disabled = true)
 	{
-		$this->disabled = (bool)$disabled;
+		$this->disabled = (bool) $disabled;
 		return $this;
 	}
 
@@ -109,22 +108,22 @@ class SelectionExtension extends Mesour\UI\Selection implements ISelection
 		foreach ($this->getGrid()->getColumns() as $column) {
 			if ($column instanceof Mesour\DataGrid\Column\Status) {
 				foreach ($currentData as $item) {
-					$_item = null;
+					$currentItem = null;
 					foreach ($column as $statusItem) {
 						/** @var Mesour\DataGrid\Column\Status\IStatusItem $statusItem */
 						$options = $statusItem->getStatusOptions();
 						if ($options) {
 							if ($item[$column->getName()] == $statusItem->getStatus()) {
-								$_item = $options;
+								$currentItem = $options;
 								break;
 							}
 						}
 					}
-					if (!is_null($_item)) {
-						$statusName = reset($_item);
-						$_key = key($_item);
-						$statuses[$_key] = $statusName;
-						$items[$item[$this->getGrid()->getPrimaryKey()]] = (string)$_key;
+					if (!is_null($currentItem)) {
+						$statusName = reset($currentItem);
+						$currentKey = key($currentItem);
+						$statuses[$currentKey] = $statusName;
+						$items[$item[$this->getGrid()->getPrimaryKey()]] = (string) $currentKey;
 					}
 				}
 			}

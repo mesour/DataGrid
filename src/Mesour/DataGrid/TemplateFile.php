@@ -12,7 +12,6 @@ namespace Mesour\DataGrid;
 use Latte\Engine;
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -20,7 +19,7 @@ class TemplateFile extends \stdClass implements Mesour\Components\Utils\IString
 {
 
 	/** @var Engine */
-	static private $engine;
+	private static $engine;
 
 	private $file;
 

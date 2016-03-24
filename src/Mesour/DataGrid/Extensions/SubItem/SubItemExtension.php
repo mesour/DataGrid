@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Extensions\SubItem;
 use Mesour;
 use Mesour\DataGrid\Extensions;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -42,9 +41,9 @@ class SubItemExtension extends Extensions\Base implements ISubItem, Extensions\I
 	}
 
 	/**
-	 * @param $name
-	 * @param Mesour\UI\DataGrid $grid
+	 * @param string $name
 	 * @param null|string $description
+	 * @param Mesour\UI\DataGrid $grid
 	 * @return Extensions\SubItem\Items\GridItem
 	 */
 	public function addGridItem($name, $description, Mesour\UI\DataGrid $grid)

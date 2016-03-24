@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\SubItem\Items;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */

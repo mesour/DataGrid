@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour\UI\Button;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -40,13 +39,13 @@ class SubItemButton extends BaseColumn
 
 	public function setOpened($opened = true)
 	{
-		$this->opened = (bool)$opened;
+		$this->opened = (bool) $opened;
 		return $this;
 	}
 
 	public function setTwoRows($twoRows = true)
 	{
-		$this->twoRows = (bool)$twoRows;
+		$this->twoRows = (bool) $twoRows;
 		return $this;
 	}
 

@@ -11,23 +11,21 @@ namespace Mesour\DataGrid\Extensions\Export;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 interface IExport extends Mesour\DataGrid\Extensions\IExtension
 {
 
-	public function setFileName($file_name);
+	public function setFileName($fileName);
 
 	/**
 	 * @param string $delimiter
 	 * @return mixed
 	 */
-	public function setDelimiter($delimiter = ",");
+	public function setDelimiter($delimiter = ',');
 
 	public function setCacheDir($dir);
-
 
 	public function setColumns(array $columns = []);
 

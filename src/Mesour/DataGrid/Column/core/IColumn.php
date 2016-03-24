@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Column;
 use Mesour;
 use Mesour\Table\Render;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */

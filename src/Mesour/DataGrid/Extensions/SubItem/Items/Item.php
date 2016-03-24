@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\SubItem\Items;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -126,9 +125,9 @@ abstract class Item extends Mesour\Object
 		return $this->description ? $this->description : $this->name;
 	}
 
-	public function addAlias($for_key, $alias)
+	public function addAlias($forKey, $alias)
 	{
-		$this->aliases[$for_key] = $alias;
+		$this->aliases[$forKey] = $alias;
 	}
 
 	public function getTranslatedKey($key)

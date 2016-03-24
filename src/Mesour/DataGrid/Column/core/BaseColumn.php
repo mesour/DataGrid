@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Column;
 use Mesour;
 use Mesour\Table;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -26,7 +25,7 @@ abstract class BaseColumn extends Table\Column implements IColumn
 
 	public function setDisabled($disabled = true)
 	{
-		$this->disabled = (bool)$disabled;
+		$this->disabled = (bool) $disabled;
 		return $this;
 	}
 

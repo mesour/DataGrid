@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Extensions\Editable;
 use Mesour;
 use Mesour\DataGrid\Extensions;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */

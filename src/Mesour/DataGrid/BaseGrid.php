@@ -10,9 +10,7 @@
 namespace Mesour\DataGrid;
 
 use Mesour;
-use Mesour\DataGrid\Column;
 use Nette\Utils\Json;
-
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -110,7 +108,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 	}
 
 	/**
-	 * @param $extension
+	 * @param string $extension
 	 * @param bool|TRUE $need
 	 * @return Mesour\Components\ComponentModel\IComponent|object|null
 	 * @throws Mesour\InvalidArgumentException
@@ -146,7 +144,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param null $header
 	 * @return Column\Text
 	 */
@@ -214,7 +212,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 	{
 		if (is_null($this->realColumnNames)) {
 			if (!empty($fullData)) {
-				$x = (array)reset($fullData);
+				$x = (array) reset($fullData);
 				$this->realColumnNames = array_keys($x);
 			} else {
 				$this->realColumnNames = $this->getSource()->getColumnNames();
@@ -386,7 +384,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 		if ($this->getSource()->getTotalCount() === 0) {
 			$this->addRow($body, count($columns), [], true, $this->getTranslator()->translate($this->emptyText));
-		} else if ($this->count === 0) {
+		} elseif ($this->count === 0) {
 			$this->addRow($body, count($columns), [], true, $this->getTranslator()->translate($this->emptyFilterText));
 		} else {
 			foreach ($data as $key => $rowData) {
@@ -555,11 +553,17 @@ abstract class BaseGrid extends Mesour\UI\Table
 			$this->isSourceUsed = false;
 			$this->setSource($source);
 		} catch (NoDataSourceException $e) {
+			// no action
 		}
 
 		$this->extensionStorage = clone $this->extensionStorage;
 		$this->extensionStorage->setParent($this);
 		parent::__clone();
+	}
+
+	protected function getPrivateSession()
+	{
+		return $this->privateSession;
 	}
 
 }

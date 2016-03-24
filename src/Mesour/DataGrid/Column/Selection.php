@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour\DataGrid\Extensions\Selection\ISelection;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -43,4 +42,5 @@ class Selection extends BaseColumn implements IPrependedColumn
 	{
 		return $this->selection->createItem($data[$this->getGrid()->getSource()->getPrimaryKey()]);
 	}
+
 }

@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -47,4 +46,5 @@ class EmptyData extends BaseColumn
 		$text->setText($this->text);
 		return $text;
 	}
+
 }

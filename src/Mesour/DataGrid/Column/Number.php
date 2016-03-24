@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -28,13 +27,13 @@ class Number extends InlineEdit implements IExportable
 
 	public function setDecimals($decimals)
 	{
-		$this->decimals = (int)$decimals;
+		$this->decimals = (int) $decimals;
 		return $this;
 	}
 
-	public function setDecimalPoint($decimal_point = '.')
+	public function setDecimalPoint($decimalPoint = '.')
 	{
-		$this->decimalPoint = $decimal_point;
+		$this->decimalPoint = $decimalPoint;
 		return $this;
 	}
 
@@ -44,9 +43,9 @@ class Number extends InlineEdit implements IExportable
 		return $this;
 	}
 
-	public function setThousandsSeparator($thousand_separator = ',')
+	public function setThousandsSeparator($thousandSeparator = ',')
 	{
-		$this->thousandSeparator = $thousand_separator;
+		$this->thousandSeparator = $thousandSeparator;
 		return $this;
 	}
 

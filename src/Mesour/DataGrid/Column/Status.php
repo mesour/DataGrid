@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  *
@@ -24,7 +23,7 @@ class Status extends Filtering implements IExportable
 	static public $no_active_class = 'no-active-button';
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return Mesour\DataGrid\Column\Status\StatusButton
 	 */
 	public function addButton($name)
@@ -35,7 +34,7 @@ class Status extends Filtering implements IExportable
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return Mesour\DataGrid\Column\Status\StatusDropDown
 	 */
 	public function addDropDown($name)
@@ -72,15 +71,15 @@ class Status extends Filtering implements IExportable
 	public function getBodyAttributes($data, $need = true, $rawData = [])
 	{
 		$class = 'button-component';
-		$active_count = 0;
+		$activeCount = 0;
 		foreach ($this as $button) {
 			/** @var Mesour\DataGrid\Column\Status\IStatusItem $button */
 			if ($button->isActive($this->getName(), $data)) {
 				$class .= ' is-' . $button->getStatus();
-				$active_count++;
+				$activeCount++;
 			}
 		}
-		if ($active_count === 0) {
+		if ($activeCount === 0) {
 			$class .= ' ' . self::$no_active_class;
 		}
 		return parent::mergeAttributes($data, ['class' => $class]);

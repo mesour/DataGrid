@@ -9,10 +9,10 @@
 
 namespace Mesour\DataGrid;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 class NoDataSourceException extends \Exception
 {
+
 }

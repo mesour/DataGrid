@@ -12,7 +12,6 @@ namespace Mesour\UI;
 use Mesour;
 use Mesour\DataGrid\Column;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -20,7 +19,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 {
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Text
 	 */
@@ -32,7 +31,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Number
 	 */
@@ -44,7 +43,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Date
 	 */
@@ -56,7 +55,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Container
 	 */
@@ -70,7 +69,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Image
 	 */
@@ -82,7 +81,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Status
 	 */
@@ -94,7 +93,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Column\Template
 	 */
@@ -106,7 +105,7 @@ class DataGrid extends Mesour\DataGrid\SubItemGrid
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param null $header
 	 * @return Column\Text
 	 */

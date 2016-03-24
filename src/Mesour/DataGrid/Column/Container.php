@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Column;
 use Mesour;
 use Mesour\Table\Render;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -20,7 +19,7 @@ class Container extends Filtering implements IExportable, IContainer
 {
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Text
 	 */
@@ -32,7 +31,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Date
 	 */
@@ -44,7 +43,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return self
 	 */
@@ -58,7 +57,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Image
 	 */
@@ -70,7 +69,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Status
 	 */
@@ -82,7 +81,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @param string|null $header
 	 * @return Template
 	 */
@@ -94,7 +93,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return Mesour\UI\Button(
 	 * @throws Mesour\InvalidArgumentException
 	 */
@@ -107,7 +106,7 @@ class Container extends Filtering implements IExportable, IContainer
 	}
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return Mesour\UI\DropDown
 	 * @throws Mesour\InvalidArgumentException
 	 */

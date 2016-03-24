@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Sources;
 use Mesour;
 use Nette;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -41,7 +40,7 @@ class NetteDbGridSource extends Mesour\Filter\Sources\NetteDbFilterSource implem
 			if (!$data) {
 				return [];
 			}
-			$this->columnNames = array_keys((array)$data);
+			$this->columnNames = array_keys((array) $data);
 		}
 		return $this->columnNames;
 	}

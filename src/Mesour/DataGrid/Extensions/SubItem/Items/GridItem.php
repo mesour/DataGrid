@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\SubItem\Items;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -19,16 +18,18 @@ class GridItem extends Item
 {
 
 	public function __construct(
-		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name,
-		$description = null, Mesour\UI\DataGrid $grid = null
+		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent,
+		$name,
+		$description = null,
+		Mesour\UI\DataGrid $grid = null
 	)
 	{
 		parent::__construct($parent, $name, $description);
 		$i = 0;
 		while ($i < (is_null($this->pageLimit) ? self::DEFAULT_COUNT : $this->pageLimit)) {
-			$_grid = clone $grid;
-			$_grid->setName($name . $i);
-			$this->parent->addComponent($_grid, $name . $i);
+			$currentGrid = clone $grid;
+			$currentGrid->setName($name . $i);
+			$this->parent->addComponent($currentGrid, $name . $i);
 			$this->keys[] = $i;
 			$i++;
 		}
@@ -61,6 +62,5 @@ class GridItem extends Item
 		$arguments = array_merge($arguments, $args);
 		return parent::invoke($arguments, $name, $key);
 	}
-
 
 }

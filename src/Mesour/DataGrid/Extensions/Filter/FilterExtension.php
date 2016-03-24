@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Filter;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -37,7 +36,7 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 
 	public function setDisabled($disabled = true)
 	{
-		$this->disabled = (bool)$disabled;
+		$this->disabled = (bool) $disabled;
 		return $this;
 	}
 
@@ -61,9 +60,9 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 
 	public function gridCreate($data = [])
 	{
-		$this->onFilter[] = function (IFilter $_filter) {
-			$this->updateFilter($_filter);
-			$this->getGrid()->onFilter($_filter);
+		$this->onFilter[] = function (IFilter $currentFilter) {
+			$this->updateFilter($currentFilter);
+			$this->getGrid()->onFilter($currentFilter);
 		};
 		$this->setSource($this->getGrid()->getSource());
 		$fullData = $this->beforeCreate();
@@ -101,7 +100,8 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 	private function setupInlineFilterAttribute()
 	{
 		$this->getGrid()->setAttribute(
-			'data-mesour-enabled-filter', (int)($this->isInline() && !$this->isDisabled())
+			'data-mesour-enabled-filter',
+			(int) ($this->isInline() && !$this->isDisabled())
 		);
 	}
 

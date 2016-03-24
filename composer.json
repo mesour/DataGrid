@@ -26,7 +26,9 @@
     "nette/robot-loader": "~2.3.0",
     "nette/database": "~2.3.0",
     "doctrine/orm": "^2.5",
-    "mesour/array-manager": "3.0.*@beta"
+    "mesour/array-manager": "3.0.*@beta",
+    "slevomat/coding-standard": "^1.0",
+    "consistence/coding-standard": "^0.10"
   },
   "minimum-stability": "beta",
   "prefer-stable": true,

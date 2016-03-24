@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Selection;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  *
@@ -19,13 +18,12 @@ use Mesour;
  */
 class Link extends Mesour\Object
 {
+
 	private $name;
 
 	private $fixed_name;
 
 	private $confirm = false;
-
-	private $permission = false;
 
 	private $ajax = true;
 
@@ -53,7 +51,7 @@ class Link extends Mesour\Object
 
 	public function setAjax($ajax)
 	{
-		$this->ajax = (bool)$ajax;
+		$this->ajax = (bool) $ajax;
 		$this->button->setAttribute('data-mesour-selection', $this->ajax ? 'ajax' : 'none');
 		return $this;
 	}
@@ -104,4 +102,5 @@ class Link extends Mesour\Object
 	{
 
 	}
+
 }

@@ -11,10 +11,10 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
 interface IContainer extends Mesour\Components\ComponentModel\IComponent, IColumn
 {
+
 }

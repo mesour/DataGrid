@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<ruleset name="Mesour Coding Standard">
+    <rule ref="vendor/consistence/coding-standard/Consistence/ruleset.xml">
+        <!-- because of exceptions.php -->
+        <exclude name="Squiz.Classes.ClassFileName.NoMatch"/>
+        <exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
+
+        <!-- because of "@param int" over "@param integer" -->
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/>
+
+        <!-- because of functions without visibility in interfaces -->
+        <exclude name="Squiz.Scope.MethodScope.Missing"/>
+
+        <!-- because of ") {" when arguments are on multiple lines -->
+        <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine"/>
+
+        <!-- because of *.phpt -->
+        <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+
+        <!-- because of ::class -->
+        <exclude name="Squiz.Classes.SelfMemberReference.NotUsed"/>
+
+        <!-- because of $formControl->addCondition() -->
+        <exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/>
+    </rule>
+    <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/ruleset.xml">
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameAfterKeyword"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedExceptions"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.UseOnlyWhitelistedNamespaces"/>
+
+        <!-- because of exceptions.php -->
+        <exclude name="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/>
+
+        <!-- because of \DateTime, \Iterator etc. -->
+        <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName"/>
+
+        <!-- because of @method annotations -->
+        <exclude name="SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse"/>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" type="boolean" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+        <properties>
+            <property name="rootNamespaces" type="array" value="libs/SmartSelling=>SmartSelling"/>
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
+        <properties>
+            <property name="allowFullyQualifiedExceptions" type="boolean" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="1"/>
+        </properties>
+    </rule>
+    <exclude-pattern>app/config/environment.php</exclude-pattern>
+    <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+</ruleset>

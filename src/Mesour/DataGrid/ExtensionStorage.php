@@ -11,7 +11,6 @@ namespace Mesour\DataGrid;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -138,7 +137,8 @@ class ExtensionStorage
 				);
 			}
 		}
-		if ($extName = $this->getExtensionName($extension)) {
+		$extName = $this->getExtensionName($extension);
+		if ($extName) {
 			if (strlen($extension->getName()) === 0) {
 				throw new Mesour\InvalidStateException('Extension must have a set name.');
 			}

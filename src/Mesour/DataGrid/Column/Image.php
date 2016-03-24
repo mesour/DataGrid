@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -30,30 +29,28 @@ class Image extends BaseColumn
 
 	/**
 	 * Set max width in pixels
-	 *
-	 * @param $maxWidth 0 = unlimited
+	 * @param mixed $maxWidth 0 = unlimited
 	 * @return $this
 	 */
 	public function setMaxWidth($maxWidth)
 	{
-		$this->maxWidth = (int)$maxWidth;
+		$this->maxWidth = (int) $maxWidth;
 		return $this;
 	}
 
 	/**
 	 * Set max height in pixels
-	 *
-	 * @param $maxHeight 0 = unlimited
+	 * @param mixed $maxHeight 0 = unlimited
 	 * @return $this
 	 */
 	public function setMaxHeight($maxHeight)
 	{
-		$this->maxHeight = (int)$maxHeight;
+		$this->maxHeight = (int) $maxHeight;
 		return $this;
 	}
 
 	/**
-	 * @param $previewWebPath
+	 * @param string $previewWebPath
 	 * @param null $previewRootPath default $_SERVER['DOCUMENT_ROOT']
 	 * @param null $imageRootPath default $_SERVER['DOCUMENT_ROOT']
 	 * @return $this
@@ -76,7 +73,6 @@ class Image extends BaseColumn
 		} else {
 			$this->previewRootPath = $previewRootPath;
 		}
-
 
 		$this->previewPath = $previewWebPath;
 		return $this;
@@ -141,9 +137,9 @@ class Image extends BaseColumn
 		return $img;
 	}
 
-	private function createFullPath($image_file)
+	private function createFullPath($imageFile)
 	{
-		return $this->rootPath . $image_file;
+		return $this->rootPath . $imageFile;
 	}
 
 	private function fixPixels($value)

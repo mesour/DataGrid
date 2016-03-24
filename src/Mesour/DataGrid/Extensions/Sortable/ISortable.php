@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Extensions\Sortable;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -19,7 +18,7 @@ interface ISortable extends Mesour\DataGrid\Extensions\IExtension, Mesour\DataGr
 {
 
 	/**
-	 * @param $columnName
+	 * @param string $columnName
 	 * @return mixed
 	 */
 	public function setColumnName($columnName);

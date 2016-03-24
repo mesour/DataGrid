@@ -12,7 +12,6 @@ namespace Mesour\DataGrid\Column;
 use Mesour;
 use Mesour\DataGrid\Column;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -23,7 +22,7 @@ abstract class Ordering extends BaseColumn implements IOrdering
 
 	public function setOrdering($ordering = true)
 	{
-		$this->ordering = (bool)$ordering;
+		$this->ordering = (bool) $ordering;
 		return $this;
 	}
 
@@ -63,7 +62,7 @@ abstract class Ordering extends BaseColumn implements IOrdering
 			$link->setText(parent::getHeaderContent());
 			if ($this instanceof Column\Number || $this instanceof Column\Date) {
 				$iconName = 'sort-numeric';
-			} else if ($this instanceof Column\Status) {
+			} elseif ($this instanceof Column\Status) {
 				$iconName = 'sort-amount';
 			} else {
 				$iconName = 'sort-alpha';

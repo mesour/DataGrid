@@ -11,7 +11,6 @@ namespace Mesour\DataGrid\Column\Status;
 
 use Mesour;
 
-
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
@@ -75,10 +74,10 @@ class StatusButton extends Mesour\UI\Button implements IStatusItem
 		return $this->status;
 	}
 
-	public function isActive($column_name, $data)
+	public function isActive($columnName, $data)
 	{
 		if (!$this->callback) {
-			return $data[$column_name] == $this->status ? true : false;
+			return $data[$columnName] == $this->status ? true : false;
 		} else {
 			$args = [$data];
 			if (count($this->callbackArgs) > 0) {
