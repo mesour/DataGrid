@@ -10,6 +10,7 @@
 namespace Mesour\DataGrid;
 
 use Mesour;
+use Mesour\Sources\Structures\Columns\BaseTableColumnStructure;
 use Nette\Utils\Json;
 
 /**
@@ -46,8 +47,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 	/** @var Renderer\IGridRenderer */
 	private $gridRenderer;
-
-	private $primaryKey = false;
 
 	protected $isCreateCalled = false;
 
@@ -137,9 +136,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 			}
 		}
 		$this->source = $source;
-		if ($this->primaryKey !== false) {
-			$this->source->setPrimaryKey($this->primaryKey);
-		}
 		return $this;
 	}
 
@@ -329,26 +325,36 @@ abstract class BaseGrid extends Mesour\UI\Table
 		$outScript = 'var mesour = !mesour ? {} : mesour;';
 		$outScript .= 'mesour.grid = !mesour.grid ? [] : mesour.grid;';
 
-		$referenceSettings = $this->getSource()->getReferenceSettings();
+		$dataStructure = $this->getSource()->getDataStructure();
 		foreach ($this->getColumns() as $column) {
-			if ($column instanceof Column\IInlineEdit && isset($referenceSettings[$column->getName()])) {
-				$reference = $referenceSettings[$column->getName()];
-				$column->setReference($reference['table']);
-				$referencedTables[$reference['column']] = $reference['table'];
+			if (
+				$column instanceof Column\IInlineEdit
+				&& $dataStructure->hasColumn($column->getName())
+				&& $dataStructure->getColumn($column->getName()) instanceof BaseTableColumnStructure
+			) {
+				/** @var BaseTableColumnStructure $structureColumn */
+				$structureColumn = $dataStructure->getColumn($column->getName());
+				$column->setReference($structureColumn->getTableStructure()->getName());
+				$referencedTables[$structureColumn->getReferencedColumn()]
+					= $structureColumn->getTableStructure()->getName();
 			} else {
 				continue;
 			}
 		}
 
-		foreach ($referenceSettings as $reference) {
-			$related = $this->getSource()->getReferencedSource($reference['table']);
-			$outScript .=
-				'mesour.grid.push(['
-				. '"setRelation",'
-				. '"' . $this->createLinkName() . '",'
-				. '"' . str_replace('\\', '\\\\', $reference['table']) . '",'
-				. Json::encode($related->fetchPairs($related->getPrimaryKey(), $reference['column']))
-				. ']);';
+		foreach ($dataStructure->getColumns() as $structureColumn) {
+			if ($structureColumn instanceof BaseTableColumnStructure) {
+				$related = $this->getSource()->getReferencedSource($structureColumn->getTableStructure()->getName());
+				$outScript .=
+					'mesour.grid.push(['
+					. '"setRelation",'
+					. '"' . $this->createLinkName() . '",'
+					. '"' . str_replace('\\', '\\\\', $structureColumn->getTableStructure()->getName()) . '",'
+					. Json::encode(
+						$related->fetchPairs($related->getPrimaryKey(), $structureColumn->getReferencedColumn())
+					)
+					. ']);';
+			}
 		}
 
 		return $outScript;
@@ -404,9 +410,11 @@ abstract class BaseGrid extends Mesour\UI\Table
 	{
 		$row = $this->getRendererFactory()->createRow($data, $rawData);
 		if ($this->count > 0) {
-			$row->setAttributes([
-				'id' => $this->getLineId($data),
-			]);
+			$row->setAttributes(
+				[
+					'id' => $this->getLineId($data),
+				]
+			);
 		}
 		if ($empty !== false) {
 			$columnsCount = $data;
@@ -430,7 +438,9 @@ abstract class BaseGrid extends Mesour\UI\Table
 	protected function getLineId($data)
 	{
 		if (!isset($data[$this->getPrimaryKey()])) {
-			throw new Mesour\OutOfRangeException('Primary key "' . $this->getPrimaryKey() . '" does not exists in data. For change use setPrimaryKey on DataSource.');
+			throw new Mesour\OutOfRangeException(
+				'Primary key "' . $this->getPrimaryKey() . '" does not exists in data.'
+			);
 		}
 		return $this->createLinkName() . '-' . $data[$this->getPrimaryKey()];
 	}
@@ -509,21 +519,12 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 	public function setPrimaryKey($primaryKey)
 	{
-		$this->primaryKey = $primaryKey;
-		$source = $this->getSource(false);
-		if ($source) {
-			$source->setPrimaryKey($primaryKey);
-		}
-		return $this;
+		trigger_error('Method set primary key is deprecated. PrimaryKey is in DataStructure.', E_USER_DEPRECATED);
 	}
 
 	public function getPrimaryKey()
 	{
-		$source = $this->getSource(false);
-		if ($this->primaryKey === false && $source) {
-			$this->primaryKey = $source->getPrimaryKey();
-		}
-		return $this->primaryKey;
+		return $this->getSource()->getPrimaryKey();
 	}
 
 	public function render()

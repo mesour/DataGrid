@@ -10,6 +10,7 @@
 namespace Mesour\DataGrid\Extensions\Filter;
 
 use Mesour;
+use Mesour\Sources\Structures\Columns\BaseTableColumnStructure;
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -125,10 +126,19 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 
 	public function afterFetchData($currentData, $data = [], $rawData = [])
 	{
-		$referenceSettings = $this->getSource()->getReferenceSettings();
+		$dataStructure = $this->getSource()->getDataStructure();
 		foreach ($this->getGrid()->getColumns() as $column) {
-			if ($column instanceof Mesour\DataGrid\Column\IFiltering && isset($referenceSettings[$column->getName()])) {
-				$this[$column->getName()]->setReferenceSettings($referenceSettings[$column->getName()]);
+			if ($column instanceof Mesour\DataGrid\Column\IFiltering
+				&& $dataStructure->hasColumn($column->getName())
+				&& $dataStructure->getColumn($column->getName()) instanceof BaseTableColumnStructure) {
+				/** @var BaseTableColumnStructure $structureColumn */
+				$structureColumn = $dataStructure->getColumn($column->getName());
+				$this[$column->getName()]->setReferenceSettings(
+					[
+						'table' => $structureColumn->getTableStructure()->getName(),
+						'column' => $structureColumn->getReferencedColumn()
+					]
+				);
 			} else {
 				continue;
 			}

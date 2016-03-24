@@ -40,7 +40,7 @@ $loader->register();
 
 	$time_start = microtime(true);
 
-	$sourceFile = 'doctrine_source';
+	$sourceFile = 'nette_source';
 	$primaryKey = 'userId';
 
 	$application = new \Mesour\UI\Application('mesourapp');
@@ -69,12 +69,12 @@ $loader->register();
 	// TRUE = append
 	$wrapper->class('my-next-class', true);
 
-	$grid->setPrimaryKey($primaryKey);
-
 	/** @var \Mesour\DataGrid\Sources\IGridSource $source */
 	$source = require_once __DIR__ . '/sources/' . $sourceFile . '.php';
 
-	$source->setReference('groupName', \Mesour\Sources\Tests\Entity\Groups::class, 'name');
+	$dataStructure = $source->getDataStructure();
+
+	$dataStructure->addOneToOne('group_name', 'groups', 'name');
 
 	$grid->setSource($source);
 
@@ -132,7 +132,7 @@ $loader->register();
 
 	$grid->addText('email', 'E-mail');
 
-	$grid->addText('groupName', 'Group');
+	$grid->addText('group_name', 'Group');
 
 	$grid->addNumber('amount', 'Amount')
 		->setUnit('CZK');
