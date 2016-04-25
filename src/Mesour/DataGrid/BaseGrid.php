@@ -118,22 +118,20 @@ abstract class BaseGrid extends Mesour\UI\Table
 	}
 
 	/**
-	 * @param mixed $source
+	 * @param Mesour\Sources\ISource $source
 	 * @return $this
 	 * @throws Mesour\InvalidStateException
 	 * @throws Mesour\InvalidArgumentException
 	 */
-	public function setSource($source)
+	public function setSource(Mesour\Sources\ISource $source)
 	{
 		if ($this->isSourceUsed) {
 			throw new Mesour\InvalidStateException('Cannot change source after using them.');
 		}
 		if (!$source instanceof Sources\IGridSource) {
-			if (is_array($source)) {
-				$source = new Sources\ArrayGridSource($source);
-			} else {
-				throw new Mesour\InvalidArgumentException('Source must be instance of ' . Sources\IGridSource::class . ' or array.');
-			}
+			throw new Mesour\InvalidArgumentException(
+				sprintf('Source must be instance of %s.', Sources\IGridSource::class)
+			);
 		}
 		$this->source = $source;
 		return $this;
@@ -342,21 +340,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 			}
 		}
 
-		foreach ($dataStructure->getColumns() as $structureColumn) {
-			if ($structureColumn instanceof BaseTableColumnStructure) {
-				$related = $this->getSource()->getReferencedSource($structureColumn->getTableStructure()->getName());
-				$outScript .=
-					'mesour.grid.push(['
-					. '"setRelation",'
-					. '"' . $this->createLinkName() . '",'
-					. '"' . str_replace('\\', '\\\\', $structureColumn->getTableStructure()->getName()) . '",'
-					. Json::encode(
-						$related->fetchPairs($related->getPrimaryKey(), $structureColumn->getReferencedColumn())
-					)
-					. ']);';
-			}
-		}
-
 		return $outScript;
 	}
 
@@ -458,7 +441,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 	 * @return Column\IColumn[]
 	 * @throws Mesour\InvalidStateException
 	 * @throws Mesour\InvalidArgumentException
-	 * @internal
 	 */
 	public function getColumns()
 	{

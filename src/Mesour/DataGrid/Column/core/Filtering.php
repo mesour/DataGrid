@@ -77,12 +77,23 @@ abstract class Filtering extends Ordering implements IFiltering
 	{
 		parent::validate($rowData, $data);
 
-		if ($this->hasFiltering() && count($rowData) > 0) {
-			$item = reset($rowData);
-			if (!array_key_exists($this->getName(), $item)) {
-				throw new Mesour\InvalidStateException(
-					sprintf('If use filtering, column key "%s" must exists in data.', $this->getName())
-				);
+		if ($this->hasFiltering()) {
+			$dataStructure = $this->getGrid()->getSource()->getDataStructure();
+			if ($dataStructure->hasColumn($this->getName())) {
+				$structureColumn = $dataStructure->getColumn($this->getName());
+				if ($structureColumn instanceof Mesour\Sources\Structures\Columns\BaseTableColumnStructure) {
+					$this->setFiltering(false);
+					return;
+				}
+			}
+
+			if (count($rowData) > 0) {
+				$item = reset($rowData);
+				if (!array_key_exists($this->getName(), $item)) {
+					throw new Mesour\InvalidStateException(
+						sprintf('If use filtering, column key "%s" must exists in data.', $this->getName())
+					);
+				}
 			}
 		}
 	}
@@ -90,9 +101,12 @@ abstract class Filtering extends Ordering implements IFiltering
 	public function getHeaderAttributes()
 	{
 		if (isset($this->filter[$this->getName()]) && $this->inline && $this->filtering) {
-			return array_merge([
-				'data-with-filter' => '1',
-			], parent::getHeaderAttributes());
+			return array_merge(
+				[
+					'data-with-filter' => '1',
+				],
+				parent::getHeaderAttributes()
+			);
 		}
 		return parent::getHeaderAttributes();
 	}

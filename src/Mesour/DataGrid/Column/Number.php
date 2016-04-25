@@ -49,6 +49,38 @@ class Number extends InlineEdit implements IExportable
 		return $this;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getDecimals()
+	{
+		return $this->decimals;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDecimalPoint()
+	{
+		return $this->decimalPoint;
+	}
+
+	/**
+	 * @return null
+	 */
+	public function getUnit()
+	{
+		return $this->unit;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getThousandSeparator()
+	{
+		return $this->thousandSeparator;
+	}
+
 	public function getHeaderAttributes()
 	{
 		return parent::mergeAttributes(parent::getHeaderAttributes(), [
@@ -59,14 +91,6 @@ class Number extends InlineEdit implements IExportable
 	public function getBodyAttributes($data, $need = true, $rawData = [])
 	{
 		$attributes = parent::getBodyAttributes($data);
-		if ($this->hasEditable()) {
-			$attributes = array_merge($attributes, [
-				'data-editable' => $this->getName(),
-				'data-editable-type' => 'number',
-				'data-separator' => $this->thousandSeparator,
-				'data-unit' => is_null($this->unit) ? '' : $this->unit,
-			]);
-		}
 		$attributes['class'] = 'type-text';
 		return parent::mergeAttributes(parent::getBodyAttributes($data), $attributes);
 	}

@@ -58,6 +58,11 @@ class GridRenderer implements IGridRenderer
 		echo $this->getComponent('pager');
 	}
 
+	public function renderEditable()
+	{
+		echo $this->getComponent('editable');
+	}
+
 	public function renderFilter()
 	{
 		echo $this->getComponent('filter');
@@ -87,19 +92,22 @@ class GridRenderer implements IGridRenderer
 			if (isset($this->components['filter'])) {
 				$wrapper->insert(0, $this->getComponent('filter'));
 			}
+			if (isset($this->components['editable'])) {
+				$wrapper->insert(1, $this->getComponent('editable'));
+			}
 
-			$wrapper->insert(1, $this->getComponent('grid'));
+			$wrapper->insert(2, $this->getComponent('grid'));
 
 			if (isset($this->components['pager'])) {
-				$wrapper->insert(2, $this->getComponent('pager'));
+				$wrapper->insert(3, $this->getComponent('pager'));
 			}
 			if (isset($this->components['selection'])) {
-				$wrapper->insert(3, $this->getComponent('selection'));
+				$wrapper->insert(4, $this->getComponent('selection'));
 			}
 			if (isset($this->components['export'])) {
-				$wrapper->insert(4, $this->getComponent('export'));
+				$wrapper->insert(5, $this->getComponent('export'));
 			}
-			$wrapper->insert(5, '<hr class="mesour-clear">');
+			$wrapper->insert(6, '<hr class="mesour-clear">');
 			return (string) $wrapper;
 		} catch (\Exception $e) {
 			trigger_error($e->getMessage(), E_USER_WARNING);

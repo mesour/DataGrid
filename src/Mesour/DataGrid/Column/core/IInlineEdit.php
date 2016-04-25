@@ -21,7 +21,7 @@ interface IInlineEdit extends Mesour\Components\ComponentModel\IComponent, IColu
 	 * @param bool $editable
 	 * @return mixed
 	 */
-	public function setEditable($editable = true);
+	public function setEditable();
 
 	/**
 	 * @return bool

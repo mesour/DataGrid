@@ -27,12 +27,6 @@ class Text extends InlineEdit implements IExportable
 	public function getBodyAttributes($data, $need = true, $rawData = [])
 	{
 		$attributes = parent::getBodyAttributes($data);
-		if ($this->hasEditable()) {
-			$attributes = array_merge($attributes, [
-				'data-editable' => $this->getName(),
-				'data-editable-type' => 'text',
-			]);
-		}
 		$attributes['class'] = 'type-text';
 		return parent::mergeAttributes($data, $attributes);
 	}

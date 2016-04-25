@@ -24,10 +24,31 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 	public function getBodyAttributes($data, $need = true, $rawData = [])
 	{
 		$attributes = parent::getBodyAttributes($data, $need, $rawData);
-		if ($this->hasEditable() && $this->reference) {
-			$attributes = array_merge($attributes, [
-				'data-editable-related' => $this->reference,
-			]);
+		if ($this->hasEditable()) {
+			$source = $this->getGrid()->getSource();
+			$dataStructure = $source->getDataStructure();
+			if ($dataStructure->hasColumn($this->getName())) {
+				$column = $dataStructure->getColumn($this->getName());
+				if (
+					$column instanceof Mesour\Sources\Structures\Columns\ManyToOneColumnStructure
+					|| $column instanceof Mesour\Sources\Structures\Columns\OneToOneColumnStructure
+				) {
+					$value = $data[$column->getReferencedColumn()];
+					if(!$value) {
+						$attributes['data-grid-add'] = 'true';
+					}
+				}
+			}
+			if (!isset($value)) {
+				$value = $data[$this->getName()];
+			}
+			$attributes = array_merge(
+				$attributes, [
+				'data-grid-editable' => $this->getName(),
+				'data-grid-value' => $value,
+				'data-grid-id' => $data[$this->getGrid()->getSource()->getPrimaryKey()],
+			]
+			);
 		}
 		return parent::mergeAttributes($data, $attributes);
 	}

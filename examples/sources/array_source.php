@@ -29,7 +29,7 @@ $groups = [
     ['id' => '3', 'name' => 'Group 3'],
 ];
 
-$source = new \Mesour\DataGrid\Sources\ArrayGridSource($data, [
+$source = new \Mesour\DataGrid\Sources\ArrayGridSource('users', 'id', $data, [
     'group' => $groups
 ]);
 

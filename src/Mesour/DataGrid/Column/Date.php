@@ -25,6 +25,14 @@ class Date extends InlineEdit implements IExportable
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getFormat()
+	{
+		return $this->format;
+	}
+
 	public function getHeaderAttributes()
 	{
 		return [
@@ -35,14 +43,6 @@ class Date extends InlineEdit implements IExportable
 	public function getBodyAttributes($data, $need = true, $rawData = [])
 	{
 		$attributes = parent::getBodyAttributes($data, $need, $rawData);
-		if ($this->hasEditable()) {
-			$attributes = array_merge($attributes, [
-				'data-editable' => $this->getName(),
-				'data-editable-type' => 'date',
-				'data-date-format' => Mesour\Components\Utils\Helpers::convertDateToJsFormat($this->format),
-				'data-editable-pickTime' => Mesour\Components\Utils\Helpers::isDateHasTime($this->format) ? 1 : 0,
-			]);
-		}
 		$attributes['class'] = 'type-text';
 		return parent::mergeAttributes(parent::getBodyAttributes($data), $attributes);
 	}

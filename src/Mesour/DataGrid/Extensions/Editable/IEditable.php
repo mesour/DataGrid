@@ -17,8 +17,4 @@ use Mesour;
 interface IEditable extends Mesour\DataGrid\Extensions\IExtension
 {
 
-	public function handleEditCell(array $data);
-
-	public function setPermission($resource, $privilege);
-
 }

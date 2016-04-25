@@ -117,7 +117,7 @@ abstract class ExtendedGrid extends BaseGrid
 	}
 
 	/**
-	 * @return Extensions\Editable\IEditable
+	 * @return Extensions\Editable\EditableExtension
 	 */
 	public function enableEditable()
 	{

@@ -29,6 +29,8 @@ interface IGridRenderer extends Mesour\Components\Utils\IString
 	public function renderGrid();
 
 	public function renderPager();
+	
+	public function renderEditable();
 
 	public function renderSelection();
 

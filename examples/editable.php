@@ -32,7 +32,7 @@ $loader->register();
 
 <hr>
 
-<div class="container">
+<div class="row col-lg-12" style="padding-left: 50px;">
 	<h2>Basic functionality</h2>
 
 	<hr>
@@ -77,6 +77,8 @@ $loader->register();
 
 	$dataStructure->addManyToOne('group', 'groups', 'group_id', '{name} ({type})');
 
+	$dataStructure->addOneToOne('wallet', 'wallets', 'wallet_id', '{amount} {currency}');
+
 	$grid->setSource($source);
 
 	$pager = $grid->enablePager(8);
@@ -108,9 +110,35 @@ $loader->register();
 		dump('DeleteSelected', func_get_args());
 	};
 
-	$sortable = $grid->enableSortable('sort');
+	$editable = $grid->enableEditable();
 
-	$export = $grid->enableExport(__DIR__ . '/temp');
+	$editableStructure = $editable->getDataStructure();
+
+	$editableStructure->addOneToOne('wallet', 'Wallet')
+		->enableCreateNewRow();
+
+	$editableStructure->addManyToOne('group', 'Groups')
+		->enableEditCurrentRow()
+		->enableCreateNewRow()
+		->setNullable();
+
+	$walletStructure = $editableStructure->getOrCreateElement('wallets', 'id');
+	$walletStructure->addNumber('amount', 'Amount')
+		->setDecimals(2)
+		->setThousandSeparator('.')
+		->setDecimalPoint(',');
+	$walletStructure->addEnum('currency', 'Currency')
+		->addValue('CZK', 'CZK')
+		->addValue('EUR', 'EUR');
+
+	$groupsStructure = $editableStructure->getOrCreateElement('groups', 'id');
+	$groupsStructure->addText('name', 'Name');
+	$groupsStructure->addEnum('type', 'Type')
+		->setNullable()
+		->addValue('first', 'First')
+		->addValue('second', 'Second');
+	$groupsStructure->addDate('date', 'Date');
+	$groupsStructure->addNumber('members', 'Members');
 
 	$status = $grid->addStatus('action', 'S')
 		->setPermission('menu', 'second');
@@ -131,9 +159,27 @@ $loader->register();
 
 	$grid->addText('email', 'E-mail');
 
-	$grid->addText('group_name', 'Group');
-	
-	$grid->addText('group', 'Group');
+	$grid->addText('role', 'Role');
+
+	$grid->addDate('last_login', 'Last login')
+		->setFormat('Y-m-d');
+
+	$grid->addText('has_pro', 'Has pro')
+		->setAttribute('title', 'Has pro')
+		->setCallback(
+			function (\Mesour\DataGrid\Column\Text $column, $data) {
+				if($data['has_pro']) {
+					return '<b style="color:green">Yes</b>';
+				}
+				return '<b style="color:red">No</b>';
+			}
+		);
+
+	$grid->addText('group', 'Group')
+		->setAttribute('title', 'Select group');
+
+	$grid->addText('wallet', 'Wallet')
+		->setAttribute('title', 'Wallet');
 
 	$grid->addNumber('amount', 'Amount')
 		->setUnit('CZK');
@@ -209,13 +255,15 @@ $loader->register();
 <script src="../vendor/mesour/components/public/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
 
 <script src="../vendor/mesour/components/public/mesour.components.min.js"></script>
+<script src="../vendor/mesour/modal/public/mesour.modal.min.js"></script>
+
+<script src="../vendor/mesour/editable/public/mesour.editable.min.js"></script>
 
 <script src="../vendor/mesour/filter/public/src/mesour.filter.js"></script>
 <script src="../vendor/mesour/filter/public/src/mesour.filter.Checkers.js"></script>
 <script src="../vendor/mesour/filter/public/src/mesour.filter.CustomFilter.js"></script>
 <script src="../vendor/mesour/filter/public/src/mesour.filter.Filter.js"></script>
 <script src="../vendor/mesour/filter/public/src/mesour.filter.DropDown.js"></script>
-<script src="../vendor/mesour/editable/public/mesour.editable.min.js"></script>
 
 <script src="../vendor/mesour/selection/public/mesour.selection.js"></script>
 <script src="../vendor/mesour/pager/public/mesour.advancedPager.js"></script>

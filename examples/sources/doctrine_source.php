@@ -25,7 +25,7 @@ if (!isset($conn)) {
 		'driver' => 'pdo_mysql',
 		'user' => 'root',
 		'password' => 'root',
-		'dbname' => 'sources_test',
+		'dbname' => 'mesour_editable',
 	];
 }
 
