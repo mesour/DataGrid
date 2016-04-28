@@ -20,21 +20,21 @@ class NetteDbDataSource implements IDataSource
     /**
      * @var Context|NULL
      */
-    private $context;
+    protected $context;
 
-    private $related = array();
+    protected $related = array();
 
-    private $relations = array();
+    protected $relations = array();
 
     /**
      * @var \Nette\Database\Table\Selection
      */
-    private $nette_table;
+    protected $nette_table;
 
     /**
      * @var array
      */
-    private $where_arr = array();
+    protected $where_arr = array();
 
     /**
      * @var integer
