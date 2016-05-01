@@ -42,7 +42,6 @@ $loader->register();
 
 	$sourceFile = 'doctrine_source';
 	$relatedTable = \Mesour\Sources\Tests\Entity\Group::class;
-	$groupName = 'group_name';
 	$lastLogin = 'last_login';
 
 	function getSubGrid()
@@ -51,8 +50,6 @@ $loader->register();
 		$_sub_grid = new \Mesour\UI\DataGrid('subGrid');
 
 		$_sub_grid->enablePager(5);
-
-		$_sub_grid->enableEditable();
 
 		$_sub_grid->onEditCell[] = function () {
 			dump(func_get_args());
@@ -136,6 +133,24 @@ $loader->register();
 	/** @var \Mesour\DataGrid\Sources\IGridSource $source */
 	$source = require_once __DIR__ . '/sources/' . $sourceFile . '.php';
 
+	$dataStructure = $source->getDataStructure();
+
+	/** @var \Mesour\Sources\Structures\Columns\ManyToManyColumnStructure $companiesColumn */
+	$companiesColumn = $dataStructure->getColumn('companies');
+	$companiesColumn->setPattern('{name}');
+
+	/** @var \Mesour\Sources\Structures\Columns\OneToManyColumnStructure $addressesColumn */
+	$addressesColumn = $dataStructure->getColumn('addresses');
+	$addressesColumn->setPattern('{street}, {zip} {city}, {country}');
+
+	/** @var \Mesour\Sources\Structures\Columns\ManyToOneColumnStructure $groupColumn */
+	$groupColumn = $dataStructure->getColumn('group');
+	$groupColumn->setPattern('{name} ({type})');
+
+	/** @var \Mesour\Sources\Structures\Columns\OneToOneColumnStructure $walletColumn */
+	$walletColumn = $dataStructure->getColumn('wallet');
+	$walletColumn->setPattern('{amount}');
+
 	for ($x = 0; $x < 8; $x++) {
 		$sources[] = clone $source;
 	}
@@ -145,8 +160,6 @@ $loader->register();
 	$pager = $grid->enablePager(8);
 
 	$filter = $grid->enableFilter();
-
-	$grid->enableEditable();
 
 	$grid->onEditCell[] = function () {
 		dump(func_get_args());
@@ -255,7 +268,7 @@ $loader->register();
 
 	$container->addText('name');
 
-	$grid->addText($groupName, 'Group');
+	$grid->addText('group', 'Group');
 
 	$grid->addText('email', 'E-mail')
 		->setOrdering(false);

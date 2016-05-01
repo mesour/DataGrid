@@ -5,7 +5,8 @@
     height: 42px;
     padding: 6px 8px;
 }
-.mesour-datagrid table > thead > tr > th >span {
+
+.mesour-datagrid table > thead > tr > th > span {
     color: #337ab7;
 }
 
@@ -22,20 +23,32 @@
     white-space: nowrap;
 }
 
+.mesour-datagrid-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.mesour-datagrid-list li {
+
+}
+
 .mesour-datagrid table > tbody > tr > td {
     border-right: 1px solid #ddd;
     padding: 6px 8px;
     vertical-align: middle;
 }
+
 .mesour-datagrid table > tbody > tr > td.subgrid-button {
     vertical-align: top;
 }
+
 .mesour-datagrid table > tbody > tr > td .btn-sm {
     padding: 4px 8px 6px 8px;
     font-size: 13px;
     line-height: 1;
     border-radius: 3px;
 }
+
 .mesour-datagrid table > tbody > tr > td .btn-sm.btn-sm-grid {
     padding: 4px 9px 4px 9px;
 }
@@ -70,6 +83,7 @@
 .mesour-datagrid .table {
     margin-bottom: 10px;
 }
+
 .mesour-datagrid table[data-mesour-enabled-filter="1"] .full-reset {
     float: right;
 }
@@ -128,7 +142,7 @@
     display: none;
 }
 
-.ordering .no-sort{
+.ordering .no-sort {
     color: #ccc;
 }
 
@@ -163,28 +177,35 @@
     clear: both;
     padding-bottom: 10px;
 }
+
 .mesour-datagrid-pager + .selection-dropdown {
     top: -54px;
 }
+
 .mesour-datagrid-pager > div.row {
     margin-right: 0;
     margin-left: 0;
 }
+
 .mesour-datagrid-pager > div {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
-.mesour-datagrid-pager nav ul.pagination{
+
+.mesour-datagrid-pager nav ul.pagination {
     margin: 10px 0;
 }
-.mesour-datagrid-pager .input-group{
+
+.mesour-datagrid-pager .input-group {
     padding-top: 10px;
 }
-.mesour-datagrid-pager .row-count{
+
+.mesour-datagrid-pager .row-count {
     border-left: none;
 }
-.mesour-datagrid-pager .form-control{
+
+.mesour-datagrid-pager .form-control {
     text-align: right;
     padding-right: 5px;
     padding-left: 10px;
@@ -192,54 +213,65 @@
     border-right: 1px solid #dfdfdf;
     min-width: 35px;
 }
-.mesour-datagrid-pager .form-control + span{
+
+.mesour-datagrid-pager .form-control + span {
     padding-left: 0;
     padding-right: 10px;
     border-left: none;
 }
-.mesour-datagrid-pager .col-xs-12{
+
+.mesour-datagrid-pager .col-xs-12 {
     padding-left: 0;
     padding-right: 0;
 }
+
 @media (max-width: 768px) {
-    .mesour-datagrid-pager .col-xs-12{
+    .mesour-datagrid-pager .col-xs-12 {
         width: 100%;
         padding-right: 10px;
     }
-    .mesour-datagrid-pager .col-xs-12 .input-group{
+
+    .mesour-datagrid-pager .col-xs-12 .input-group {
         float: none;
         text-align: left;
         padding-top: 0;
         padding-bottom: 10px;
     }
-    .mesour-datagrid-pager .col-xs-12 .input-group .form-control{
+
+    .mesour-datagrid-pager .col-xs-12 .input-group .form-control {
 
     }
 }
+
 @media (max-width: 990px) {
-    .mesour-datagrid-pager .col-xs-12{
+    .mesour-datagrid-pager .col-xs-12 {
         width: 100%;
     }
-    .mesour-datagrid-pager .col-xs-12 .input-group{
+
+    .mesour-datagrid-pager .col-xs-12 .input-group {
         float: none;
         text-align: left;
         padding-top: 0;
         padding-bottom: 10px;
     }
-    .mesour-datagrid-pager .col-xs-12 .input-group .form-control{
+
+    .mesour-datagrid-pager .col-xs-12 .input-group .form-control {
 
     }
 }
+
 @media (max-width: 638px) {
-    .mesour-datagrid-pager .col-xs-12{
+    .mesour-datagrid-pager .col-xs-12 {
         width: 100%;
     }
-    .mesour-datagrid-pager .col-xs-12 .input-group{
+
+    .mesour-datagrid-pager .col-xs-12 .input-group {
         float: none;
         text-align: left;
         padding-top: 0;
         padding-bottom: 10px;
     }
+
     .mesour-datagrid-pager .col-xs-12 .pagination li:first-child,
     .mesour-datagrid-pager .col-xs-12 .pagination li:last-child {
         display: none;

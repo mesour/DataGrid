@@ -34,20 +34,28 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 					|| $column instanceof Mesour\Sources\Structures\Columns\OneToOneColumnStructure
 				) {
 					$value = $data[$column->getReferencedColumn()];
-					if(!$value) {
+					if (!$value) {
 						$attributes['data-grid-add'] = 'true';
 					}
+				} elseif (
+					$column instanceof Mesour\Sources\Structures\Columns\OneToManyColumnStructure
+					|| $column instanceof Mesour\Sources\Structures\Columns\ManyToManyColumnStructure
+				) {
+					return parent::mergeAttributes($data, $attributes);
 				}
 			}
 			if (!isset($value)) {
 				$value = $data[$this->getName()];
 			}
 			$attributes = array_merge(
-				$attributes, [
-				'data-grid-editable' => $this->getName(),
-				'data-grid-value' => $value,
-				'data-grid-id' => $data[$this->getGrid()->getSource()->getPrimaryKey()],
-			]
+				$attributes,
+				[
+					'data-grid-editable' => $this->getName(),
+					'data-grid-value' => $value instanceof \DateTime ? $value->format(
+						method_exists($this, 'getFormat') ? $this->getFormat() : 'Y-m-d H:i:s'
+					) : $value,
+					'data-grid-id' => $data[$this->getGrid()->getSource()->getPrimaryKey()],
+				]
 			);
 		}
 		return parent::mergeAttributes($data, $attributes);

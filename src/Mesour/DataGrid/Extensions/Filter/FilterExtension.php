@@ -134,12 +134,16 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 			) {
 				/** @var BaseTableColumnStructure $structureColumn */
 				$structureColumn = $dataStructure->getColumn($column->getName());
-				$this[$column->getName()]->setReferenceSettings(
-					[
-						'table' => $structureColumn->getTableStructure()->getName(),
-						'column' => $structureColumn->getReferencedColumn(),
-					]
-				);
+				/** @var Mesour\Filter\IFilterItem $filterItem */
+				$filterItem = isset($this[$column->getName()]) ? $this[$column->getName()] : null;
+				if ($filterItem) {
+					$filterItem->setReferenceSettings(
+						[
+							'table' => $structureColumn->getTableStructure()->getName(),
+							'column' => $structureColumn->getReferencedColumn(),
+						]
+					);
+				}
 			} else {
 				continue;
 			}

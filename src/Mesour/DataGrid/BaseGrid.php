@@ -284,6 +284,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 		foreach ($this->getColumns() as $column) {
 			$column->validate($currentData, $data);
+			$column->setListRenderer(new GridListRenderer($column));
 		}
 
 		$script = Mesour\Components\Utils\Html::el('script');

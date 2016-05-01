@@ -114,7 +114,7 @@ abstract class Filtering extends Ordering implements IFiltering
 	public function getHeaderContent()
 	{
 		$parentContent = parent::getHeaderContent();
-		if ($this->inline) {
+		if ($this->inline && !$this->isReferencedColumn()) {
 			$filterItem = $this->filter->getItem($this->getName());
 			$filterItem->getButtonPrototype()
 				->class($this->filterItemSizeClass, true);

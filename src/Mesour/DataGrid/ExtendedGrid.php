@@ -21,8 +21,9 @@ use Mesour;
 abstract class ExtendedGrid extends BaseGrid
 {
 
-	const FILTER_WRAPPER = 'filter-wrapper',
-		PAGER_WRAPPER = 'pager-wrapper';
+	const FILTER_WRAPPER = 'filter-wrapper';
+
+	const PAGER_WRAPPER = 'pager-wrapper';
 
 	static public $defaults = [
 		self::WRAPPER => [

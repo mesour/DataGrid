@@ -42,6 +42,7 @@ require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/User.php';
 require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/Group.php';
 require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/UserAddress.php';
 require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/Company.php';
+require_once __DIR__ . '/../../vendor/mesour/sources/tests/Entity/Wallet.php';
 
 $helperSet = new \Symfony\Component\Console\Helper\HelperSet(
 	[
@@ -64,9 +65,7 @@ $source = new \Mesour\DataGrid\Sources\DoctrineGridSource(
 		'id' => 'u.id',
 		'group_id' => 'u.groups',
 		'last_login' => 'u.lastLogin',
-		'group_name' => 'g.name',
-		'group_type' => 'g.type',
-		'group_date' => 'g.date',
+		'group' => 'g',
 	]
 );
 

@@ -1,21 +1,22 @@
 <?php
 
-namespace Mesour\DataGrid\Tests;
+namespace Mesour\DataGridTests\Sources;
 
 use Doctrine\ORM\QueryBuilder;
 use Mesour\DataGrid\Sources\DoctrineGridSource;
 use Mesour\Filter;
+use Mesour\FilterTests\Sources\BaseDoctrineFilterSourceTest;
 use Mesour\Sources;
 use Nette\Database;
 
-abstract class BaseDoctrineGridSourceTest extends Filter\Tests\BaseDoctrineFilterSourceTest
+abstract class BaseDoctrineGridSourceTest extends BaseDoctrineFilterSourceTest
 {
 
 	public function __construct($setConfigFiles = true)
 	{
 		if ($setConfigFiles) {
-			$this->configFile = __DIR__ . '/../config.php';
-			$this->localConfigFile = __DIR__ . '/../config.local.php';
+			$this->configFile = __DIR__ . '/../../../config.php';
+			$this->localConfigFile = __DIR__ . '/../../../config.local.php';
 		}
 
 		parent::__construct(false);

@@ -78,7 +78,8 @@ class EditableExtension extends Mesour\UI\Editable implements IEditable
 	private function determineAndAttachField(
 		Mesour\Editable\Structures\IDataStructure $structure,
 		Mesour\DataGrid\Column\IColumn $column,
-		Mesour\Sources\Structures\Columns\IColumnStructure $columnStructure = null)
+		Mesour\Sources\Structures\Columns\IColumnStructure $columnStructure = null
+	)
 	{
 		if ($column instanceof Mesour\DataGrid\Column\Text) {
 			$structure->addText($column->getName(), $column->getHeader());

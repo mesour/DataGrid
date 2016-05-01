@@ -75,9 +75,25 @@ $loader->register();
 
 	$dataStructure = $source->getDataStructure();
 
-	$dataStructure->addManyToOne('group', 'groups', 'group_id', '{name} ({type})');
+	$dataStructure->renameColumn('user_addresses', 'addresses');
+	$dataStructure->renameColumn('groups', 'group');
+	$dataStructure->renameColumn('wallets', 'wallet');
 
-	$dataStructure->addOneToOne('wallet', 'wallets', 'wallet_id', '{amount} {currency}');
+	/** @var \Mesour\Sources\Structures\Columns\ManyToManyColumnStructure $companiesColumn */
+	$companiesColumn = $dataStructure->getColumn('companies');
+	$companiesColumn->setPattern('{name}');
+
+	/** @var \Mesour\Sources\Structures\Columns\OneToManyColumnStructure $addressesColumn */
+	$addressesColumn = $dataStructure->getColumn('addresses');
+	$addressesColumn->setPattern('{street}, {zip} {city}, {country}');
+
+	/** @var \Mesour\Sources\Structures\Columns\ManyToOneColumnStructure $groupColumn */
+	$groupColumn = $dataStructure->getColumn('group');
+	$groupColumn->setPattern('{name} ({type})');
+
+	/** @var \Mesour\Sources\Structures\Columns\OneToOneColumnStructure $walletColumn */
+	$walletColumn = $dataStructure->getColumn('wallet');
+	$walletColumn->setPattern('{amount}');
 
 	$grid->setSource($source);
 
@@ -176,53 +192,23 @@ $loader->register();
 		);
 
 	$grid->addText('group', 'Group')
+		//->setFiltering(false)
 		->setAttribute('title', 'Select group');
 
 	$grid->addText('wallet', 'Wallet')
+		//->setFiltering(false)
 		->setAttribute('title', 'Wallet');
+
+	$grid->addText('addresses', 'Addresses')
+		//->setFiltering(false)
+	;
+
+	$grid->addText('companies', 'Companies')
+		//->setFiltering(false)
+	;
 
 	$grid->addNumber('amount', 'Amount')
 		->setUnit('CZK');
-
-	$container = $grid->addContainer('blablablablablabla', 'Actions');
-
-	//$container->setDisabled();
-
-	$button = $container->addButton('test_button');
-
-	$button->setIcon('pencil')
-		->setType('primary')
-		->setAttribute('href', $button->link('http://mesour.com'))
-		->setAttribute('target', '_blank');
-
-	$dropDown = $container->addDropDown('test_drop_down')
-		->setPullRight()
-		->setAttribute('class', 'dropdown');
-
-	$dropDown->addHeader('Test header');
-
-	$first = $dropDown->addButton();
-
-	$first->setText('First button')
-		->setAttribute('href', $dropDown->link('/first/'));
-
-	$dropDown->addDivider();
-
-	$dropDown->addHeader('Test header 2');
-
-	$dropDown->addButton()
-		->setText('Second button')
-		->setConfirm('Test confirm :-)')
-		->setAttribute('href', $dropDown->link('/second/'));
-
-	$dropDown->addButton()
-		->setText('Third button')
-		->setAttribute('href', $dropDown->link('/third/'));
-
-	$mainButton = $dropDown->getMainButton();
-
-	$mainButton->setText('Actions')
-		->setType('danger');
 
 	$time_end = microtime(true);
 	$time = $time_end - $time_start;

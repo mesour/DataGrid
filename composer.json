@@ -1,6 +1,6 @@
 {
   "name": "mesour/datagrid",
-  "description": "Mesour DataGrid is DataGrid for PHP >= 5.5 with options like to inline edit, export to csv, create sub items, sort data using jQuery.ui.nestedSortable and much more.",
+  "description": "Mesour DataGrid is DataGrid for PHP >= 5.5 with options like to inline edit, export to csv, create sub items, sort data using jQuery.ui.sortable and much more.",
   "license": ["BSD-3-Clause","GPL-2.0","GPL-3.0"],
   "keywords": ["grid","datagrid","data grid","component"],
   "homepage": "http://grid.mesour.com/",
@@ -13,13 +13,13 @@
     "mesour/components": "~3.0.0",
     "mesour/button": "~3.0.0",
     "mesour/dropdown": "~3.0.0",
-    "mesour/editable": "dev-master",
-    "mesour/filter": "dev-master",
+    "mesour/editable": "~3.0.0",
+    "mesour/filter": "3.0.*@beta",
     "mesour/icon": "~3.0.0",
     "mesour/pager": "~3.0.0",
     "mesour/selection": "~3.0.0",
-    "mesour/sources": "dev-master",
-    "mesour/table": "3.0.*@beta"
+    "mesour/sources": "~3.0.0",
+    "mesour/table": "~3.0.0"
   },
   "require-dev": {
     "tracy/tracy": "~2.3.0",

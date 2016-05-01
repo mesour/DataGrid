@@ -1,0 +1,16 @@
+array(
+	'action',
+	'amount',
+	'avatar',
+	'email',
+	'group_id',
+	'has_pro',
+	'id',
+	'last_login',
+	'name',
+	'order',
+	'role',
+	'surname',
+	'timestamp',
+	'wallet_id',
+)
