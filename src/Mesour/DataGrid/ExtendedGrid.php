@@ -14,7 +14,6 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  *
- * @method null onEditCell($lineId, $columnName, $newValue, $oldValue, $dataValue = null)
  * @method null onSort($data, $itemId)
  * @method null onFilter(Extensions\Filter\IFilter $filter)
  */
@@ -60,6 +59,10 @@ abstract class ExtendedGrid extends BaseGrid
 
 	public $onSort = [];
 
+	/**
+	 * @var array
+	 * @deprecated not called
+	 */
 	public $onEditCell = [];
 
 	public $onFilter = [];
