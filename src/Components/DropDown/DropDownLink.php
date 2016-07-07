@@ -93,7 +93,7 @@ class DropDownLink extends DropDownItem {
 		}
 
 		$li = Html::el('li', $this->option[self::ATTRIBUTES]);
-		$li->add($a);
+		$li->addHtml($a);
 
 		return $li;
 	}

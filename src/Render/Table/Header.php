@@ -16,9 +16,9 @@ class Header extends Render\Header {
 		$tableHead = Html::el('thead', $this->header_attributes);
 		$tr = Html::el('tr', $this->attributes);
 		foreach ($this->cells as $cell) {
-			$tr->add($cell->create());
+			$tr->addHtml($cell->create());
 		}
-		$tableHead->add($tr);
+		$tableHead->addHtml($tr);
 		return $tableHead;
 	}
 

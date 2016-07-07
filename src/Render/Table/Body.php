@@ -16,7 +16,7 @@ class Body extends Render\Body {
 		$tableBody = Html::el('tbody', $this->attributes);
 
 		foreach ($this->rows as $row) {
-			$tableBody->add($row->create());
+			$tableBody->addHtml($row->create());
 		}
 
 		return $tableBody;

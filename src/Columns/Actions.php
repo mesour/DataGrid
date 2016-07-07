@@ -80,7 +80,7 @@ class Actions extends Base {
 			if($action instanceof DropDown) {
 				$dropdown_count++;
 			}
-			$container->add($action->create($data) . ' ');
+			$container->addHtml($action->create($data) . ' ');
 		}
 		$container->class('buttons-count-' . (count($this->option[self::ACTIONS])-$dropdown_count) . ' dropdown-count-' . $dropdown_count);
 		return $container;

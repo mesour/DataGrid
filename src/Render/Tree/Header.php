@@ -15,7 +15,7 @@ class Header extends Render\Header {
 	public function create() {
 		$tr = Html::el('div', $this->attributes);
 		foreach ($this->cells as $cell) {
-			$tr->add($cell->create());
+			$tr->addHtml($cell->create());
 		}
 		return $tr;
 	}

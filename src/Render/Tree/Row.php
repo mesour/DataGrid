@@ -16,11 +16,11 @@ class Row extends Render\Row {
 		$li = Html::el('li', $this->attributes);
 		$container = Html::el('div');
 		foreach ($this->cells as $cell) {
-			$container->add($cell->create());
+			$container->addHtml($cell->create());
 		}
-		$li->add($container);
+		$li->addHtml($container);
 		if (!is_null($this->body)) {
-			$li->add($this->body->create());
+			$li->addHtml($this->body->create());
 		}
 		return $li;
 	}
