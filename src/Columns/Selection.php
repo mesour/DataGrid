@@ -54,12 +54,12 @@ class Selection extends Base {
 
 		$button = Html::el('button', array('type' => 'button'));
 		$checkbox = Html::el('a', array('type' => 'button', 'class' => 'btn btn-xs btn-default main-checkbox'));
-		$checkbox->add('&nbsp;&nbsp;&nbsp;&nbsp;');
-		$button->add($checkbox);
+		$checkbox->addHtml('&nbsp;&nbsp;&nbsp;&nbsp;');
+		$button->addHtml($checkbox);
 
 		$button->class('btn btn-default btn-xs dropdown-toggle');
-		$button->add(' ');
-		$button->add(Html::el('span', array('class' => 'caret')));
+		$button->addHtml(' ');
+		$button->addHtml(Html::el('span', array('class' => 'caret')));
 
 		$ul = Html::el('ul', array('class' => 'dropdown-menu', 'role' => 'menu'));
 		foreach ($this->option[self::HELPERS] as $i => $helper) {
@@ -69,18 +69,18 @@ class Selection extends Base {
 				}
 				$a = Html::el('a', array('href' => '#', 'data-select' => $helper->getValue()));
 				$a->setText($helper->getName());
-				$ul->add(Html::el('li')->add($a));
+				$ul->addHtml(Html::el('li')->addHtml($a));
 			} else {
-				$ul->add(Html::el('li', array('class' => 'divider')));
+				$ul->addHtml(Html::el('li', array('class' => 'divider')));
 			}
 			if($i === count($this->option[self::HELPERS])-1) {
-				$ul->add(Html::el('li', array('class' => 'divider')));
+				$ul->addHtml(Html::el('li', array('class' => 'divider')));
 			}
 		}
-		$ul->add(Html::el('li')->add(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText($this->grid['translator']->translate('Inverse selection'))));
-		$div->add($ul);
+		$ul->addHtml(Html::el('li')->addHtml(Html::el('a', array('href' => '#', 'data-select' => 'inverse'))->setText($this->grid['translator']->translate('Inverse selection'))));
+		$div->addHtml($ul);
 
-		$div->add($button);
+		$div->addHtml($button);
 
 		return $div;
 	}
@@ -91,7 +91,7 @@ class Selection extends Base {
 
 	public function getBodyContent($data) {
 		$checkbox = Html::el('a', array('data-value' => $data[$this->option[self::ID]], 'class' => 'btn btn-default btn-xs select-checkbox'));
-		$checkbox->add('&nbsp;&nbsp;&nbsp;&nbsp;');
+		$checkbox->addHtml('&nbsp;&nbsp;&nbsp;&nbsp;');
 		return $checkbox;
 	}
 

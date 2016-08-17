@@ -12,7 +12,7 @@
 			<script n:if="isset($control['filter']) && $control['filter']->isAdvanced()">mesour.dataGrid.list[{$control->getName()}].filterValues = {=json_encode($control['filter']->settings)|noescape};</script>
 			<script n:if="\Mesour\DataGrid\Grid::$js_draw">{=file_get_contents($grid_dir . '/../../public/mesourGrid.js')|noescape}</script>
 			<style n:if="\Mesour\DataGrid\Grid::$css_draw">{=file_get_contents($grid_dir . '/../../public/mesourGrid.css')|noescape}</style>
-			{? \Mesour\DataGrid\Grid::disableJsDraw()}{? \Mesour\DataGrid\Grid::disableCssDraw()}
+			{php \Mesour\DataGrid\Grid::disableJsDraw()}{php \Mesour\DataGrid\Grid::disableCssDraw()}
 			<div class="data-grid"{if isset($control['editable'])} data-editable-link="{$control['editable']->link('editCell!')}"{/if}>
 				{if isset($control['filter'])}
 					{control filter}

@@ -221,7 +221,7 @@ class Button extends Setting {
 
         $translated_text = $this->getTranslator() ? $this->getTranslator()->translate($this->option[self::TEXT]) : $this->option[self::TEXT];
         if($this->option[self::ICON_POSITION] === 'right') {
-            $button->add($translated_text);
+            $button->addHtml($translated_text);
         }
 
 		if ((array_key_exists(self::ICON, $this->option) && is_string($this->option[self::ICON])) || array_key_exists(self::ICON_CLASSES, $this->option)) {
@@ -233,12 +233,12 @@ class Button extends Setting {
 					$attributes['style'] = 'color:' . $this->option[self::ICON_COLOR];
 				}
 			}
-            $button->add(Html::el('b', $attributes));
-            $button->add(' ');
+            $button->addHtml(Html::el('b', $attributes));
+            $button->addHtml(' ');
 		}
 
         if($this->option[self::ICON_POSITION] === 'left') {
-            $button->add($translated_text);
+            $button->addHtml($translated_text);
         }
 
 		return $button;

@@ -15,9 +15,9 @@ class Renderer extends Render\Renderer {
 	public function create() {
 		$table = Html::el('table', $this->attributes);
 
-		$table->add($this->header->create());
+		$table->addHtml($this->header->create());
 
-		$table->add($this->body->create());
+		$table->addHtml($this->body->create());
 
 		return $table;
 	}

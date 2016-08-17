@@ -139,10 +139,10 @@ class Container extends BaseOrdering {
 			$span->addAttributes($column->getBodyAttributes($data));
 			$content = $column->getBodyContent($data);
 			if(!is_null($content)) {
-				$span->add($content);
+				$span->addHtml($content);
 			}
-			$container->add($span);
-			$container->add(' ');
+			$container->addHtml($span);
+			$container->addHtml(' ');
 		}
 		if($only_buttons) {
 			$container->class('only-buttons', TRUE);

@@ -148,15 +148,15 @@ class DropDown extends Setting {
                         continue;
                     }
                     if (isset($separator)) {
-                        $ul->add($separator);
+                        $ul->addHtml($separator);
                         unset($separator);
                     }
                     if (isset($header)) {
-                        $ul->add($header);
+                        $ul->addHtml($header);
                         unset($header);
                     }
 
-                    $ul->add($href);
+                    $ul->addHtml($href);
                     $has_links = TRUE;
                 } elseif($link instanceof DropDownSeparator) {
                     $separator = $link->create($this->data);
@@ -178,8 +178,8 @@ class DropDown extends Setting {
         }
         $button = Html::el('button', array('class' => $class, 'id' => 'dropdownMenu', 'type' => 'button', 'data-toggle' => 'dropdown'));
         $button->setHtml(($this->getTranslator() ? $this->getTranslator()->translate($this->option[self::NAME]) : $this->option[self::NAME]) . ' <span class="caret"></span>');
-        $container->add($button);
-        $container->add($ul);
+        $container->addHtml($button);
+        $container->addHtml($ul);
 
 		return $container;
 	}

@@ -15,7 +15,7 @@ class Row extends Render\Row {
 	public function create() {
 		$tr = Html::el('tr', $this->attributes);
 		foreach ($this->cells as $cell) {
-			$tr->add($cell->create());
+			$tr->addHtml($cell->create());
 		}
 		return $tr;
 	}

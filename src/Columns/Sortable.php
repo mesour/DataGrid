@@ -21,7 +21,7 @@ class Sortable extends Base {
 
 	public function getBodyContent($data) {
 		$link = Html::el('a', array('class' => 'btn btn-sm btn-default move handler', 'href' => '#'));
-		$link->add(Html::el('b', array('class' => 'glyphicon glyphicon-move')));
+		$link->addHtml(Html::el('b', array('class' => 'glyphicon glyphicon-move')));
 		return $link;
 	}
 

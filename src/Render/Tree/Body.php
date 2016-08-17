@@ -16,7 +16,7 @@ class Body extends Render\Body {
 		$treeBody = Html::el('ul', $this->attributes);
 
 		foreach ($this->rows as $row) {
-			$treeBody->add($row->create());
+			$treeBody->addHtml($row->create());
 		}
 
 		return $treeBody;
