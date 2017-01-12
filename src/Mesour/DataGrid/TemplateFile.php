@@ -18,9 +18,6 @@ use Mesour;
 class TemplateFile extends \stdClass implements Mesour\Components\Utils\IString
 {
 
-	/** @var Engine */
-	private static $engine;
-
 	private $file;
 
 	private $parameters = [];
@@ -34,6 +31,19 @@ class TemplateFile extends \stdClass implements Mesour\Components\Utils\IString
 			self::$engine = new Engine;
 		}
 		self::$engine->setTempDirectory($tempDir);
+	}
+
+	public function setTemplateEngine(Mesour\Template\ITemplate $template)
+	{
+		$this->templateEngine = $template;
+	}
+
+	public function getEngine()
+	{
+		if (!$this->templateEngine) {
+			$this->templateEngine = new Mesour\Template\Latte\LatteTemplate();
+		}
+		return $this->templateEngine;
 	}
 
 	public function setFile($file)

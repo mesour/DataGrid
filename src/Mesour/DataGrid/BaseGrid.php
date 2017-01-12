@@ -11,7 +11,6 @@ namespace Mesour\DataGrid;
 
 use Mesour;
 use Mesour\Sources\Structures\Columns\BaseTableColumnStructure;
-use Nette\Utils\Json;
 
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
@@ -284,7 +283,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 
 		foreach ($this->getColumns() as $column) {
 			$column->validate($currentData, $data);
-			$column->setListRenderer(new GridListRenderer($column));
+			$column->setListRenderer(new Mesour\DataGrid\Renderer\GridListRenderer($column));
 		}
 
 		$script = Mesour\Components\Utils\Html::el('script');
@@ -383,7 +382,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 			}
 		}
 
-		$this->onRenderBody($body, $rawData, $data);
+		$this->onRenderBody($body, $renderer, $rawData, $data);
 
 		$table->setBody($body);
 

@@ -202,12 +202,15 @@ $loader->register();
 			]));
 		});
 
-	$subItems->addTemplateItem('description', 'Template item', __DIR__ . '/test.latte', __DIR__ . '/temp', 'test')
+	$templateItem = $subItems->addTemplateItem('description', 'Template item')
 		//->setPermission('menu', 'second')
-		->setCallback(function (\Mesour\DataGrid\TemplateFile $template, User $user) {
+		->setCallback(function (\Mesour\UI\TemplateFile $template, User $user) {
 
 			$template->name = $user->getName() . ' ' . $user->getSurname();
 		});
+	$templateItem->setTempDir(__DIR__ . '/temp');
+	$templateItem->setFile(__DIR__ . '/test.latte');
+	$templateItem->setBlock('test');
 
 	$selection = $grid->enableRowSelection()
 		->getLinks();

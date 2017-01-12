@@ -178,6 +178,35 @@ $loader->register();
 	$mainButton->setText('Actions')
 		->setType('danger');
 
+	// TEST -------------------------------------------------
+
+	$grid->onRenderBody[] = function(
+		\Mesour\Table\Render\Table\Body $body,
+		\Mesour\Table\Render\Table\RendererFactory $rendererFactory,
+		$rawData,
+		$data
+	) use ($grid) {
+		$myCustomRowData = [
+			'some_key' => 'value',
+		];
+
+		$row = $rendererFactory->createRow([], $myCustomRowData);
+
+		$column = new \Mesour\DataGrid\Column\Text('test_column', $grid);
+
+		$column->setCallback(function($column, $myCustomRowData) {
+			return $myCustomRowData['some_key'];
+		});
+
+		$cell = $rendererFactory->createCell([], $column, $myCustomRowData);
+
+		$row->addCell($cell);
+
+		$body->addRow($row);
+	};
+
+	// / TEST -----------------------------------------------
+
 	$time_end = microtime(true);
 	$time = $time_end - $time_start;
 

@@ -126,6 +126,8 @@ $loader->register();
 		dump('DeleteSelected', func_get_args());
 	};
 
+	// EDITABLE
+
 	$editable = $grid->enableEditable();
 
 	$editableStructure = $editable->getDataStructure();
@@ -137,6 +139,20 @@ $loader->register();
 		->enableEditCurrentRow()
 		->enableCreateNewRow()
 		->setNullable();
+
+	$editableStructure->addOneToMany('addresses', 'Addresses')
+		->enableCreateNewRow()
+        ->enableRemoveRow();
+
+	$editableStructure->addManyToMany('companies', 'Companies')
+		->enableAttachRow()
+		->enableCreateNewRow()
+		->enableRemoveRow();
+
+	$companyStructure = $editableStructure->getOrCreateElement('companies', 'id');
+	$companyStructure->addText('name', 'Name');
+	$companyStructure->addNumber('reg_num', 'Reg. number');
+	$companyStructure->addBool('verified', 'Verified');
 
 	$walletStructure = $editableStructure->getOrCreateElement('wallets', 'id');
 	$walletStructure->addNumber('amount', 'Amount')
@@ -155,6 +171,8 @@ $loader->register();
 		->addValue('second', 'Second');
 	$groupsStructure->addDate('date', 'Date');
 	$groupsStructure->addNumber('members', 'Members');
+
+	// / EDITABLE
 
 	$status = $grid->addStatus('action', 'S')
 		->setPermission('menu', 'second');

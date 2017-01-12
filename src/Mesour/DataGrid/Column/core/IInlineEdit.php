@@ -32,4 +32,22 @@ interface IInlineEdit extends Mesour\Components\ComponentModel\IComponent, IColu
 
 	public function getReference();
 
+	/**
+	 * @return Mesour\Editable\Structures\Fields\IStructureElementField|Mesour\Editable\Structures\Fields\IStructureField
+	 */
+	public function getEditableField();
+
+	/**
+	 * @return Mesour\UI\Button
+	 */
+	public function createEditButton();
+
+	/**
+	 * @param mixed $data
+	 * @param array $attributes
+	 * @param mixed $itemData
+	 * @return array
+	 */
+	public function getEditableAttributes($data, array $attributes = [], $itemData = []);
+
 }

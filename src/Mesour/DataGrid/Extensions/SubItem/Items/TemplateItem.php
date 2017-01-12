@@ -17,35 +17,16 @@ use Mesour;
 class TemplateItem extends Item
 {
 
-	private $templatePath;
+	use Mesour\Template\TemplateTrait;
 
-	private $block = null;
-
-	private $template;
-
-	public function __construct(
-		Mesour\DataGrid\Extensions\SubItem\ISubItem $parent,
-		$name,
-		$description = null,
-		Mesour\DataGrid\TemplateFile $template = null,
-		$templatePath = null,
-		$block = null
-	)
+	public function __construct(Mesour\DataGrid\Extensions\SubItem\ISubItem $parent, $name, $description = null)
 	{
 		parent::__construct($parent, $name, $description);
-		$this->template = $template;
-		$this->templatePath = $templatePath;
-		$this->block = $block;
 	}
 
 	public function render()
 	{
-		$this->template->_template_path = $this->templatePath;
-		$this->template->_block = false;
-		if (!is_null($this->block) && is_string($this->block)) {
-			$this->template->_block = $this->block;
-		}
-		return $this->template;
+		return $this->getTemplateFile();
 	}
 
 	public function reset()

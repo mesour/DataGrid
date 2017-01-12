@@ -15,7 +15,7 @@ use Mesour\DataGrid\Extensions;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-class SubItemExtension extends Extensions\Base implements ISubItem, Extensions\IExtension
+class SubItemExtension extends Extensions\Base implements ISubItem
 {
 
 	private $items = [];
@@ -54,25 +54,10 @@ class SubItemExtension extends Extensions\Base implements ISubItem, Extensions\I
 		return $item;
 	}
 
-	public function addTemplateItem($name, $description, $templatePath, $tempDir, $block = null)
+	public function addTemplateItem($name, $description)
 	{
 		$this->check($name);
-		if (!is_file($templatePath)) {
-			throw new Mesour\FileNotFoundException('Template path ' . $templatePath . ' does not exist.');
-		}
-		if (!is_dir($tempDir) && !is_writable($tempDir)) {
-			throw new Mesour\InvalidStateException('Temp directory must be directory and must be writable.');
-		}
-		$template = new Mesour\DataGrid\TemplateFile($tempDir);
-		$template->setFile(__DIR__ . '/Items/Template.latte');
-		$item = new Extensions\SubItem\Items\TemplateItem(
-			$this,
-			$name,
-			$this->getTranslator()->translate($description),
-			$template,
-			$templatePath,
-			$block
-		);
+		$item = new Extensions\SubItem\Items\TemplateItem($this, $name, $this->getTranslator()->translate($description));
 		$this->items[$name] = $item;
 		return $item;
 	}
