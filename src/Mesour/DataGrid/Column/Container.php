@@ -18,6 +18,8 @@ use Mesour\Table\Render;
 class Container extends Filtering implements IExportable, IContainer
 {
 
+	use Mesour\Icon\HasIcon;
+
 	/**
 	 * @param string $name
 	 * @param string|null $header
@@ -123,7 +125,7 @@ class Container extends Filtering implements IExportable, IContainer
 	{
 		parent::attachToFilter($filter, $hasCheckers);
 		$item = $filter->addTextFilter($this->getName(), $this->getHeader());
-		$item->setCheckers($hasCheckers);
+		$this->setUpFilterItem($item, $hasCheckers);
 	}
 
 	protected function setColumn(Render\IColumn $column, $name, $header = null)

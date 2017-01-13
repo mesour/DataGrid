@@ -17,6 +17,9 @@ use Mesour;
 class Text extends InlineEdit implements IExportable
 {
 
+	use Mesour\Components\Security\Authorised;
+	use Mesour\Icon\HasIcon;
+
 	public function getHeaderAttributes()
 	{
 		return array_merge([
@@ -44,7 +47,7 @@ class Text extends InlineEdit implements IExportable
 	{
 		parent::attachToFilter($filter, $hasCheckers);
 		$item = $filter->addTextFilter($this->getName(), $this->getHeader());
-		$item->setCheckers($hasCheckers);
+		$this->setUpFilterItem($item, $hasCheckers);
 	}
 
 }

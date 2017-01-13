@@ -18,6 +18,9 @@ use Mesour\DataGrid\Extensions;
 class SubItemExtension extends Extensions\Base implements ISubItem
 {
 
+	use Mesour\Components\Localization\Translatable;
+	use Mesour\Components\Security\Authorised;
+
 	private $items = [];
 
 	/** @var Mesour\Components\Session\ISessionSection */

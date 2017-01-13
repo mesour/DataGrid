@@ -13,10 +13,10 @@ use Mesour;
 
 /**
  * @author Matouš Němec (http://mesour.com)
- * 
+ *
  * @method Mesour\DataGrid\Column\IColumn getColumn()
  */
-class GridListRenderer extends Mesour\Table\ListRenderer
+class GridListRenderer extends Mesour\Table\Render\Lists\ListRenderer
 {
 
 	/**
@@ -41,7 +41,7 @@ class GridListRenderer extends Mesour\Table\ListRenderer
 
 	private function getCreateButton()
 	{
-		if(!$this->createButton) {
+		if (!$this->createButton) {
 			$this->createButton = new Mesour\UI\Button('_create_button');
 			$this->createButton->setIcon('plus')
 				->setClassName('');

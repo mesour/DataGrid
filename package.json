@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mesour-datagrid": "^0.1.0"
+  },
+  "devDependencies": {
+    "eonasdan-bootstrap-datetimepicker": "^4.17.42"
+  }
+}

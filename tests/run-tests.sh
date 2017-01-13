@@ -1,1 +1,0 @@
-./../vendor/bin/tester ./ -s -c ./php.ini

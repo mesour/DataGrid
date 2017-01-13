@@ -17,13 +17,19 @@ use Mesour;
 class Links extends Mesour\Object implements Mesour\Components\Utils\IString
 {
 
-	/** @var Mesour\Components\Control\IControl */
+	/**
+	 * @var Mesour\Components\Control\IControl|Mesour\Components\Localization\Translatable
+	 */
 	private $parent;
 
-	/** @var Mesour\UI\DropDown */
+	/**
+	 * @var Mesour\UI\DropDown
+	 */
 	private $dropDown;
 
-	/** @var Link[] */
+	/**
+	 * @var Link[]
+	 */
 	private $links = [];
 
 	public function __construct(ISelection $parent)

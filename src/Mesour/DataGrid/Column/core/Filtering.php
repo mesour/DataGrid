@@ -126,4 +126,21 @@ abstract class Filtering extends Ordering implements IFiltering
 		}
 	}
 
+	/**
+	 * @param Mesour\Filter\IFilterItem $item
+	 * @param bool $hasCheckers
+	 */
+	protected function setUpFilterItem(Mesour\Filter\IFilterItem $item, $hasCheckers)
+	{
+		$dataStructure = $this->getGrid()->getSource()->getDataStructure();
+		if ($dataStructure->hasColumn($this->getName())) {
+			$column = $dataStructure->getColumn($this->getName());
+			if ($column instanceof Mesour\Sources\Structures\Columns\BaseTableColumnStructure) {
+				$item->setMainFilter(false);
+			}
+		}
+
+		$item->setCheckers($hasCheckers);
+	}
+
 }

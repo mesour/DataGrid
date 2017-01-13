@@ -25,9 +25,9 @@ $loader->register();
 	  integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="../vendor/mesour/components/public/DateTimePicker/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
 
-<link rel="stylesheet" href="../public/mesour.grid.min.css">
+<link rel="stylesheet" href="../node_modules/mesour-datagrid/dist/css/mesour.datagrid.min.css">
 
 <hr>
 
@@ -44,10 +44,13 @@ $loader->register();
 	$relatedTable = \Mesour\Sources\Tests\Entity\Group::class;
 	$lastLogin = 'last_login';
 
+	$application = new \Mesour\UI\Application('mesourapp');
+
 	function getSubGrid()
 	{
+	    global $application;
 
-		$_sub_grid = new \Mesour\UI\DataGrid('subGrid');
+		$_sub_grid = new \Mesour\UI\DataGrid('subGrid', $application);
 
 		$_sub_grid->enablePager(5);
 
@@ -102,11 +105,12 @@ $loader->register();
 		return $button;
 	}
 
-	$application = new \Mesour\UI\Application('mesourapp');
+	$application->getConfiguration()
+		->setTempDir(__DIR__ . '/temp');
 
 	$application->setRequest($_REQUEST);
 
-	$application->setUserRole('registered');
+	$application->getUser()->setRoles('registered');
 
 	$auth = $application->getAuthorizator();
 
@@ -341,13 +345,13 @@ $loader->register();
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="../public/jquery.ui.js"></script>
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
 		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
 		crossorigin="anonymous"></script>
 
-<script src="../vendor/mesour/components/public/DateTimePicker/moment.min.js"></script>
-<script src="../vendor/mesour/components/public/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="../node_modules/eonasdan-bootstrap-datetimepicker/node_modules/moment/min/moment.min.js"></script>
+<script src="../node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
-<script src="../public/mesour.grid.min.js"></script>
+<script src="../node_modules/mesour-datagrid/dist/js/mesour.datagrid.js"></script>

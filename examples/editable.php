@@ -22,13 +22,9 @@ $loader->register();
 	  integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" href="../vendor/mesour/components/public/DateTimePicker/bootstrap-datetimepicker.min.css">
+<link rel="stylesheet" href="../node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
 
-<link rel="stylesheet" href="../public/src/mesour.grid.css">
-<link rel="stylesheet" href="../vendor/mesour/filter/public/mesour.filter.min.css">
-<link rel="stylesheet" href="../vendor/mesour/editable/public/src/mesour.editable.css">
-<link rel="stylesheet" href="../vendor/mesour/selection/public/mesour.selection.css">
-
+<link rel="stylesheet" href="../node_modules/mesour-datagrid/dist/css/mesour.datagrid.min.css">
 
 <hr>
 
@@ -46,9 +42,12 @@ $loader->register();
 
 	$application = new \Mesour\UI\Application('mesourapp');
 
+	$application->getConfiguration()
+        ->setTempDir(__DIR__ . '/temp');
+
 	$application->setRequest($_REQUEST);
 
-	$application->setUserRole('registered');
+	$application->getUser()->setRoles('registered');
 
 	$auth = $application->getAuthorizator();
 
@@ -99,7 +98,7 @@ $loader->register();
 
 	$pager = $grid->enablePager(8);
 
-	$filter = $grid->enableFilter();
+	$filter = $grid->enableFilter(false);
 
 	$selection = $grid->enableRowSelection();
 
@@ -173,6 +172,8 @@ $loader->register();
 	$groupsStructure->addNumber('members', 'Members');
 
 	// / EDITABLE
+
+    $grid->enableSortable('sort');
 
 	$status = $grid->addStatus('action', 'S')
 		->setPermission('menu', 'second');
@@ -249,29 +250,13 @@ $loader->register();
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="../public/jquery.ui.js"></script>
+<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
 		integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
 		crossorigin="anonymous"></script>
 
-<script src="../vendor/mesour/components/public/DateTimePicker/moment.min.js"></script>
-<script src="../vendor/mesour/components/public/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="../node_modules/eonasdan-bootstrap-datetimepicker/node_modules/moment/min/moment.min.js"></script>
+<script src="../node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
-<script src="../vendor/mesour/components/public/mesour.components.min.js"></script>
-<script src="../vendor/mesour/modal/public/mesour.modal.min.js"></script>
-
-<script src="../vendor/mesour/editable/public/mesour.editable.min.js"></script>
-
-<script src="../vendor/mesour/filter/public/src/mesour.filter.js"></script>
-<script src="../vendor/mesour/filter/public/src/mesour.filter.Checkers.js"></script>
-<script src="../vendor/mesour/filter/public/src/mesour.filter.CustomFilter.js"></script>
-<script src="../vendor/mesour/filter/public/src/mesour.filter.Filter.js"></script>
-<script src="../vendor/mesour/filter/public/src/mesour.filter.DropDown.js"></script>
-
-<script src="../vendor/mesour/selection/public/mesour.selection.js"></script>
-<script src="../vendor/mesour/pager/public/mesour.advancedPager.js"></script>
-<script src="../public/src/mesour.grid.core.js"></script>
-<script src="../public/src/mesour.grid.sortable.js"></script>
-<script src="../public/src/mesour.grid.selection.js"></script>
-<script src="../public/src/mesour.grid.editable.js"></script>
+<script src="../node_modules/mesour-datagrid/dist/js/mesour.datagrid.js"></script>

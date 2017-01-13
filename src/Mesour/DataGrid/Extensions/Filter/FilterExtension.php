@@ -18,6 +18,8 @@ use Mesour\Sources\Structures\Columns\BaseTableColumnStructure;
 class FilterExtension extends Mesour\UI\Filter implements IFilter
 {
 
+	use Mesour\Components\Security\Authorised;
+
 	private $isInline = true;
 
 	private $disabled = false;
@@ -126,34 +128,16 @@ class FilterExtension extends Mesour\UI\Filter implements IFilter
 
 	public function afterFetchData($currentData, $data = [], $rawData = [])
 	{
-		$dataStructure = $this->getSource()->getDataStructure();
-		foreach ($this->getGrid()->getColumns() as $column) {
-			if ($column instanceof Mesour\DataGrid\Column\IFiltering
-				&& $dataStructure->hasColumn($column->getName())
-				&& $dataStructure->getColumn($column->getName()) instanceof BaseTableColumnStructure
-			) {
-				/** @var BaseTableColumnStructure $structureColumn */
-				$structureColumn = $dataStructure->getColumn($column->getName());
-				/** @var Mesour\Filter\IFilterItem $filterItem */
-				$filterItem = isset($this[$column->getName()]) ? $this[$column->getName()] : null;
-				if ($filterItem) {
-					$filterItem->setReferenceSettings(
-						[
-							'table' => $structureColumn->getTableStructure()->getName(),
-							'column' => $structureColumn->getReferencedColumn(),
-						]
-					);
-				}
-			} else {
-				continue;
-			}
-		}
+
 	}
 
 	public function attachToRenderer(Mesour\DataGrid\Renderer\IGridRenderer $renderer, $data = [], $rawData = [])
 	{
 		$filterPrototype = $this->getGrid()->getFilterPrototype();
 		$filterPrototype->add($this->createdFilter);
+		if ($this->createdFilter->getName() === 'input') {
+			$filterPrototype->add($this->getModal()->create());
+		}
 		$renderer->setComponent('filter', $filterPrototype);
 	}
 

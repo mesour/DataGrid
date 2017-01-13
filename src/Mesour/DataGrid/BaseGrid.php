@@ -17,9 +17,12 @@ use Mesour\Sources\Structures\Columns\BaseTableColumnStructure;
  *
  * @method null onRenderColumnHeader($column, $i, $columnCount)
  * @method null onAfterRenderRow($body, $key, $rawData, $data)
+ * @method null onRenderBody(Mesour\Table\Render\Table\Body $body, Mesour\Table\Render\IRendererFactory $renderer, $rawData, $data)
  */
 abstract class BaseGrid extends Mesour\UI\Table
 {
+
+	use Mesour\Components\Localization\Translatable;
 
 	const WRAPPER = 'wrapper';
 
@@ -240,6 +243,9 @@ abstract class BaseGrid extends Mesour\UI\Table
 		return ['data-mesour-grid' => $this->createLinkName()];
 	}
 
+	/**
+	 * @return Mesour\Components\Utils\Html
+	 */
 	public function getWrapperPrototype()
 	{
 		if (!$this->wrapper) {
@@ -438,7 +444,7 @@ abstract class BaseGrid extends Mesour\UI\Table
 	}
 
 	/**
-	 * @return Column\IColumn[]
+	 * @return Column\IColumn[]|Mesour\Components\ComponentModel\IContainer[]
 	 * @throws Mesour\InvalidStateException
 	 * @throws Mesour\InvalidArgumentException
 	 */
@@ -497,11 +503,6 @@ abstract class BaseGrid extends Mesour\UI\Table
 			return $columns;
 		}
 		return parent::getColumns();
-	}
-
-	public function setPrimaryKey($primaryKey)
-	{
-		trigger_error('Method set primary key is deprecated. PrimaryKey is in DataStructure.', E_USER_DEPRECATED);
 	}
 
 	public function getPrimaryKey()

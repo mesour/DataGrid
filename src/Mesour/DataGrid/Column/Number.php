@@ -17,6 +17,9 @@ use Mesour;
 class Number extends InlineEdit implements IExportable
 {
 
+	use Mesour\Components\Security\Authorised;
+	use Mesour\Icon\HasIcon;
+
 	private $decimals = 0;
 
 	private $unit = null;
@@ -111,7 +114,7 @@ class Number extends InlineEdit implements IExportable
 	{
 		parent::attachToFilter($filter, $hasCheckers);
 		$item = $filter->addNumberFilter($this->getName(), $this->getHeader());
-		$item->setCheckers($hasCheckers);
+		$this->setUpFilterItem($item, $hasCheckers);
 	}
 
 }

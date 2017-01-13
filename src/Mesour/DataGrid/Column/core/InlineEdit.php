@@ -100,9 +100,6 @@ abstract class InlineEdit extends Filtering implements IInlineEdit
 					&& !$column instanceof Mesour\Sources\Structures\Columns\ManyToManyColumnStructure
 					&& ((!is_array($value) && $value !== null) || (is_array($value) && count($value) > 0))
 				) {
-					if ($this->getName() === 'wallet') {
-						dump($value);
-					}
 					$attributes['data-grid-edit'] = 'true';
 				}
 			}

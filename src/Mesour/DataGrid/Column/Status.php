@@ -20,6 +20,9 @@ use Mesour;
 class Status extends Filtering implements IExportable
 {
 
+	use Mesour\Components\Security\Authorised;
+	use Mesour\Icon\HasIcon;
+
 	static public $no_active_class = 'no-active-button';
 
 	/**

@@ -17,6 +17,8 @@ use Mesour;
 class SortableExtension extends Mesour\DataGrid\Extensions\Base implements ISortable
 {
 
+	use Mesour\Components\Security\Authorised;
+
 	private $sortableUsed = false;
 
 	private $columnName = false;

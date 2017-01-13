@@ -101,7 +101,7 @@ class Template extends Filtering implements IExportable
 	{
 		parent::attachToFilter($filter, $hasCheckers);
 		$item = $filter->addTextFilter($this->getName(), $this->getHeader());
-		$item->setCheckers($hasCheckers);
+		$this->setUpFilterItem($item, $hasCheckers);
 	}
 
 }

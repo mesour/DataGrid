@@ -17,6 +17,9 @@ use Mesour;
 class SelectionExtension extends Mesour\UI\Selection implements ISelection
 {
 
+	use Mesour\Components\Localization\Translatable;
+	use Mesour\Components\Security\Authorised;
+
 	private $selection_used = false;
 
 	private $disabled = false;

@@ -17,6 +17,8 @@ use Mesour;
 class Sortable extends BaseColumn implements IPrependedColumn
 {
 
+	use Mesour\Icon\HasIcon;
+
 	protected $arrowsIcon = 'arrows';
 
 	/**

@@ -17,6 +17,8 @@ use Mesour;
 class PagerExtension extends Mesour\UI\AdvancedPager implements IPager
 {
 
+	use Mesour\Components\Security\Authorised;
+
 	/** @var Mesour\Components\Utils\Html|string */
 	private $createdPager;
 

@@ -142,10 +142,6 @@ class ExtensionStorage
 			if (strlen($extension->getName()) === 0) {
 				throw new Mesour\InvalidStateException('Extension must have a set name.');
 			}
-			if (isset($this->parent[$extension->getName()])) {
-				throw new Mesour\InvalidStateException('Extension with name "' . $extension->getName() . '" already exists.');
-			}
-			$this->parent->addComponent($extension);
 
 			/** @var Extensions\IExtension $extension */
 			$extension->createInstance($extension, $extensionName);
@@ -168,7 +164,7 @@ class ExtensionStorage
 			$class = $this->extensions[$extensionName]['class'];
 			$extension = $this->parent->getComponent($name, false);
 			if (is_null($extension) && $need) {
-				$instance = $this->set(new $class($name), $extensionName);
+				$instance = $this->set(new $class($name, $this->parent), $extensionName);
 				if (!isset($this->parent[$name])) {
 					$this->parent->addComponent($instance);
 				}

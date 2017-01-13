@@ -18,6 +18,8 @@ use Mesour\Table;
 abstract class BaseColumn extends Table\Column implements IColumn
 {
 
+	use Mesour\Components\Security\Authorised;
+
 	/** @var Mesour\Components\Utils\Html */
 	private $filterResetButton;
 
@@ -64,7 +66,7 @@ abstract class BaseColumn extends Table\Column implements IColumn
 
 	/**
 	 * @param null $subControl
-	 * @return Mesour\UI\DataGrid
+	 * @return Mesour\UI\DataGrid|Table\ITable
 	 */
 	final public function getGrid($subControl = null)
 	{

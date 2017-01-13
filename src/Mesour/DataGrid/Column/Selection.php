@@ -9,6 +9,7 @@
 
 namespace Mesour\DataGrid\Column;
 
+use Mesour\Components\Security\Authorised;
 use Mesour\DataGrid\Extensions\Selection\ISelection;
 
 /**
@@ -16,6 +17,8 @@ use Mesour\DataGrid\Extensions\Selection\ISelection;
  */
 class Selection extends BaseColumn implements IPrependedColumn
 {
+
+	use Authorised;
 
 	/**
 	 * @var ISelection

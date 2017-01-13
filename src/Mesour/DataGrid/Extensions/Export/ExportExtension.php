@@ -14,8 +14,10 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport, Mesour\DataGrid\Extensions\IExtension
+class ExportExtension extends Mesour\DataGrid\Extensions\Base implements IExport
 {
+
+	use Mesour\Components\Security\Authorised;
 
 	/**
 	 * Cache directory

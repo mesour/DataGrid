@@ -1,5 +1,6 @@
 .idea
 /vendor
+/node_modules
 /composer.lock
 /examples/log
 /examples/temp
@@ -8,4 +9,4 @@
 /tests/log
 /tests/tmp
 /tests/config.local.php
-/tests/src/Sources/output
+/tests/Mesour/DataGridTests/Sources/output

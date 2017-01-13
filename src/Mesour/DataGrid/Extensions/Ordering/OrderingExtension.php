@@ -17,6 +17,8 @@ use Mesour;
 class OrderingExtension extends Mesour\DataGrid\Extensions\Base implements IOrdering
 {
 
+	use Mesour\Components\Security\Authorised;
+
 	private $defaultOrder = [];
 
 	private $disabled = false;
