@@ -21,11 +21,17 @@ $source = new \Mesour\DataGrid\Sources\NetteDbGridSource(
 	$selection,
 	$context,
 	[
-		'group_name' => 'g.name',
-		'group' => 'g.name',
+		'group_name' => 'groups.name',
+		'group' => 'groups.name',
 		'wallet' => 'wallet.amount',
 		'companies' => ':user_companies.company.name',
 		'addresses' => ':user_addresses.city',
+		'id' => 'users.id',
+		'amount' => 'users.amount',
+		'name' => 'users.name',
+		'wallet_amount' => 'wallet.amount',
+		'company_name' => ':user_companies.company.name',
+		'address_city' => ':addresses.city',
 	]
 );
 

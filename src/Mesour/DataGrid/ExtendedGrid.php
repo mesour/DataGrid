@@ -15,7 +15,7 @@ use Mesour;
  * @author Matouš Němec <matous.nemec@mesour.com>
  *
  * @method null onSort($data, $itemId)
- * @method null onFilter(Extensions\Filter\IFilter $filter)
+ * @method null onFilter(Extensions\Filter\IFilter|Extensions\SimpleFilter\ISimpleFilter $filter)
  */
 abstract class ExtendedGrid extends BaseGrid
 {
@@ -97,7 +97,22 @@ abstract class ExtendedGrid extends BaseGrid
 	 */
 	public function enableFilter($inline = true)
 	{
+		if ($this->getExtension('ISimpleFilter', false)) {
+			throw new Mesour\InvalidStateException('Simple filter is already used.');
+		}
 		return $this->getExtension('IFilter')->setInline($inline);
+	}
+
+	/**
+	 * @param array $allowedColumns
+	 * @return Extensions\SimpleFilter\ISimpleFilter
+	 */
+	public function enableSimpleFilter(array $allowedColumns = [])
+	{
+		if ($this->getExtension('IFilter', false)) {
+			throw new Mesour\InvalidStateException('Normal filter is already used.');
+		}
+		return $this->getExtension('ISimpleFilter')->setAllowedColumns($allowedColumns);
 	}
 
 	/**

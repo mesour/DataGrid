@@ -33,6 +33,11 @@ class ExtensionStorage
 			'interface' => Mesour\DataGrid\Extensions\Filter\IFilter::class,
 			'class' => Mesour\DataGrid\Extensions\Filter\FilterExtension::class,
 		],
+		'ISimpleFilter' => [
+			'name' => 'filter',
+			'interface' => Mesour\DataGrid\Extensions\SimpleFilter\ISimpleFilter::class,
+			'class' => Mesour\DataGrid\Extensions\SimpleFilter\SimpleFilterExtension::class,
+		],
 		'ISortable' => [
 			'name' => 'sortable',
 			'interface' => Mesour\DataGrid\Extensions\Sortable\ISortable::class,

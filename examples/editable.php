@@ -26,6 +26,12 @@ $loader->register();
 
 <link rel="stylesheet" href="../node_modules/mesour-datagrid/dist/css/mesour.datagrid.min.css">
 
+<style>
+    .input-group-btn:last-child > .btn[data-simple-filter] {
+        padding: 9px;
+    }
+</style>
+
 <hr>
 
 <div class="row col-lg-12" style="padding-left: 50px;">
@@ -98,7 +104,8 @@ $loader->register();
 
 	$pager = $grid->enablePager(8);
 
-	$filter = $grid->enableFilter(false);
+	//$filter = $grid->enableFilter();
+	$filter = $grid->enableSimpleFilter();
 
 	$selection = $grid->enableRowSelection();
 
