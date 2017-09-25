@@ -10,17 +10,17 @@
   }],
   "require": {
     "php": ">=5.6.0",
-    "mesour/components": "dev-experimental",
-    "mesour/button": "dev-experimental",
-    "mesour/dropdown": "dev-experimental",
-    "mesour/editable": "dev-experimental",
-    "mesour/filter": "dev-experimental",
-    "mesour/icon": "dev-experimental",
-    "mesour/pager": "dev-experimental",
-    "mesour/selection": "dev-experimental",
+    "mesour/components": "~3.1.0",
+    "mesour/button": "~3.1.0",
+    "mesour/dropdown": "~3.1.0",
+    "mesour/editable": "~3.1.0",
+    "mesour/filter": "~3.1.0",
+    "mesour/icon": "~3.1.0",
+    "mesour/pager": "~3.1.0",
+    "mesour/selection": "~3.1.0",
     "mesour/sources": "~3.0.0",
-    "mesour/template": "dev-experimental",
-    "mesour/table": "dev-experimental"
+    "mesour/template": "~3.1.0",
+    "mesour/table": "~3.1.0"
   },
   "require-dev": {
     "tracy/tracy": "~2.4.0",
