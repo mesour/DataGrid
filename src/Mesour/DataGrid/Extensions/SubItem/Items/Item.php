@@ -14,8 +14,10 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-abstract class Item extends Mesour\Object
+abstract class Item
 {
+
+	use Mesour\SmartObject;
 
 	const DEFAULT_COUNT = 20;
 

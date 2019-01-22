@@ -14,8 +14,10 @@ use Mesour;
 /**
  * @author Matouš Němec <matous.nemec@mesour.com>
  */
-class Links extends Mesour\Object implements Mesour\Components\Utils\IString
+class Links implements Mesour\Components\Utils\IString
 {
+
+	use Mesour\SmartObject;
 
 	/**
 	 * @var Mesour\Components\Control\IControl|Mesour\Components\Localization\Translatable

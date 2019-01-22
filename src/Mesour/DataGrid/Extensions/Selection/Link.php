@@ -16,8 +16,10 @@ use Mesour;
  *
  * @method null onCall($items)
  */
-class Link extends Mesour\Object
+class Link
 {
+
+	use Mesour\SmartObject;
 
 	private $name;
 
